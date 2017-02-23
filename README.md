@@ -33,7 +33,7 @@ plt.ylabel(r'$y$')
 plt.savefig('plot_goose_latex.svg')
 ```
 
-![examples/plot_goose_latex.svg](./examples/plot_goose_latex.svg)
+![examples/plot_goose_latex.svg](./examples/plot_goose_latex.png)
 
 ### Image
 
@@ -59,7 +59,7 @@ ax.yaxis.set_ticks(range(0,101,20))
 plt.savefig('image_goose_latex.svg')
 ```
 
-![examples/image_goose_latex.svg](./examples/image_goose_latex.svg)
+![examples/image_goose_latex.svg](./examples/image_goose_latex.png)
 
 ## Extending
 
