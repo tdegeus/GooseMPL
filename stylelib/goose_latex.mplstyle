@@ -1,0 +1,20 @@
+font.family          : serif
+font.serif           : Computer Modern Roman
+font.size            : 16
+font.weight          : light
+axes.labelsize       : 20
+axes.facecolor       : none
+legend.fancybox      : true
+legend.shadow        : true
+legend.facecolor     : w
+legend.columnspacing : 1.0
+legend.handletextpad : 0.2
+lines.linewidth      : 2
+image.cmap           : afmhot
+image.interpolation  : nearest
+image.origin         : lower
+savefig.facecolor    : none
+text.usetex          : true
+text.latex.preamble  : \usepackage{amsmath},\usepackage{amsfonts},\usepackage{amssymb},\usepackage{bm}
+axes.prop_cycle    : cycler('color',['k', 'r', 'g', 'b', 'y', 'c', 'm'])
+
