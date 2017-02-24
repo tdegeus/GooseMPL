@@ -1,5 +1,7 @@
-font.weight          : normal
-font.size            : 16
+font.family          : serif
+font.serif           : Computer Modern Roman
+font.weight          : bold
+font.size            : 18
 axes.labelsize       : large
 axes.titlesize       : large
 axes.facecolor       : none
@@ -13,3 +15,5 @@ image.cmap           : afmhot
 image.interpolation  : nearest
 image.origin         : lower
 savefig.facecolor    : none
+text.usetex          : true
+text.latex.preamble  : \usepackage{amsmath},\usepackage{amsfonts},\usepackage{amssymb},\usepackage{bm}

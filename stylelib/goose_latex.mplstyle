@@ -1,8 +1,8 @@
 font.family          : serif
 font.serif           : Computer Modern Roman
-font.size            : 16
-font.weight          : light
-axes.labelsize       : 20
+font.size            : 20
+font.weight          : normal
+axes.labelsize       : 24
 axes.facecolor       : none
 legend.fancybox      : true
 legend.shadow        : true

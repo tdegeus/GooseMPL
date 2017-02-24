@@ -32,6 +32,8 @@ plt.savefig('plot.svg')
 # goose
 # ==============================================================================
 
+plt.style.use('goose')
+
 fig,ax = plt.subplots()
 
 ax.plot(x,np.sin(x)         ,label=r'sin x')
@@ -53,10 +55,10 @@ plt.ylabel('y')
 plt.savefig('plot_goose.svg')
 
 # ==============================================================================
-# goose_latex
+# goose-latex
 # ==============================================================================
 
-plt.style.use('goose_latex')
+plt.style.use('goose-latex')
 
 fig,ax = plt.subplots()
 
@@ -76,5 +78,5 @@ plt.xlim([0,2*np.pi])
 plt.xlabel(r'$x$')
 plt.ylabel(r'$y$')
 
-plt.savefig('plot_goose_latex.svg')
+plt.savefig('plot_goose-latex.svg')
 
