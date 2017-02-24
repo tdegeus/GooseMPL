@@ -6,11 +6,11 @@
 - [Customized style](#customized-style)
     - [Overview](#overview)
     - [Tips](#tips)
-    - [Examples](#examples)
+- [Extension module](#extension-module)
+- [Examples](#examples)
     - [Extending](#extending)
 
 <!-- /MarkdownTOC -->
-
 
 # Customized style
 
@@ -62,7 +62,11 @@ with plt.style.context(('presentation')):
     plt.plot(np.sin(np.linspace(0, 2 * np.pi)))
 ```
 
-## Examples
+# Extension module
+
+In addition to the customized styles [goose](stylelib/goose.mplstyle) and [goose-latex](stylelib/goose-latex.mplstyle) this repository provides a number of functions that extend `matplotlib.pyplot`.
+
+# Examples
 
 ### Plot
 
