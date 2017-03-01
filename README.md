@@ -8,7 +8,9 @@
     - [Tips](#tips)
 - [Extension module](#extension-module)
 - [Examples](#examples)
-    - [Extending](#extending)
+    - [Plot](#plot)
+    - [Image](#image)
+    - [Subplot](#subplot)
 
 <!-- /MarkdownTOC -->
 
@@ -16,14 +18,14 @@
 
 ## Overview
 
-Matplotlib has a very convenient way to customize plots while minimizing the amount of customized code needed for this. In employs easy-to-switch plotting styles with the same parameters as a `matplotlibrc` file. The only thing needed to switch styles is:
+Matplotlib has a very convenient way to customize plots while minimizing the amount of customized code needed for this. It employs easy-to-switch plotting styles with the same parameters as a `matplotlibrc` file. The only thing needed to switch styles is:
 
 ```python
 import matplotlib.pyplot as plt
 plt.style.use('name_of_custom_style')
 ```
 
-A number of styles are available. To list them use: `plt.style.available`.
+A number of styles are available. To list them use `plt.style.available`.
 
 Also, one can use one's own style. This is a text-file `name_of_custom_style.mplstyle` stored in a sub-directory `stylelib` of the Matplotlib configuration directory; e.g.:
 
@@ -41,7 +43,9 @@ matplotlib.get_configdir()
 
 Two styles are proposed here: [goose](stylelib/goose.mplstyle) and [goose-latex](stylelib/goose-latex.mplstyle) (see [examples](#examples) below). The styles are equivalent with the exception that latter uses LaTeX and the Computer Modern Roman font.
 
->   More can be found in the [matplotlib documentation](http://matplotlib.org/users/customizing.html)
+>   More information:
+>   
+>   *   [matplotlib documentation](http://matplotlib.org/users/customizing.html)
 
 ## Tips
 
@@ -62,13 +66,23 @@ with plt.style.context(('presentation')):
     plt.plot(np.sin(np.linspace(0, 2 * np.pi)))
 ```
 
+### Extending
+
+To get the available fields do the following:
+
+```python
+import matplotlib as mpl
+
+print(mpl.rcParams)
+```
+
 # Extension module
 
 In addition to the customized styles [goose](stylelib/goose.mplstyle) and [goose-latex](stylelib/goose-latex.mplstyle) this repository provides a number of functions that extend `matplotlib.pyplot`.
 
 # Examples
 
-### Plot
+## Plot
 
 ```python
 import numpy as np
@@ -100,7 +114,7 @@ plt.savefig('plot_goose-latex.svg')
 
 ![examples/plot_goose-latex.svg](./examples/plot_goose-latex.png)
 
-### Image
+## Image
 
 ```python
 import numpy as np
@@ -126,12 +140,70 @@ plt.savefig('image_goose-latex.svg')
 
 ![examples/image_goose-latex.svg](./examples/image_goose-latex.png)
 
-## Extending
-
-To get the available fields do the following:
+## Subplot
 
 ```python
-import matplotlib as mpl
 
-print(mpl.rcParams)
+import numpy as np
+import matplotlib.pyplot as plt
+plt.style.use('goose-latex')
+
+x = np.linspace(0,2*np.pi,400)
+
+# new figure
+# ----------
+
+fig = plt.figure(figsize=(18,6))
+fig.set_tight_layout(True)
+
+# first subplot
+# -------------
+
+ax1 = fig.add_subplot(1,2,1)
+
+ax1.plot(x,np.sin(x)         ,label=r'$\sin \big( x \big)$')
+ax1.plot(x,np.sin(x-np.pi/4.),label=r'$\sin \big( x - \tfrac{\pi}{4} \big)$')
+
+ax1.set_title('First subplot')
+
+ax1.xaxis.set_ticklabels(['0',r'$\pi$',r'$2\pi$'])
+ax1.xaxis.set_ticks([0,np.pi,2*np.pi])
+ax1.yaxis.set_ticks([-1,0,1])
+
+plt.legend(loc='upper right')
+
+plt.xlim([0,2*np.pi])
+
+plt.xlabel(r'$x$')
+plt.ylabel(r'$y$')
+
+# second subplot
+# --------------
+
+ax2 = fig.add_subplot(1,2,2)
+
+ax2.plot(x,np.cos(x)         ,linestyle='--',label=r'$\cos \big( x \big)$')
+ax2.plot(x,np.cos(x-np.pi/4.),linestyle='--',label=r'$\cos \big( x - \tfrac{\pi}{4} \big)$')
+
+ax2.set_title('Second subplot')
+
+ax2.xaxis.set_ticklabels(['0',r'$\pi$',r'$2\pi$'])
+ax2.xaxis.set_ticks([0,np.pi,2*np.pi])
+ax2.yaxis.set_ticks([-1,0,1])
+
+plt.legend(loc='upper center')
+
+plt.xlim([0,2*np.pi])
+
+plt.xlabel(r'$x$')
+plt.ylabel(r'$y$')
+
+# save figure
+# -----------
+
+plt.savefig('subplot_goose-latex.svg')
 ```
+
+![examples/subplot_goose-latex.svg](./examples/subplot_goose-latex.png)
+
+
