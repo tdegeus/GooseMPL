@@ -9,8 +9,9 @@
 - [Extension module](#extension-module)
 - [Examples](#examples)
     - [Plot](#plot)
-    - [Image](#image)
     - [Subplot](#subplot)
+    - [Image](#image)
+    - [Image subplots: tight colorbar](#image-subplots-tight-colorbar)
 
 <!-- /MarkdownTOC -->
 
@@ -112,33 +113,7 @@ plt.ylabel(r'$y$')
 plt.savefig('plot_goose-latex.svg')
 ```
 
-![examples/plot_goose-latex.svg](./examples/plot_goose-latex.png)
-
-## Image
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-plt.style.use('goose-latex')
-
-x,y = np.meshgrid(np.linspace(0,1,100),np.linspace(0,1,100))
-d   = np.sqrt(x**2+y**2)
-
-fig,ax = plt.subplots()
-
-cax = ax.imshow(d)
-
-cbar = fig.colorbar(cax,aspect=10)
-cbar.set_ticks([0,np.sqrt(2.)])
-cbar.set_ticklabels(['0',r'$\sqrt{2}$'])  # vertically oriented colorbar
-
-ax.xaxis.set_ticks(range(0,101,20))
-ax.yaxis.set_ticks(range(0,101,20))
-
-plt.savefig('image_goose-latex.svg')
-```
-
-![examples/image_goose-latex.svg](./examples/image_goose-latex.png)
+![examples/plot_goose-latex.png](./examples/plot_goose-latex.png)
 
 ## Subplot
 
@@ -204,6 +179,87 @@ plt.ylabel(r'$y$')
 plt.savefig('subplot_goose-latex.svg')
 ```
 
-![examples/subplot_goose-latex.svg](./examples/subplot_goose-latex.png)
+![examples/subplot_goose-latex.png](./examples/subplot_goose-latex.png)
 
+## Image
 
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+plt.style.use('goose-latex')
+
+x,y = np.meshgrid(np.linspace(0,1,100),np.linspace(0,1,100))
+d   = np.sqrt(x**2+y**2)
+
+fig,ax = plt.subplots()
+
+cax = ax.imshow(d)
+
+cbar = fig.colorbar(cax,aspect=10)
+cbar.set_ticks([0,np.sqrt(2.)])
+cbar.set_ticklabels(['0',r'$\sqrt{2}$'])  # vertically oriented colorbar
+
+ax.xaxis.set_ticks(range(0,101,20))
+ax.yaxis.set_ticks(range(0,101,20))
+
+plt.savefig('image_goose-latex.svg')
+```
+
+![examples/image_goose-latex.png](./examples/image_goose-latex.png)
+
+## Image subplots: tight colorbar
+
+```python
+
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+plt.style.use('goose-latex')
+
+a,b = np.meshgrid(np.linspace(0,1,100),np.linspace(0,1,100))
+d   = np.sqrt(a**2+b**2)
+
+fig  = plt.figure(figsize=(18,6))
+fig.set_tight_layout(True)
+
+ax   = fig.add_subplot(1,3,1)
+im   = ax.imshow(a,clim=(0,1))
+ax.xaxis.set_ticks([0,100])
+ax.yaxis.set_ticks([0,100])
+plt.xlabel(r'$x$')
+plt.ylabel(r'$y$')
+plt.title(r'$a$')
+div  = make_axes_locatable(ax)
+cax  = div.append_axes("right", size="5%", pad=0.1)
+cbar = plt.colorbar(im,cax=cax)
+cbar.set_ticks([0,1])
+
+ax   = fig.add_subplot(1,3,2)
+im   = ax.imshow(b,clim=(0,1))
+ax.xaxis.set_ticks([0,100])
+ax.yaxis.set_ticks([0,100])
+plt.xlabel(r'$x$')
+plt.ylabel(r'$y$')
+plt.title(r'$b$')
+div  = make_axes_locatable(ax)
+cax  = div.append_axes("right", size="5%", pad=0.1)
+cbar = plt.colorbar(im,cax=cax)
+cbar.set_ticks([0,1])
+
+ax   = fig.add_subplot(1,3,3)
+im   = ax.imshow(d,clim=(0,1))
+ax.xaxis.set_ticks([0,100])
+ax.yaxis.set_ticks([0,100])
+plt.xlabel(r'$x$')
+plt.ylabel(r'$y$')
+plt.title(r'$\sqrt{a^2 + b^2}$')
+div  = make_axes_locatable(ax)
+cax  = div.append_axes("right", size="5%", pad=0.1)
+cbar = plt.colorbar(im,cax=cax)
+cbar.set_ticks([0,1])
+
+plt.savefig('image_subplots.svg')
+```
+
+![examples/image_subplots.png](./examples/image_subplots.png)
