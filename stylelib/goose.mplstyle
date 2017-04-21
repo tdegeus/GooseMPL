@@ -1,7 +1,12 @@
+figure.figsize       : 8,6
 font.weight          : normal
 font.size            : 16
-axes.labelsize       : large
-axes.titlesize       : large
+axes.labelsize       : medium
+axes.titlesize       : medium
+xtick.labelsize      : small
+ytick.labelsize      : small
+xtick.top            : True
+ytick.right          : True
 axes.facecolor       : none
 axes.prop_cycle      : cycler('color',['k', 'r', 'g', 'b', 'y', 'c', 'm'])
 legend.fontsize      : medium
@@ -13,3 +18,4 @@ image.cmap           : afmhot
 image.interpolation  : nearest
 image.origin         : lower
 savefig.facecolor    : none
+figure.autolayout    : True

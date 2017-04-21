@@ -20,6 +20,9 @@ cbar.set_ticklabels(['0',r'$\sqrt{2}$'])  # vertically oriented colorbar
 ax.xaxis.set_ticks(range(0,101,20))
 ax.yaxis.set_ticks(range(0,101,20))
 
+plt.xlim([0,100])
+plt.ylim([0,100])
+
 plt.xlabel(r'x')
 plt.ylabel(r'y')
 
@@ -42,6 +45,9 @@ cbar.set_ticklabels(['0',r'$\sqrt{2}$'])  # vertically oriented colorbar
 ax.xaxis.set_ticks(range(0,101,20))
 ax.yaxis.set_ticks(range(0,101,20))
 
+plt.xlim([0,100])
+plt.ylim([0,100])
+
 plt.xlabel(r'x')
 plt.ylabel(r'y')
 
@@ -51,7 +57,7 @@ plt.savefig('image_goose.svg')
 # goose-latex
 # ==============================================================================
 
-plt.style.use('goose-latex')
+plt.style.use(['goose','latex'])
 
 fig,ax = plt.subplots()
 
@@ -63,6 +69,9 @@ cbar.set_ticklabels(['0',r'$\sqrt{2}$'])  # vertically oriented colorbar
 
 ax.xaxis.set_ticks(range(0,101,20))
 ax.yaxis.set_ticks(range(0,101,20))
+
+plt.xlim([0,100])
+plt.ylim([0,100])
 
 plt.xlabel(r'$x$')
 plt.ylabel(r'$y$')

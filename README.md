@@ -79,7 +79,7 @@ print(mpl.rcParams)
 
 # Extension module
 
-In addition to the customized styles [goose](stylelib/goose.mplstyle) and [goose-latex](stylelib/goose-latex.mplstyle) this repository provides a number of functions that extend `matplotlib.pyplot`.
+In addition to the customized styles [goose](stylelib/goose.mplstyle), [latex](stylelib/latex.mplstyle), [tick-lower](stylelib/tick-lower.mplstyle), and [tick-in](stylelib/tick-in.mplstyle) this repository provides a number of functions that extend `matplotlib.pyplot`.
 
 # Examples
 
@@ -88,7 +88,7 @@ In addition to the customized styles [goose](stylelib/goose.mplstyle) and [goose
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use('goose-latex')
+plt.style.use(['goose','latex'])
 
 x = np.linspace(0,2*np.pi,400)
 
@@ -121,7 +121,7 @@ plt.savefig('plot_goose-latex.svg')
 
 import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use('goose-latex')
+plt.style.use(['goose','latex'])
 
 x = np.linspace(0,2*np.pi,400)
 
@@ -186,7 +186,7 @@ plt.savefig('subplot_goose-latex.svg')
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use('goose-latex')
+plt.style.use(['goose','latex'])
 
 x,y = np.meshgrid(np.linspace(0,1,100),np.linspace(0,1,100))
 d   = np.sqrt(x**2+y**2)
@@ -202,6 +202,9 @@ cbar.set_ticklabels(['0',r'$\sqrt{2}$'])  # vertically oriented colorbar
 ax.xaxis.set_ticks(range(0,101,20))
 ax.yaxis.set_ticks(range(0,101,20))
 
+plt.xlim([0,100])
+plt.ylim([0,100])
+
 plt.savefig('image_goose-latex.svg')
 ```
 
@@ -215,7 +218,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-plt.style.use('goose-latex')
+plt.style.use(['goose','latex'])
 
 a,b = np.meshgrid(np.linspace(0,1,100),np.linspace(0,1,100))
 d   = np.sqrt(a**2+b**2)
@@ -227,6 +230,8 @@ ax   = fig.add_subplot(1,3,1)
 im   = ax.imshow(a,clim=(0,1))
 ax.xaxis.set_ticks([0,100])
 ax.yaxis.set_ticks([0,100])
+plt.xlim([0,100])
+plt.ylim([0,100])
 plt.xlabel(r'$x$')
 plt.ylabel(r'$y$')
 plt.title(r'$a$')
@@ -239,6 +244,8 @@ ax   = fig.add_subplot(1,3,2)
 im   = ax.imshow(b,clim=(0,1))
 ax.xaxis.set_ticks([0,100])
 ax.yaxis.set_ticks([0,100])
+plt.xlim([0,100])
+plt.ylim([0,100])
 plt.xlabel(r'$x$')
 plt.ylabel(r'$y$')
 plt.title(r'$b$')
@@ -251,6 +258,8 @@ ax   = fig.add_subplot(1,3,3)
 im   = ax.imshow(d,clim=(0,1))
 ax.xaxis.set_ticks([0,100])
 ax.yaxis.set_ticks([0,100])
+plt.xlim([0,100])
+plt.ylim([0,100])
 plt.xlabel(r'$x$')
 plt.ylabel(r'$y$')
 plt.title(r'$\sqrt{a^2 + b^2}$')
