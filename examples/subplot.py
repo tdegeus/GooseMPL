@@ -1,7 +1,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use(['goose','latex'])
+plt.style.use(['goose','goose-latex'])
 
 x = np.linspace(0,2*np.pi,400)
 

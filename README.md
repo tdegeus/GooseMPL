@@ -88,7 +88,7 @@ In addition to the customized styles [goose](stylelib/goose.mplstyle), [latex](s
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use(['goose','latex'])
+plt.style.use(['goose','goose-latex'])
 
 x = np.linspace(0,2*np.pi,400)
 
@@ -121,7 +121,7 @@ plt.savefig('plot_goose-latex.svg')
 
 import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use(['goose','latex'])
+plt.style.use(['goose','goose-latex'])
 
 x = np.linspace(0,2*np.pi,400)
 
@@ -186,7 +186,7 @@ plt.savefig('subplot_goose-latex.svg')
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use(['goose','latex'])
+plt.style.use(['goose','goose-latex'])
 
 x,y = np.meshgrid(np.linspace(0,1,100),np.linspace(0,1,100))
 d   = np.sqrt(x**2+y**2)
@@ -218,7 +218,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-plt.style.use(['goose','latex'])
+plt.style.use(['goose','goose-latex'])
 
 a,b = np.meshgrid(np.linspace(0,1,100),np.linspace(0,1,100))
 d   = np.sqrt(a**2+b**2)

@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-plt.style.use(['goose','latex'])
+plt.style.use(['goose','goose-latex'])
 
 a,b = np.meshgrid(np.linspace(0,1,100),np.linspace(0,1,100))
 d   = np.sqrt(a**2+b**2)

@@ -58,7 +58,7 @@ plt.savefig('plot_goose.svg')
 # goose-latex
 # ==============================================================================
 
-plt.style.use(['goose','latex'])
+plt.style.use(['goose','goose-latex'])
 
 fig,ax = plt.subplots()
 
