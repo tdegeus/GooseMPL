@@ -22,7 +22,7 @@ import matplotlib        as mpl
 import numpy             as np
 import os,re,sys
 
-# ==============================================================================
+# ==================================================================================================
 
 def cdf(data,mode='continuous',**kwargs):
   '''
@@ -31,26 +31,15 @@ Plot cumulative probability density.
 :arguments:
 
   **data** (``<numpy.ndarray>``)
-    Data for which the cumulative probability density is plotted.
+    Input data, to plot the distribution for.
 
 :options:
 
   **mode** ([``'continuous'``] | ``'line'`` | ``'bar'``)
-    Plot modes. If set to ``continuous`` the actual data is used. For the other
-    cases the data is binned.
+    Plot modes. The data is binned, unless ``continuous`` is used.
 
-:linestyle:
-
-  See ``gplot.plot``. Some examples:
-
-  **linestyle** ([``'-'``] | ``'--'`` | ``'-.'`` | ``None``)
-    Line-style
-
-  **linewidth** (``<float>``)
-    Line-width (e.g. ``1.0``).
-
-  **marker** (``<str>``)
-    Marker.
+  **ax** (``<matplotlib>``)
+    Specify an axis to include to plot in. By default the current axis is used.
 
 :barstyle:
 
@@ -81,18 +70,33 @@ Plot cumulative probability density.
   **weights** (``<numpy.ndarray>``) *optional*
     Weights, of the same shape as ``data``.
 
+:recommended options:
+
+  **linestyle** ([``'-'``] | ``'--'`` | ``'-.'`` | ``None``)
+    Line-style
+
+  **linewidth** (``<float>``)
+    Line-width (e.g. ``1.0``).
+
+  **marker** (``<str>``)
+    Marker.
+
 .. seealso::
 
   * `matplotlib.patches.Rectangle
     <http://matplotlib.org/api/patches_api.html#matplotlib.patches.Rectangle>`_.
+
+  * `matplotlib.pyplot.plot
+    <http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot>`_.
   '''
+
+  ax = kwargs.pop('ax',plt.gca())
 
   # plot continuous
   # ---------------
 
   if mode in ['continuous','c']:
-
-    return plt.plot(np.sort(data),np.linspace(0.0,1.0,len(data)),**kwargs)
+    return ax.plot(np.sort(data),np.linspace(0.0,1.0,len(data)),**kwargs)
 
   # plot in bins
   # ------------
@@ -111,13 +115,118 @@ Plot cumulative probability density.
 
   # plot as curve
   if mode in ['line','lines','l']:
-    return plt.plot(np.cumsum(np.diff(bin_edges))+bin_edges[0]-np.diff(bin_edges)[0]/2.,data,**kwargs)
+    return ax.plot(np.cumsum(np.diff(bin_edges))+bin_edges[0]-np.diff(bin_edges)[0]/2.,data,**kwargs)
 
   # plot as bars
   if mode in ['bars','bar','b']:
     for i,(x0,dx,dy) in enumerate(zip(bin_edges[:-1],bin_edges[1:]-bin_edges[:-1],data)):
-      plt.gca().add_patch(mpl.patches.Rectangle((x0,0),dx,dy,**kwargs))
+      ax.add_patch(mpl.patches.Rectangle((x0,0),dx,dy,**kwargs))
 
   return None
 
-# ==============================================================================
+# ==================================================================================================
+
+def patch(*args,**kwargs):
+  '''
+Add patches to plot. The color of the patches is indexed according to a specified color-index.
+
+:example:
+
+  Plot a finite element mesh: the outline of the undeformed configuration, and the deformed
+  configuration for which the elements get a color e.g. based on stress::
+
+    import matplotlib.pyplot as plt
+    import goosempl          as gplt
+
+    fig,ax = plt.subplots()
+
+    p = gplt.patch(coor=coor+disp,conn=conn,ax=ax,cindex=stress,cmap='YlOrRd',edgecolor=None)
+    _ = gplt.patch(coor=coor     ,conn=conn,ax=ax)
+
+    cbar = fig.colorbar(p,ax=ax,aspect=10)
+
+    plt.show()
+
+:arguments - option 1/2:
+
+  **patches** (``<list>``)
+    List with patch objects. Can be replaced by specifying ``coor`` and ``conn``.
+
+:arguments - option 2/2:
+
+  **coor** (``<numpy.ndarray>`` | ``<list>`` (nested))
+    Matrix with on each row the coordinates (positions) of each node.
+
+  **conn** (``<numpy.ndarray>`` | ``<list>`` (nested))
+    Matrix with on each row the number numbers (rows in ``coor``) which form an element (patch).
+
+:options:
+
+  **cindex** (``<numpy.ndarray>``)
+    Array with, for each patch, the value that should be indexed to a color.
+
+  **ax** (``<matplotlib>``)
+    Specify an axis to include to plot in. By default the current axis is used.
+
+:recommended options:
+
+  **cmap** (``<str>`` | ...)
+    Specify a colormap.
+
+  **linewidth** (``<float>``)
+    Width of the edges.
+
+  **edgecolor** (``<str>`` | ...)
+    Color of the edges.
+
+  **clim** (``(<float>,<float>)``)
+    Lower and upper limit of the color-axis.
+
+:returns:
+
+  **handle** (``<matplotlib>``)
+    Handle of the patch objects.
+
+.. seealso::
+
+  * `matplotlib example
+    <http://matplotlib.org/examples/api/patch_collection.html>`_.
+  '''
+
+  from matplotlib.collections import PatchCollection
+  from matplotlib.patches     import Polygon
+
+  # check dependent options
+  if ( 'coor' in kwargs and 'conn' not in kwargs ) or ( 'conn' in kwargs and 'coor' not in kwargs ):
+    raise IOError('Specify both "coor" and "conn"')
+
+  # extract local options
+  ax     = kwargs.pop( 'ax'     , plt.gca() )
+  cindex = kwargs.pop( 'cindex' , None      )
+  coor   = kwargs.pop( 'coor'   , None      )
+  conn   = kwargs.pop( 'conn'   , None      )
+  # set defaults
+  kwargs.setdefault('edgecolor','k')
+
+  # no color-index -> set transparent
+  if cindex is None:
+    kwargs.setdefault('facecolor',(0.,0.,0.,0.))
+
+  # convert mesh -> list of Polygons
+  if coor is not None and conn is not None:
+    poly = []
+    for iconn in conn:
+      poly.append(Polygon(coor[iconn,:]))
+    args = (poly,*args)
+
+  # convert patches -> matplotlib-objects
+  p = PatchCollection(*args,**kwargs)
+  # add colors to patches
+  if cindex is not None:
+    p.set_array(cindex)
+  # add patches to axis
+  ax.add_collection(p)
+
+  return p
+
+# ==================================================================================================
