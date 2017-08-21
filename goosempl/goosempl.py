@@ -197,7 +197,7 @@ Add patches to plot. The color of the patches is indexed according to a specifie
   from matplotlib.patches     import Polygon
 
   # check dependent options
-  if ( 'coor' in kwargs and 'conn' not in kwargs ) or ( 'conn' in kwargs and 'coor' not in kwargs ):
+  if ( 'coor' not in kwargs or 'conn' not in kwargs ):
     raise IOError('Specify both "coor" and "conn"')
 
   # extract local options

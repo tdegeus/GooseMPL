@@ -11,6 +11,7 @@
     - [Plot](#plot)
     - [Subplot](#subplot)
     - [Plot: use colormap](#plot-use-colormap)
+    - [Patch: plot mesh](#patch-plot-mesh)
     - [Image](#image)
     - [Image subplots: tight colorbar](#image-subplots-tight-colorbar)
 
@@ -29,7 +30,7 @@ plt.style.use('name_of_custom_style')
 
 A number of styles are available. To list them use `plt.style.available`.
 
-Also, one can use one's own style. This is a text-file `name_of_custom_style.mplstyle` stored in a sub-directory `stylelib` of the Matplotlib configuration directory; e.g.:
+Also, one can use one's own style. This is a plain-text file `name_of_custom_style.mplstyle` stored in a sub-directory `stylelib` of the Matplotlib configuration directory; e.g.:
 
 ```bash
 ~/.matplotlib/stylelib/         # MacOS/Linux
@@ -80,7 +81,7 @@ print(mpl.rcParams)
 
 # Extension module
 
-In addition to the customized styles [goose](stylelib/goose.mplstyle), [latex](stylelib/latex.mplstyle), [tick-lower](stylelib/tick-lower.mplstyle), and [tick-in](stylelib/tick-in.mplstyle) this repository provides a number of functions that extend `matplotlib.pyplot`.
+In addition to the customized styles [goose](stylelib/goose.mplstyle), [goose-latex](stylelib/goose-latex.mplstyle), [goose-tick-lower](stylelib/goose-tick-lower.mplstyle), and [goose-tick-in](stylelib/goose-tick-in.mplstyle) this repository provides a number of functions that extend `matplotlib.pyplot`.
 
 # Examples
 
@@ -112,6 +113,7 @@ plt.xlabel(r'$x$')
 plt.ylabel(r'$y$')
 
 plt.savefig('plot_goose-latex.svg')
+plt.show()
 ```
 
 ![examples/plot_goose-latex.png](./examples/plot_goose-latex.png)
@@ -178,6 +180,7 @@ plt.ylabel(r'$y$')
 # -----------
 
 plt.savefig('subplot_goose-latex.svg')
+plt.show()
 ```
 
 ![examples/subplot_goose-latex.png](./examples/subplot_goose-latex.png)
@@ -214,9 +217,59 @@ sm.set_array([])
 plt.colorbar(sm,ticks=np.linspace(0,2,N),boundaries=np.arange(-0.05,2.1,.1))
 
 plt.savefig('plot-cmap_goose-latex.svg')
+plt.show()
 ```
 
-![examples/subplot_goose-latex.png](./examples/plot-cmap_goose-latex.png)
+![examples/plot-cmap_goose-latex.png](./examples/plot-cmap_goose-latex.png)
+
+## Patch: plot mesh
+```python
+
+import matplotlib.pyplot as plt
+import goosempl          as gplt
+import numpy             as np
+
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+plt.style.use(['goose','goose-latex'])
+
+coor = np.array([
+  [ 0.0, 0.0 ],
+  [ 1.0, 0.0 ],
+  [ 2.0, 0.0 ],
+  [ 0.0, 1.0 ],
+  [ 1.0, 1.0 ],
+  [ 2.0, 1.0 ],
+])
+
+conn = np.array([
+  [ 0, 1, 4, 3 ],
+  [ 1, 2, 5, 4 ],
+])
+
+value = np.array([
+  -1,
+  +1,
+])
+
+fig,ax = plt.subplots()
+
+im = gplt.patch(coor=coor,conn=conn,cindex=value,clim=[-2,2],cmap='RdBu_r')
+
+plt.xlim([ -0.1,  2.1 ])
+plt.ylim([ -0.1,  1.1 ])
+
+ax.set_aspect('equal')
+
+div  = make_axes_locatable(ax)
+cax  = div.append_axes("right", size="5%", pad=0.1)
+cbar = plt.colorbar(im,cax=cax)
+
+plt.savefig('plot-patch.svg')
+plt.show()
+```
+
+![examples/plot-patch.png](./examples/plot-patch.png)
 
 ## Image
 
@@ -243,6 +296,7 @@ plt.xlim([0,100])
 plt.ylim([0,100])
 
 plt.savefig('image_goose-latex.svg')
+plt.show()
 ```
 
 ![examples/image_goose-latex.png](./examples/image_goose-latex.png)
@@ -306,6 +360,7 @@ cbar = plt.colorbar(im,cax=cax)
 cbar.set_ticks([0,1])
 
 plt.savefig('image_subplots.svg')
+plt.show()
 ```
 
 ![examples/image_subplots.png](./examples/image_subplots.png)
