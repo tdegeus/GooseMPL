@@ -4,16 +4,18 @@
 <!-- MarkdownTOC -->
 
 - [Customized style](#customized-style)
-    - [Overview](#overview)
-    - [Tips](#tips)
+  - [Overview](#overview)
+  - [Tips](#tips)
 - [Extension module](#extension-module)
 - [Examples](#examples)
-    - [Plot](#plot)
-    - [Subplot](#subplot)
-    - [Plot: use colormap](#plot-use-colormap)
-    - [Patch: plot mesh](#patch-plot-mesh)
-    - [Image](#image)
-    - [Image subplots: tight colorbar](#image-subplots-tight-colorbar)
+  - [Plot](#plot)
+  - [Subplot](#subplot)
+  - [Plot: use colormap](#plot-use-colormap)
+  - [Patch: plot mesh](#patch-plot-mesh)
+  - [Image](#image)
+  - [Image subplots: tight colorbar](#image-subplots-tight-colorbar)
+- [Develop](#develop)
+  - [Create a new release](#create-a-new-release)
 
 <!-- /MarkdownTOC -->
 
@@ -364,3 +366,20 @@ plt.show()
 ```
 
 ![examples/image_subplots.png](./examples/image_subplots.png)
+
+# Develop
+
+## Create a new release
+
+1.  Update the version numbers by modifying `__version__` in `setup.py`.
+
+2.  Upload the changes to GitHub and create a new release there (with the correct version number).
+
+3.  Upload the package to PyPi:
+
+    ```bash
+    $ python3 setup.py bdist_wheel --universal
+    $ twine upload dist/*
+    ```
+
+
