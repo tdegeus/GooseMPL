@@ -16,13 +16,13 @@ GooseMPL provides a style and several style extensions for matplotlib, some cust
 
 To obtain GooseMPL, use PyPi:
 
-.. code-block::
+.. code-block:: bash
 
   pip install goosempl
 
 or
 
-.. code-block::
+.. code-block:: bash
 
   pip3 install goosempl
 
