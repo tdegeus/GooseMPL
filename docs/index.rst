@@ -18,12 +18,6 @@ To obtain GooseMPL, use PyPi:
 
 .. code-block:: bash
 
-  pip install goosempl
-
-or
-
-.. code-block:: bash
-
   pip3 install goosempl
 
 Contents

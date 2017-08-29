@@ -3,8 +3,31 @@
 Customized style
 ****************
 
-Overview
-========
+Styles in GooseMPL
+==================
+
+The following styles are part of GooseMPL (they become available upon installing GooseMPL):
+
+*   `goose <https://github.com/tdegeus/GooseMPL/blob/master/goosempl/stylelib/goose.mplstyle>`_
+
+    Customized layout settings.
+
+*   `goose-latex <https://github.com/tdegeus/GooseMPL/blob/master/goosempl/stylelib/goose-latex.mplstyle>`_
+
+    Extend a style to enable the use of LaTeX, and change the font to LaTeX default Computer Modern font.
+
+*   `goose-tick-in <https://github.com/tdegeus/GooseMPL/blob/master/goosempl/stylelib/goose-tick-in.mplstyle>`_
+
+    Place the tick-markers (*the little lines*) at the inside of the axes rather than at the outside.
+
+*   `goose-tick-lower <https://github.com/tdegeus/GooseMPL/blob/master/goosempl/stylelib/goose-tick-lower.mplstyle>`_
+
+    Shown only axes on the bottom and left side of the figure (those on the top and right are not shown).
+
+See the :ref:`examples-pyplot`.
+
+Background
+==========
 
 Matplotlib has a very convenient way to customize plots while minimizing the amount of customized code needed for this. It employs easy-to-switch plotting styles with the same parameters as a ``matplotlibrc`` file. The only thing needed to switch styles is:
 
@@ -29,25 +52,9 @@ The exact directory depends on the operating system and the installation. To fin
   import matplotlib
   matplotlib.get_configdir()
 
-The following styles are proposed here:
+.. note::
 
-*   `goose <https://github.com/tdegeus/GooseMPL/blob/master/goosempl/stylelib/goose.mplstyle>`_
-
-*   `goose-latex <https://github.com/tdegeus/GooseMPL/blob/master/goosempl/stylelib/goose-latex.mplstyle>`_
-
-    Extend a style to enable the use of LaTeX, and change the font to LaTeX default Computer Modern font.
-
-*   `goose-tick-in <https://github.com/tdegeus/GooseMPL/blob/master/goosempl/stylelib/goose-tick-in.mplstyle>`_
-
-*   `goose-tick-lower <https://github.com/tdegeus/GooseMPL/blob/master/goosempl/stylelib/goose-tick-lower.mplstyle>`_
-
-    Shown only axes on the bottom and left side of the figure (those on the top and right are not shown).
-
-See the :ref:`examples-pyplot`.
-
-.. note:: More information
-
-  *   `matplotlib documentation <http://matplotlib.org/users/customizing.html>`_
+  More information in the `matplotlib documentation <http://matplotlib.org/users/customizing.html>`_
 
 Tips
 ====
