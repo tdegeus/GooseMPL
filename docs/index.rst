@@ -3,7 +3,7 @@
 GooseMPL
 ********
 
-GooseMPL provides a style and several style extensions for matplotlib, some custom functions that extend matplotlib, and several examples to make professional plot using matplotlib. See [goosempl.geus.me](http://goosempl.geus.me) for documentation.
+GooseMPL provides a style and several style extensions for matplotlib, some custom functions that extend matplotlib, and several examples to make professional plot using matplotlib.
 
 
 .. note::
@@ -12,7 +12,7 @@ GooseMPL provides a style and several style extensions for matplotlib, some cust
 
   Bug reports or feature requests can be filed on GitHub.
 
-  (c - MIT) T.W.J. de Geus (Tom) | tom@geus.me | www.geus.me | `github.com/tdegeus/GooseMPL <http://github.com/tdegeus/GooseMPL>`_
+  (c - MIT) T.W.J. de Geus (Tom) | tom@geus.me | `www.geus.me <http://www.geus.me>`_ | `github.com/tdegeus/GooseMPL <http://github.com/tdegeus/GooseMPL>`_
 
 To obtain GooseMPL, use PyPi:
 
