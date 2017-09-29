@@ -1,11 +1,13 @@
 
 # GooseMPL
 
-GooseMPL provides a style and several style extensions for matplotlib, some custom functions that extend matplotlib, and several examples to make professional plot using matplotlib. See [goosempl.geus.me](http://goosempl.geus.me) for documentation.
+GooseMPL provides a style and several style extensions for matplotlib, some custom functions that extend matplotlib, and several examples to make professional plot using matplotlib. 
 
->   This library is free to use. Any additions are very much appreciated, in terms of suggested functionality, code, documentation, testimonials, word of mouth advertisement, .... As always, the code comes with no guarantee. None of the developers can be held responsible for possible mistakes or misuse.
+Documentation: [goosempl.geus.me](http://goosempl.geus.me)
+
+>   **Disclaimer**
 >   
->   Bug reports or feature requests can be filed on GitHub.
+>   This code is made available under the very permissive MIT license. Still, any additions are very much appreciated. Bug reports or feature requests can be filed on GitHub. As always, the code comes with no guarantee. None of the developers can be held responsible for possible mistakes.
 >   
->   (c - MIT) T.W.J. de Geus (Tom) | tom@geus.me | www.geus.me | [github.com/tdegeus/GooseMPL](http://github.com/tdegeus/GooseMPL)
+>   (c - [MIT](https://github.com/tdegeus/GooseMPL/blob/master/LICENSE)) T.W.J. de Geus (Tom) | tom@geus.me | www.geus.me | [github.com/tdegeus/GooseMPL](https://github.com/tdegeus/GooseMPL)
 
