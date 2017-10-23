@@ -11,7 +11,7 @@ class new_install(install):
     super(new_install, self).__init__(*args, **kwargs)
     atexit.register(_post_install)
 
-__version__ = '0.1.5'
+__version__ = '0.1.6'
 
 setup(
   name              = 'goosempl',

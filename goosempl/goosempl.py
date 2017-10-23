@@ -168,6 +168,10 @@ Add patches to plot. The color of the patches is indexed according to a specifie
   **ax** (``<matplotlib>``)
     Specify an axis to include to plot in. By default the current axis is used.
 
+  **autoscale** ([``True``] | ``False``)
+    Automatically update the limits of the plot (currently automatic limits of Collections are not
+    supported by matplotlib).
+
 :recommended options:
 
   **cmap** (``<str>`` | ...)
@@ -201,10 +205,11 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     raise IOError('Specify both "coor" and "conn"')
 
   # extract local options
-  ax     = kwargs.pop( 'ax'     , plt.gca() )
-  cindex = kwargs.pop( 'cindex' , None      )
-  coor   = kwargs.pop( 'coor'   , None      )
-  conn   = kwargs.pop( 'conn'   , None      )
+  ax        = kwargs.pop( 'ax'        , plt.gca() )
+  cindex    = kwargs.pop( 'cindex'    , None      )
+  coor      = kwargs.pop( 'coor'      , None      )
+  conn      = kwargs.pop( 'conn'      , None      )
+  autoscale = kwargs.pop( 'autoscale' , True      )
   # set defaults
   kwargs.setdefault('edgecolor','k')
 
@@ -226,6 +231,15 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     p.set_array(cindex)
   # add patches to axis
   ax.add_collection(p)
+
+  # rescale the axes manually
+  if autoscale:
+    # - get limits
+    xlim = [ np.min(coor[:,0]) , np.max(coor[:,0]) ]
+    ylim = [ np.min(coor[:,1]) , np.max(coor[:,1]) ]
+    # - set limits +/- 10% extra margin
+    plt.xlim([xlim[0]-.1*(xlim[1]-xlim[0]),xlim[1]+.1*(xlim[1]-xlim[0])])
+    plt.ylim([ylim[0]-.1*(ylim[1]-ylim[0]),ylim[1]+.1*(ylim[1]-ylim[0])])
 
   return p
 
