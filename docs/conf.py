@@ -31,6 +31,8 @@ import sys, os
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 sys.path.insert(0, os.path.abspath('../'))
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../goosempl'))
 
 extensions = ['sphinx.ext.imgmath', 'sphinx.ext.autodoc', 'sphinx.ext.autosummary']
 
