@@ -1,3 +1,4 @@
+[![Documentation Status](https://readthedocs.org/projects/goosempl/badge/?version=latest)](http://goosempl.readthedocs.io/en/latest/?badge=latest)
 
 # GooseMPL
 
