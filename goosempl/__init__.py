@@ -36,6 +36,9 @@ def copy_style():
   for fname in files:
     path = os.path.join(matplotlib.get_configdir(),fname)
     text = resource_string(__name__,fname).decode()
+
+    if not os.path.isdir(path): os.mkdir(path)
+
     open(path,'w').write(text)
 
 # ==================================================================================================
