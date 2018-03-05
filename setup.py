@@ -15,7 +15,7 @@ class PostInstallCommand(install):
 
 # --------------------------------------------------------------------------------------------------
 
-__version__ = '0.1.10'
+__version__ = '0.1.12'
 
 # --------------------------------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ setup(
   packages          = ['goosempl'],
   cmdclass          = {'install': PostInstallCommand},
   package_data      = {'goosempl':[
-    'stylelib/goose.mplstyle'
+    'stylelib/goose.mplstyle',
     'stylelib/goose-latex.mplstyle',
     'stylelib/goose-tick-in.mplstyle',
     'stylelib/goose-tick-lower.mplstyle',
