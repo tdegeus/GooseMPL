@@ -35,13 +35,13 @@ def copy_style():
 
   for fname in files:
 
-    path = os.path.abspath(matplotlib.get_configdir())
+    text = resource_string(__name__, fname).decode()
 
-    text = resource_string(__name__,fname).decode()
+    path = os.path.abspath(os.path.join(matplotlib.get_configdir(), fname))
 
-    if not os.path.isdir(path): os.makedirs(path)
+    if not os.path.isdir(os.path.dirname(path)): os.makedirs(os.path.dirname(path))
 
-    open(os.path.join(path,fname),'w').write(text)
+    open(path,'w').write(text)
 
 # ==================================================================================================
 
