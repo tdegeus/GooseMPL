@@ -27,19 +27,21 @@ def copy_style():
   from pkg_resources import resource_string
 
   files = [
+    'stylelib/goose.mplstyle',
     'stylelib/goose-latex.mplstyle',
     'stylelib/goose-tick-in.mplstyle',
     'stylelib/goose-tick-lower.mplstyle',
-    'stylelib/goose.mplstyle',
   ]
 
   for fname in files:
-    path = os.path.join(matplotlib.get_configdir(),fname)
+
+    path = os.path.abspath(matplotlib.get_configdir())
+
     text = resource_string(__name__,fname).decode()
 
-    if not os.path.isdir(path): os.mkdir(path)
+    if not os.path.isdir(path): os.makedirs(path)
 
-    open(path,'w').write(text)
+    open(os.path.join(path,fname),'w').write(text)
 
 # ==================================================================================================
 

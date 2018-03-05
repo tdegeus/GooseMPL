@@ -15,7 +15,7 @@ class PostInstallCommand(install):
 
 # --------------------------------------------------------------------------------------------------
 
-__version__ = '0.2.0'
+__version__ = '0.1.10'
 
 # --------------------------------------------------------------------------------------------------
 
@@ -32,11 +32,11 @@ setup(
   install_requires  = ['matplotlib>=2.0.0'],
   packages          = ['goosempl'],
   cmdclass          = {'install': PostInstallCommand},
-  package_data      = {'goosempl/stylelib':[
-    'goosempl/stylelib/goose-latex.mplstyle',
-    'goosempl/stylelib/goose-tick-in.mplstyle',
-    'goosempl/stylelib/goose-tick-lower.mplstyle',
-    'goosempl/stylelib/goose.mplstyle'
+  package_data      = {'goosempl':[
+    'stylelib/goose.mplstyle'
+    'stylelib/goose-latex.mplstyle',
+    'stylelib/goose-tick-in.mplstyle',
+    'stylelib/goose-tick-lower.mplstyle',
   ]},
 )
 
