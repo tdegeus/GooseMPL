@@ -19,29 +19,104 @@ This module provides some extensions to matplotlib.
 
 # ==================================================================================================
 
+def find_latex_font_serif():
+  r'''
+Find and available font to mimic LaTeX.
+  '''
+
+  import os, re
+  import matplotlib.font_manager
+
+  name = lambda font: os.path.splitext(os.path.split(font)[-1])[0]
+
+  fonts = matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext='ttf')
+
+  matches = [
+    r'.*Computer\ Modern\ Roman.*',
+    r'.*CMU\ Serif.*Regular.*',
+    r'.*CMU.*',
+    r'.*Times.*',
+    r'.*DejaVu.*',
+    r'.*Serif.*',
+  ]
+
+  for match in matches:
+    for font in fonts:
+      if re.match(match,font):
+        return name(font)
+
+# --------------------------------------------------------------------------------------------------
+
 def copy_style():
+  r'''
+Write all goose-styles to the relevant matplotlib configuration directory.
+  '''
 
   import os
   import matplotlib
 
-  from pkg_resources import resource_string
+  # style definitions
+  # -----------------
 
-  files = [
-    'stylelib/goose.mplstyle',
-    'stylelib/goose-latex.mplstyle',
-    'stylelib/goose-tick-in.mplstyle',
-    'stylelib/goose-tick-lower.mplstyle',
-  ]
+  styles = {}
 
-  for fname in files:
+  styles['goose.mplstyle'] = '''
+figure.figsize       : 8,6
+font.weight          : normal
+font.size            : 16
+axes.labelsize       : medium
+axes.titlesize       : medium
+xtick.labelsize      : small
+ytick.labelsize      : small
+xtick.top            : True
+ytick.right          : True
+axes.facecolor       : none
+axes.prop_cycle      : cycler('color',['k', 'r', 'g', 'b', 'y', 'c', 'm'])
+legend.fontsize      : medium
+legend.fancybox      : true
+legend.columnspacing : 1.0
+legend.handletextpad : 0.2
+lines.linewidth      : 2
+image.cmap           : afmhot
+image.interpolation  : nearest
+image.origin         : lower
+savefig.facecolor    : none
+figure.autolayout    : True
+  '''
 
-    text = resource_string(__name__, fname).decode()
+  styles['goose-tick-in.mplstyle'] = '''
+xtick.direction      : in
+ytick.direction      : in
+  '''
 
-    path = os.path.abspath(os.path.join(matplotlib.get_configdir(), fname))
+  styles['goose-tick-lower.mplstyle'] = '''
+xtick.top            : False
+ytick.right          : False
+axes.spines.top      : False
+axes.spines.right    : False
+  '''
 
-    if not os.path.isdir(os.path.dirname(path)): os.makedirs(os.path.dirname(path))
+  styles['goose-latex.mplstyle'] = r'''
+font.family          : serif
+font.serif           : {serif:s}
+font.weight          : bold
+font.size            : 18
+text.usetex          : true
+text.latex.preamble  : \usepackage{{amsmath}},\usepackage{{amsfonts}},\usepackage{{amssymb}},\usepackage{{bm}}
+'''.format(serif=find_latex_font_serif())
 
-    open(path,'w').write(text)
+  # write style definitions
+  # -----------------------
+
+  # directory name where the styles are stored
+  dirname = os.path.abspath(os.path.join(matplotlib.get_configdir(), 'stylelib'))
+
+  # make directory if it does not yet exist
+  if not os.path.isdir(dirname): os.makedirs(dirname)
+
+  # write all styles
+  for fname, style in styles.items():
+    open(os.path.join(dirname, fname),'w').write(style)
 
 # ==================================================================================================
 
