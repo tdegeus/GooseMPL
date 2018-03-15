@@ -27,13 +27,13 @@ Find and available font to mimic LaTeX.
   import os, re
   import matplotlib.font_manager
 
-  name = lambda font: os.path.splitext(os.path.split(font)[-1])[0]
+  name = lambda font: os.path.splitext(os.path.split(font)[-1])[0].split(' - ')[0]
 
   fonts = matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext='ttf')
 
   matches = [
     r'.*Computer\ Modern\ Roman.*',
-    r'.*CMU\ Serif.*Regular.*',
+    r'.*CMU\ Serif.*',
     r'.*CMU.*',
     r'.*Times.*',
     r'.*DejaVu.*',
