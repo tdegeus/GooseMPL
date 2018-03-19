@@ -113,3 +113,13 @@ Stand-alone colorbar
 .. image:: colorbar.svg
   :width: 600px
   :align: center
+
+Custom colormap
+===============
+
+.. literalinclude:: colormap.py
+   :language: python
+
+.. image:: colormap.svg
+  :width: 600px
+  :align: center
