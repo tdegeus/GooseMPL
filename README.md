@@ -10,6 +10,6 @@ Documentation: [goosempl.geus.me](http://goosempl.geus.me)
 >   
 >   This library is free to use under the [MIT license](LICENSE). Any additions are very much appreciated, in terms of suggested functionality, code, documentation, testimonials, word of mouth advertisement, .... Bug reports or feature requests can be filed on [GitHub](https://github.com/tdegeus/GooseMPL). As always, the code comes with no guarantee. None of the developers can be held responsible for possible mistakes.
 >   
->   Download: [.zip file](zipball/master) | [.tar.gz file](tarball/master).
+>   Download: [.zip file](https://github.com/tdegeus/GooseMPL/zipball/master) | [.tar.gz file](https://github.com/tdegeus/GooseMPL/tarball/master).
 >   
 >   (c - [MIT](LICENSE)) T.W.J. de Geus (Tom) | tom@geus.me | www.geus.me | [github.com/tdegeus/GooseMPL](https://github.com/tdegeus/GooseMPL)
