@@ -7,13 +7,21 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 plt.style.use(['goose','goose-latex'])
 
-# total colormap: 500 entries
-# - upper part: 400 entries
-upper = mpl.cm.jet(np.arange(400))
-# - lower part: 100 entries
-#   initialize
-lower = np.ones((100,4))
-#   let range linearly between white (1,1,1) and the first color of the upper colormap
+# create colormap
+# ---------------
+
+# create a colormap that consists of
+# - 1/5 : custom colormap, ranging from white to the first color of the colormap
+# - 4/5 : existing colormap
+
+# set upper part: 4 * 256/4 entries
+upper = mpl.cm.jet(np.arange(256))
+
+# set lower part: 1 * 256/4 entries
+# - initialize all entries to 1 to make sure that the alpha channel (4th column) is 1
+lower = np.ones((int(256/4),4))
+# - modify the first three columns (RGB):
+#   range linearly between white (1,1,1) and the first color of the upper colormap
 for i in range(3):
   lower[:,i] = np.linspace(1, upper[0,i], lower.shape[0])
 
@@ -23,8 +31,8 @@ cmap = np.vstack(( lower, upper ))
 # convert to matplotlib colormap
 cmap = mpl.colors.ListedColormap(cmap, name='myColorMap', N=cmap.shape[0])
 
-# some example
-# ------------
+# show some example
+# -----------------
 
 # open a new figure
 fig, ax = plt.subplots()

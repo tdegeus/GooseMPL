@@ -117,6 +117,21 @@ Stand-alone colorbar
 Custom colormap
 ===============
 
+This example shows how to create a custom colormap. To do this one has to create an RGBA-matrix: a matrix with on each row the amount (between 0 and 1) of Red, Green, Blue, and Alpha (transparency; 0 means that the pixel does not have any coverage information and is transparent).
+
+As an example the distance to some point is plotted in two dimensions. Then:
+
+* For any distance higher than some critical value, the colors will be taken from a standard colormap.
+* For any distance lower than some critical value, the colors will linearly go from white to the first color of the previously mentioned map.
+
+.. note::
+
+  The choices depend fully on what you want to show. The colormaps and their sizes depend on your problem. For example, you can choose different types of interpolation: linear, exponential, ...; single- or multi-color colormaps; etc..
+
+.. note::
+
+  The choices depend fully on what you want to show. The colormaps and their sizes depend on your problem. For example you can choose a different types of interpolation: linear, exponential, ...; single- or multi-color colormaps; etc..
+
 .. literalinclude:: colormap.py
    :language: python
 
