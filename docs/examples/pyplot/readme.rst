@@ -169,6 +169,16 @@ Tick formatter
 
 [:download:`source: tick-formatter.py <tick-formatter.py>`]
 
+.. note:: References
+
+  * `matplotlib.ticker <https://matplotlib.org/api/ticker_api.html#matplotlib.ticker.StrMethodFormatter>`_
+
+  * `Format Specification Mini-Language <https://docs.python.org/3/library/string.html#formatspec>`_
+
+.. note::
+
+  Use ``matplotlib.ticker.FormatStrFormatter(...)`` to use the old-style sprintf format.
+
 .. literalinclude:: tick-formatter.py
    :language: python
 
