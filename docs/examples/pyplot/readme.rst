@@ -117,6 +117,8 @@ Stand-alone colorbar
 Custom colormap
 ===============
 
+[:download:`source: colormap.py <colormap.py>`]
+
 This example shows how to create a custom colormap. To do this one has to create an RGBA-matrix: a matrix with on each row the amount (between 0 and 1) of Red, Green, Blue, and Alpha (transparency; 0 means that the pixel does not have any coverage information and is transparent).
 
 As an example the distance to some point is plotted in two dimensions. Then:
@@ -136,5 +138,28 @@ As an example the distance to some point is plotted in two dimensions. Then:
    :language: python
 
 .. image:: colormap.svg
+  :width: 600px
+  :align: center
+
+Aligning tick labels
+====================
+
+[:download:`source: tick-position.py <tick-position.py>`]
+
+This example is just a copy of `this nice answer <https://stackoverflow.com/a/47500319/2646505>`_. See also `the blog <https://gorelik.net/2017/11/23/how-to-make-a-graph-less-readable-rotate-the-text-labels/>`_ of the author.
+
+.. note::
+
+  Also take note of:
+
+  .. code-block:: python
+
+    ax.set_xticklabels(xlabels, ha='center')
+    ax.set_yticklabels(ylabels, va='center')
+
+.. literalinclude:: tick-position.py
+   :language: python
+
+.. image:: tick-position.svg
   :width: 600px
   :align: center
