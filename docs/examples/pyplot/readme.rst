@@ -163,3 +163,16 @@ This example is just a copy of `this nice answer <https://stackoverflow.com/a/47
 .. image:: tick-position.svg
   :width: 600px
   :align: center
+
+Tick formatter
+==============
+
+[:download:`source: tick-formatter.py <tick-formatter.py>`]
+
+.. literalinclude:: tick-formatter.py
+   :language: python
+
+.. image:: tick-formatter.svg
+  :width: 600px
+  :align: center
+
