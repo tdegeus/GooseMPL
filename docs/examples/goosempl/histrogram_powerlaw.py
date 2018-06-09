@@ -19,19 +19,19 @@ data = distribution()
 
 fig, axes = plt.subplots(ncols=3, figsize=(24,8))
 
-P,x = gplt.histogram(data, bins=50, x='mid', density=True)
+P,x = gplt.histogram(data, bins=41, x='mid', density=True)
 
 axes[0].plot(x,P,marker='o', linestyle='none', markersize=5., color='k')
 
 axes[0].set_title(r'histogram')
 
-P,x = gplt.histogram_log(data, bins=50, x='mid', density=True)
+P,x = gplt.histogram_log(data, bins=41, x='mid', density=True)
 
 axes[1].plot(x,P,marker='o', linestyle='none', markersize=5., color='b')
 
 axes[1].set_title(r'histogram\_log')
 
-P,x = gplt.histogram_uniform(data, bins=200, x='mid', density=True)
+P,x = gplt.histogram_uniform(data, bins=41, x='mid', density=True)
 
 axes[2].plot(x,P,marker='o', linestyle='none', markersize=5., color='r')
 

@@ -253,6 +253,7 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
   x    = kwargs.pop('x'   , 'edges').lower()
   N    = kwargs.pop('bins', 10     )
+  N    = int(np.floor(float(len(data))/float(N)))
 
   bins = np.sort(np.array(data,copy=True))[:len(data)-len(data)%N].reshape(-1,N)
   bins = bins[:,0].ravel()
