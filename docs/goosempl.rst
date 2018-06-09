@@ -26,6 +26,9 @@ Plot statistics
 
 .. autosummary::
 
+  goosempl.histogram
+  goosempl.histogram_log
+  goosempl.histogram_uniform
   goosempl.cdf
   goosempl.pdf
 

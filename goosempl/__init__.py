@@ -1,10 +1,6 @@
 '''
 This module provides some extensions to matplotlib.
 
-:references:
-
-  * `Colormaps <http://matplotlib.org/examples/color/colormaps_reference.html>`_
-
 :dependencies:
 
   * numpy
@@ -19,9 +15,16 @@ This module provides some extensions to matplotlib.
 
 # ==================================================================================================
 
+import matplotlib.pyplot as plt
+import matplotlib        as mpl
+import numpy             as np
+import os,re,sys
+
+# ==================================================================================================
+
 def find_latex_font_serif():
   r'''
-Find and available font to mimic LaTeX.
+Find an available font to mimic LaTeX.
   '''
 
   import os, re
@@ -120,13 +123,6 @@ text.latex.preamble  : \usepackage{{amsmath}},\usepackage{{amsfonts}},\usepackag
 
 # ==================================================================================================
 
-import matplotlib.pyplot as plt
-import matplotlib        as mpl
-import numpy             as np
-import os,re,sys
-
-# ==================================================================================================
-
 def set_decade_lims(axis=None,direction=None):
   r'''
 Set limits the the floor/ceil values in terms of decades.
@@ -193,6 +189,85 @@ Scale limits to be 5% wider, to have a nice plot.
 
 # ==================================================================================================
 
+def histogram(data,**kwargs):
+  r'''
+Compute histogram.
+See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`_
+
+:extra options:
+
+  **x** ([``'edges'``] | [``'mid'``])
+    Return x-coordinate as edges or mid-points.
+  '''
+
+  x = kwargs.pop('x', 'edges').lower()
+
+  P,edges = np.histogram(data, **kwargs)
+
+  if x != 'edges':
+    edges = np.diff(edges) / 2. + edges[:-1]
+
+  return P,edges
+
+# ==================================================================================================
+
+def histogram_log(data,**kwargs):
+  r'''
+Compute histogram using log-binning.
+See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`_
+
+:extra options:
+
+  **x** ([``'edges'``] | [``'mid'``])
+    Return x-coordinate as edges or mid-points.
+  '''
+
+  x    = kwargs.pop('x'   , 'edges').lower()
+  bins = kwargs.pop('bins', 10     )
+
+  if type(bins) == int:
+     bins = np.logspace(np.log10(np.min(data)),np.log10(np.max(data)),bins)
+
+  P,edges = np.histogram(data, bins=bins, **kwargs)
+
+  if x != 'edges':
+    edges = np.diff(edges) / 2. + edges[:-1]
+
+  return P,edges
+
+# ==================================================================================================
+
+def histogram_uniform(data,**kwargs):
+  r'''
+Compute histogram using bins that contain a uniform number of items.
+See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`_
+
+:extra options:
+
+  **bins** (``<int>``)
+    Number of entries in each bin (the last bin is extended to fit the data).
+
+  **x** ([``'edges'``] | [``'mid'``])
+    Return x-coordinate as edges or mid-points.
+  '''
+
+  x    = kwargs.pop('x'   , 'edges').lower()
+  N    = kwargs.pop('bins', 10     )
+
+  bins = np.sort(np.array(data,copy=True))[:len(data)-len(data)%N].reshape(-1,N)
+  bins = bins[:,0].ravel()
+
+  if len(data)%N != 0: bins = np.hstack(( bins, np.max(data) ))
+
+  P,edges = np.histogram(data, bins=bins, **kwargs)
+
+  if x != 'edges':
+    edges = np.diff(edges) / 2. + edges[:-1]
+
+  return P,edges
+
+# ==================================================================================================
+
 def cdf(data,mode='continuous',**kwargs):
   '''
 Plot cumulative probability density.
@@ -207,7 +282,7 @@ Plot cumulative probability density.
   **mode** ([``'continuous'``] | ``'line'`` | ``'bar'``)
     Plot modes. The data is binned, unless ``continuous`` is used.
 
-  **ax** (``<matplotlib>``)
+  **axis** (``<matplotlib>``)
     Specify an axis to include to plot in. By default the current axis is used.
 
 :barstyle:
@@ -259,13 +334,13 @@ Plot cumulative probability density.
     <http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot>`_.
   '''
 
-  ax = kwargs.pop('ax',plt.gca())
+  axis = kwargs.pop('axis',plt.gca())
 
   # plot continuous
   # ---------------
 
   if mode in ['continuous','c']:
-    return ax.plot(np.sort(data),np.linspace(0.0,1.0,len(data)),**kwargs)
+    return axis.plot(np.sort(data),np.linspace(0.0,1.0,len(data)),**kwargs)
 
   # plot in bins
   # ------------
@@ -284,12 +359,12 @@ Plot cumulative probability density.
 
   # plot as curve
   if mode in ['line','lines','l']:
-    return ax.plot(np.cumsum(np.diff(bin_edges))+bin_edges[0]-np.diff(bin_edges)[0]/2.,data,**kwargs)
+    return axis.plot(np.cumsum(np.diff(bin_edges))+bin_edges[0]-np.diff(bin_edges)[0]/2.,data,**kwargs)
 
   # plot as bars
   if mode in ['bars','bar','b']:
     for i,(x0,dx,dy) in enumerate(zip(bin_edges[:-1],bin_edges[1:]-bin_edges[:-1],data)):
-      ax.add_patch(mpl.patches.Rectangle((x0,0),dx,dy,**kwargs))
+      axis.add_patch(mpl.patches.Rectangle((x0,0),dx,dy,**kwargs))
 
   return None
 
@@ -322,6 +397,8 @@ Plot probability density.
 
 
 :options:
+
+  **axis** ([``plt.gca()``] | ``<matplotlib.axis>``)
 
   **bin_edges** ([``None``] | ``<numpy.ndarray>``)
     Specify the bin-edges. If this is specified the histogram is not calculated,
@@ -382,6 +459,9 @@ Plot probability density.
 
   '''
 
+  # get axis
+  axis = kwargs.pop('axis', plt.gca())
+
   # define histogram
   # ----------------
 
@@ -438,11 +518,11 @@ Plot probability density.
       yf = np.array(y,copy=True)
       xf = np.hstack(( xf[0]*np.ones ((1)) , xf , xf[-1]*np.ones ((1)) ))
       yf = np.hstack((       np.zeros((1)) , yf ,        np.zeros((1)) ))
-      hf = plt.fill(xf,yf,**fill_args)
+      hf = axis.fill(xf,yf,**fill_args)
 
     # plot line
     if line_plot and kwargs['plot']:
-      hp = plt.plot(x,y,**line_args)
+      hp = axis.plot(x,y,**line_args)
 
     # set handles
     if kwargs['plot']:
@@ -462,7 +542,7 @@ Plot probability density.
   kwargs.pop('plot',False)
 
   for i,(x0,dx,dy) in enumerate(zip(bin_edges[:-1],bin_edges[1:]-bin_edges[:-1],data)):
-    plt.gca().add_patch(mpl.patches.Rectangle((x0,0),dx,dy,**kwargs))
+    axis.add_patch(mpl.patches.Rectangle((x0,0),dx,dy,**kwargs))
 
   return (x,y)
 
@@ -567,7 +647,7 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     args = tuple(poly, *args)
 
   # convert patches -> matplotlib-objects
-  p = PatchCollection(*args,**kwargs)
+  p = PatchCollection(args,**kwargs)
   # add colors to patches
   if cindex is not None:
     p.set_array(cindex)
