@@ -85,6 +85,7 @@ image.interpolation  : nearest
 image.origin         : lower
 savefig.facecolor    : none
 figure.autolayout    : True
+errorbar.capsize     : 2
   '''
 
   styles['goose-tick-in.mplstyle'] = '''
@@ -563,10 +564,10 @@ Add patches to plot. The color of the patches is indexed according to a specifie
 
     fig,ax = plt.subplots()
 
-    p = gplt.patch(coor=coor+disp,conn=conn,ax=ax,cindex=stress,cmap='YlOrRd',edgecolor=None)
-    _ = gplt.patch(coor=coor     ,conn=conn,ax=ax)
+    p = gplt.patch(coor=coor+disp,conn=conn,axis=ax,cindex=stress,cmap='YlOrRd',edgecolor=None)
+    _ = gplt.patch(coor=coor     ,conn=conn,axis=ax)
 
-    cbar = fig.colorbar(p,ax=ax,aspect=10)
+    cbar = fig.colorbar(p,axis=ax,aspect=10)
 
     plt.show()
 
@@ -588,7 +589,7 @@ Add patches to plot. The color of the patches is indexed according to a specifie
   **cindex** (``<numpy.ndarray>``)
     Array with, for each patch, the value that should be indexed to a color.
 
-  **ax** (``<matplotlib>``)
+  **axis** (``<matplotlib>``)
     Specify an axis to include to plot in. By default the current axis is used.
 
   **autoscale** ([``True``] | ``False``)
@@ -628,7 +629,7 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     raise IOError('Specify both "coor" and "conn"')
 
   # extract local options
-  ax        = kwargs.pop( 'ax'        , plt.gca() )
+  axis      = kwargs.pop( 'axis'      , plt.gca() )
   cindex    = kwargs.pop( 'cindex'    , None      )
   coor      = kwargs.pop( 'coor'      , None      )
   conn      = kwargs.pop( 'conn'      , None      )
@@ -653,7 +654,7 @@ Add patches to plot. The color of the patches is indexed according to a specifie
   if cindex is not None:
     p.set_array(cindex)
   # add patches to axis
-  ax.add_collection(p)
+  axis.add_collection(p)
 
   # rescale the axes manually
   if autoscale:

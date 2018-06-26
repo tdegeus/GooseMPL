@@ -117,6 +117,9 @@ Stand-alone colorbar
 Custom colormap
 ===============
 
+Combined colormap
+-----------------
+
 [:download:`source: colormap.py <colormap.py>`]
 
 This example shows how to create a custom colormap. To do this one has to create an RGBA-matrix: a matrix with on each row the amount (between 0 and 1) of Red, Green, Blue, and Alpha (transparency; 0 means that the pixel does not have any coverage information and is transparent).
@@ -138,6 +141,20 @@ As an example the distance to some point is plotted in two dimensions. Then:
    :language: python
 
 .. image:: colormap.svg
+  :width: 600px
+  :align: center
+
+Sub-colormap vs. interpolated colormap
+--------------------------------------
+
+[:download:`source: colormap-part.py <colormap-part.py>`]
+
+This example contains a simple example to derive a custom colormap from an existing colormap, see `this answer <https://stackoverflow.com/a/51036472/2646505>`_.
+
+.. literalinclude:: colormap-part.py
+   :language: python
+
+.. image:: colormap-part.svg
   :width: 600px
   :align: center
 
