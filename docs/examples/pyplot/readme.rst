@@ -8,29 +8,49 @@ Examples
 Plot
 ====
 
-[:download:`source: plot.py <plot.py>`]
-
-.. literalinclude:: plot.py
-   :language: python
+Basic
+-----
 
 .. image:: plot.svg
   :width: 600px
   :align: center
 
+[:download:`source: plot.py <plot.py>`]
+
+.. literalinclude:: plot.py
+   :language: python
+
+
 Subplot
-=======
+-------
+
+.. image:: subplot.svg
+  :width: 1000px
+  :align: center
 
 [:download:`source: subplot.py <subplot.py>`]
 
 .. literalinclude:: subplot.py
    :language: python
 
-.. image:: subplot.svg
-  :width: 1000px
+Legend
+------
+
+.. image:: legend.svg
+  :width: 600px
   :align: center
 
-Plot: use colormap
-==================
+.. note:: References
+
+  `StackOverflow - "How to put the legend out of matplotlib plot" <https://stackoverflow.com/a/4701285/2646505>`_
+
+[:download:`source: legend.py <legend.py>`]
+
+.. literalinclude:: legend.py
+   :language: python
+
+Line-color from colormap
+------------------------
 
 [:download:`source: plot-cmap.py <plot-cmap.py>`]
 
@@ -58,6 +78,51 @@ Plot: use colormap
   :width: 600px
   :align: center
 
+Aligning tick labels
+--------------------
+
+[:download:`source: tick-position.py <tick-position.py>`]
+
+This example is just a copy of `this nice answer <https://stackoverflow.com/a/47500319/2646505>`_. See also `the blog <https://gorelik.net/2017/11/23/how-to-make-a-graph-less-readable-rotate-the-text-labels/>`_ of the author.
+
+.. note::
+
+  Also take note of:
+
+  .. code-block:: python
+
+    ax.set_xticklabels(xlabels, ha='center')
+    ax.set_yticklabels(ylabels, va='center')
+
+.. literalinclude:: tick-position.py
+   :language: python
+
+.. image:: tick-position.svg
+  :width: 600px
+  :align: center
+
+Tick formatter
+--------------
+
+[:download:`source: tick-formatter.py <tick-formatter.py>`]
+
+.. note:: References
+
+  * `matplotlib.ticker <https://matplotlib.org/api/ticker_api.html#matplotlib.ticker.StrMethodFormatter>`_
+
+  * `Format Specification Mini-Language <https://docs.python.org/3/library/string.html#formatspec>`_
+
+.. note::
+
+  Use ``matplotlib.ticker.FormatStrFormatter(...)`` to use the old-style sprintf format.
+
+.. literalinclude:: tick-formatter.py
+   :language: python
+
+.. image:: tick-formatter.svg
+  :width: 600px
+  :align: center
+
 Image
 =====
 
@@ -73,6 +138,9 @@ Image
 Colorbar
 ========
 
+Basic
+-----
+
 [:download:`source: image_subplots.py <image_subplots.py>`]
 
 .. literalinclude:: image_subplots.py
@@ -87,7 +155,7 @@ Colorbar
   * `StackOverflow - "positioning the colorbar" <https://stackoverflow.com/a/43425119/2646505>`_
 
 Colorbar positioning
-====================
+--------------------
 
 [:download:`source: image_subplots_bottom.py <image_subplots_bottom.py>`]
 
@@ -99,7 +167,7 @@ Colorbar positioning
   :align: center
 
 Stand-alone colorbar
-====================
+--------------------
 
 [:download:`source: colorbar.py <colorbar.py>`]
 
@@ -114,8 +182,8 @@ Stand-alone colorbar
   :width: 600px
   :align: center
 
-Custom colormap
-===============
+Colormap
+========
 
 Combined colormap
 -----------------
@@ -155,51 +223,6 @@ This example contains a simple example to derive a custom colormap from an exist
    :language: python
 
 .. image:: colormap-part.svg
-  :width: 600px
-  :align: center
-
-Aligning tick labels
-====================
-
-[:download:`source: tick-position.py <tick-position.py>`]
-
-This example is just a copy of `this nice answer <https://stackoverflow.com/a/47500319/2646505>`_. See also `the blog <https://gorelik.net/2017/11/23/how-to-make-a-graph-less-readable-rotate-the-text-labels/>`_ of the author.
-
-.. note::
-
-  Also take note of:
-
-  .. code-block:: python
-
-    ax.set_xticklabels(xlabels, ha='center')
-    ax.set_yticklabels(ylabels, va='center')
-
-.. literalinclude:: tick-position.py
-   :language: python
-
-.. image:: tick-position.svg
-  :width: 600px
-  :align: center
-
-Tick formatter
-==============
-
-[:download:`source: tick-formatter.py <tick-formatter.py>`]
-
-.. note:: References
-
-  * `matplotlib.ticker <https://matplotlib.org/api/ticker_api.html#matplotlib.ticker.StrMethodFormatter>`_
-
-  * `Format Specification Mini-Language <https://docs.python.org/3/library/string.html#formatspec>`_
-
-.. note::
-
-  Use ``matplotlib.ticker.FormatStrFormatter(...)`` to use the old-style sprintf format.
-
-.. literalinclude:: tick-formatter.py
-   :language: python
-
-.. image:: tick-formatter.svg
   :width: 600px
   :align: center
 

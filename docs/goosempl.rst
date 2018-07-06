@@ -29,8 +29,8 @@ Plot statistics
   goosempl.histogram
   goosempl.histogram_log
   goosempl.histogram_uniform
+  goosempl.histogram_cumulative
   goosempl.cdf
-  goosempl.pdf
 
 Documentation
 =============

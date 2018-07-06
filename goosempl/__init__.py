@@ -205,8 +205,7 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
   P,edges = np.histogram(data, **kwargs)
 
-  if x != 'edges':
-    edges = np.diff(edges) / 2. + edges[:-1]
+  if x != 'edges': edges = np.diff(edges) / 2. + edges[:-1]
 
   return P,edges
 
@@ -226,13 +225,11 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
   x    = kwargs.pop('x'   , 'edges').lower()
   bins = kwargs.pop('bins', 10     )
 
-  if type(bins) == int:
-     bins = np.logspace(np.log10(np.min(data)),np.log10(np.max(data)),bins)
+  if type(bins) == int: bins = np.logspace(np.log10(np.min(data)),np.log10(np.max(data)),bins)
 
   P,edges = np.histogram(data, bins=bins, **kwargs)
 
-  if x != 'edges':
-    edges = np.diff(edges) / 2. + edges[:-1]
+  if x != 'edges': edges = np.diff(edges) / 2. + edges[:-1]
 
   return P,edges
 
@@ -263,290 +260,61 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
   P,edges = np.histogram(data, bins=bins, **kwargs)
 
-  if x != 'edges':
-    edges = np.diff(edges) / 2. + edges[:-1]
+  if x != 'edges': edges = np.diff(edges) / 2. + edges[:-1]
 
   return P,edges
 
 # ==================================================================================================
 
+def histogram_cumulative(data,**kwargs):
+  r'''
+Compute cumulative histogram.
+See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`_
+
+:extra options:
+
+  **x** ([``'edges'``] | [``'mid'``])
+    Return x-coordinate as edges or mid-points.
+
+  **normalize** ([``False``] | ``True``)
+    Normalize such that the final probability is one. In this case the function returns the (binned)
+    cumulative probability density.
+  '''
+
+  x    = kwargs.pop('x', 'edges').lower()
+  norm = kwargs.pop('normalize', False)
+
+  P, edges = np.histogram(data, **kwargs)
+
+  P = np.cumsum(P)
+
+  if norm: P = P/P[-1]
+
+  if x != 'edges': edges = np.diff(edges) / 2. + edges[:-1]
+
+  return P, edges
+
+# ==================================================================================================
+
 def cdf(data,mode='continuous',**kwargs):
   '''
-Plot cumulative probability density.
+Return cumulative density.
 
 :arguments:
 
   **data** (``<numpy.ndarray>``)
     Input data, to plot the distribution for.
 
-:options:
-
-  **mode** ([``'continuous'``] | ``'line'`` | ``'bar'``)
-    Plot modes. The data is binned, unless ``continuous`` is used.
-
-  **axis** (``<matplotlib>``)
-    Specify an axis to include to plot in. By default the current axis is used.
-
-:barstyle:
-
-  **facecolor** (``<str>``)
-    Face color of the patch-objects.
-
-  **edgecolor** (``<str>``)
-    Edge color of the patch-objects.
-
-  **linestyle** ([``'solid'``] | ``'dashed'`` | ``'dashdot'`` | ``'dotted'``)
-    Line-style of the outline of the patch-objects.
-
-  **linewidth** ([``1.0``] | ``<float>``)
-    Line-width of the outline of the patch-objects.
-
-:histogram:
-
-  **density** ([``True``] | ``False``)
-    If set to ``True`` the area under the curve is normalized to one.
-
-  **bins** ([``10``] | ``<int>``)
-    Number of bins.
-
-  **range** (``<list>``) *optional*
-    Lower and upper limit of the bins. If not provided, range is simply
-    ``(data.min(),data.max())``. NB: values outside the range are ignored.
-
-  **weights** (``<numpy.ndarray>``) *optional*
-    Weights, of the same shape as ``data``.
-
-:recommended options:
-
-  **linestyle** ([``'-'``] | ``'--'`` | ``'-.'`` | ``None``)
-    Line-style
-
-  **linewidth** (``<float>``)
-    Line-width (e.g. ``1.0``).
-
-  **marker** (``<str>``)
-    Marker.
-
-.. seealso::
-
-  * `matplotlib.patches.Rectangle
-    <http://matplotlib.org/api/patches_api.html#matplotlib.patches.Rectangle>`_.
-
-  * `matplotlib.pyplot.plot
-    <http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot>`_.
-  '''
-
-  axis = kwargs.pop('axis',plt.gca())
-
-  # plot continuous
-  # ---------------
-
-  if mode in ['continuous','c']:
-    return axis.plot(np.sort(data),np.linspace(0.0,1.0,len(data)),**kwargs)
-
-  # plot in bins
-  # ------------
-
-  histogram            = {}
-  histogram['density'] = kwargs.pop('density',True)
-  for key in ['bins','range','weights']:
-    if key in kwargs:
-      histogram[key] = kwargs.pop(key)
-
-  # calculate histogram
-  data,bin_edges = np.histogram(data,**histogram)
-  data           = np.cumsum(data)
-  data          /= data[-1]
-  bin_edges     += np.diff(bin_edges)[0]/2.
-
-  # plot as curve
-  if mode in ['line','lines','l']:
-    return axis.plot(np.cumsum(np.diff(bin_edges))+bin_edges[0]-np.diff(bin_edges)[0]/2.,data,**kwargs)
-
-  # plot as bars
-  if mode in ['bars','bar','b']:
-    for i,(x0,dx,dy) in enumerate(zip(bin_edges[:-1],bin_edges[1:]-bin_edges[:-1],data)):
-      axis.add_patch(mpl.patches.Rectangle((x0,0),dx,dy,**kwargs))
-
-  return None
-
-# ==================================================================================================
-
-def pdf(data,bin_edges=None,bar_plot=False,**kwargs):
-  r'''
-Plot probability density.
-
-:arguments:
-
-  **data** (``<numpy.ndarray>``)
-    Data for which the probability density is plotted.
-
-  **density** ([``True``] | ``False``)
-    If set to ``True`` the area under the curve is normalized to one.
-
-  **area** ([``1.0``] | ``<float>``)
-    Normalize to a specific area.
-
-  **bins** ([``10``] | ``<int>``)
-    Number of bins.
-
-  **range** (``<list>``) *optional*
-    Lower and upper limit of the bins. If not provided, range is simply
-    ``(data.min(),data.max())``. NB: values outside the range are ignored.
-
-  **weights** (``<numpy.ndarray>``) *optional*
-    Weights, of the same shape as ``data``.
-
-
-:options:
-
-  **axis** ([``plt.gca()``] | ``<matplotlib.axis>``)
-
-  **bin_edges** ([``None``] | ``<numpy.ndarray>``)
-    Specify the bin-edges. If this is specified the histogram is not calculated,
-    this function is then only used from plotting.
-
-  **bar_plot** ([``False``] | ``True``)
-    If set to ``True`` a bar plot is made, see "barstyle" for options.
-
-  **return_data** ([``False``] | ``True``)
-    Set to ``True`` to output the data-points.
-
-  **plot** ([``True``] | ``False``)
-    If set to ``False`` only the data is outputted.
-
-:plot options:
-
-  **linestyle** ([``'-'``] | ``'--'`` | ``'-.'`` | ``None``)
-    Line-style. No line is plotted if set to ``None``.
-
-  **alpha** (``<float>``)
-    Alpha of the area under the curve. If not specified the area under the
-    under the curve is not plotted.
-
-:barstyle:
-
-  **facecolor** (``<str>``)
-    Face color of the patch-objects.
-
-  **edgecolor** (``<str>``)
-    Edge color of the patch-objects.
-
-  **linestyle** ([``'solid'``] | ``'dashed'`` | ``'dashdot'`` | ``'dotted'``)
-    Line-style of the outline the patch-objects.
-
-  **linewidth** ([``1.0``] | ``<float>``)
-    Line-width of the outline the patch-objects.
-
 :returns:
 
-  **handle** (``<matplotlib>``), *only if ``plot==True``*
-    Handle of the plot::
+  **P** (``<numpy.ndarray>``)
+    Cumulative probability.
 
-      handle_fill                # if 'linestyle==None'
-      handle_plot                # if 'alpha==None'
-      (handle_fill,handle_plot)  # otherwise
-
-  **x,y** (``<numpy.ndarray>``), *only if ``return_data==True``*
-    The data_points.
-
-
-.. seealso::
-
-  * `numpy.histogram
-    <http://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.histogram.html>`_.
-
-  * `matplotlib.patches.Rectangle
-    <http://matplotlib.org/api/patches_api.html#matplotlib.patches.Rectangle>`_.
-
+  **x** (``<numpy.ndarray>``)
+    Data points.
   '''
 
-  # get axis
-  axis = kwargs.pop('axis', plt.gca())
-
-  # define histogram
-  # ----------------
-
-  # read/default options
-  area        = kwargs.pop('area'       ,1.0  )
-  return_data = kwargs.pop('return_data',False)
-  kwargs.setdefault(       'plot'       ,True )
-
-  # histogram options: for input or defaults
-  histogram            = {}
-  histogram['density'] = kwargs.pop('density',True)
-  for key in ['bins','range','weights']:
-    if key in kwargs:
-      histogram[key] = kwargs.pop(key)
-
-  # calculate histogram, normalize the area
-  if bin_edges is None:
-    data,bin_edges = np.histogram(data,**histogram)
-    data          *= area
-
-  # convert the x- and y-axis
-  x = np.cumsum(np.diff(bin_edges))+bin_edges[0]-np.diff(bin_edges)[0]/2.
-  y = data
-
-  # plot as curve
-  # -------------
-
-  if not bar_plot:
-
-    # initiate both plot types as False
-    line_plot = False
-    fill_plot = False
-    # initiate options that should be removed for the different plot-types
-    line_rm   = ['plot','alpha']
-    fill_rm   = ['plot'        ]
-
-    # set default linestyle
-    kwargs.setdefault('linestyle','-')
-
-    # check to plot line: set options
-    if kwargs['linestyle'] in ['-','--','-.',':']:
-      line_plot = True
-      line_args = {key:val for key,val in kwargs.items() if key not in line_rm}
-      fill_rm  += ['linestyle','linewidth','label','dashes']
-
-    # check to plot fill: set options
-    if 'alpha' in kwargs:
-      fill_plot = True
-      fill_args = {key:val for key,val in kwargs.items() if key not in fill_rm}
-
-    # plot background
-    if fill_plot and kwargs['plot']:
-      xf = np.array(x,copy=True)
-      yf = np.array(y,copy=True)
-      xf = np.hstack(( xf[0]*np.ones ((1)) , xf , xf[-1]*np.ones ((1)) ))
-      yf = np.hstack((       np.zeros((1)) , yf ,        np.zeros((1)) ))
-      hf = axis.fill(xf,yf,**fill_args)
-
-    # plot line
-    if line_plot and kwargs['plot']:
-      hp = axis.plot(x,y,**line_args)
-
-    # set handles
-    if kwargs['plot']:
-      if   line_plot and fill_plot: handle = (hp,hf)
-      elif line_plot              : handle =  hp
-      elif fill_plot              : handle =  hf
-      else: raise IOError('Insufficient settings to plot, specify "linestyle" and/or "alpha" ')
-
-    # return handles, etc.
-    if   not return_data: return  handle
-    elif kwargs['plot'] : return (handle,x,y)
-    else                : return (       x,y)
-
-  # plot as bars
-  # ------------
-
-  kwargs.pop('plot',False)
-
-  for i,(x0,dx,dy) in enumerate(zip(bin_edges[:-1],bin_edges[1:]-bin_edges[:-1],data)):
-    axis.add_patch(mpl.patches.Rectangle((x0,0),dx,dy,**kwargs))
-
-  return (x,y)
+  return ( np.linspace(0.0,1.0,len(data)), np.sort(data) )
 
 # ==================================================================================================
 
