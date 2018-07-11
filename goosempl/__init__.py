@@ -197,17 +197,17 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
 :extra options:
 
-  **x** ([``'edges'``] | [``'mid'``])
-    Return x-coordinate as edges or mid-points.
+  **return_edges** ([``True``] | [``False``])
+    Return the bin edges if set to ``True``, return their midpoints otherwise.
   '''
 
-  x = kwargs.pop('x', 'edges').lower()
+  return_edges = kwargs.pop('return_edges', True)
 
-  P,edges = np.histogram(data, **kwargs)
+  P, edges = np.histogram(data, **kwargs)
 
-  if x != 'edges': edges = np.diff(edges) / 2. + edges[:-1]
+  if not return_edges: edges = np.diff(edges) / 2. + edges[:-1]
 
-  return P,edges
+  return P, edges
 
 # ==================================================================================================
 
@@ -218,20 +218,21 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
 :extra options:
 
-  **x** ([``'edges'``] | [``'mid'``])
-    Return x-coordinate as edges or mid-points.
+  **return_edges** ([``True``] | [``False``])
+    Return the bin edges if set to ``True``, return their midpoints otherwise.
   '''
 
-  x    = kwargs.pop('x'   , 'edges').lower()
-  bins = kwargs.pop('bins', 10     )
+  return_edges = kwargs.pop('return_edges', True)
+
+  bins = kwargs.pop('bins', 10)
 
   if type(bins) == int: bins = np.logspace(np.log10(np.min(data)),np.log10(np.max(data)),bins)
 
-  P,edges = np.histogram(data, bins=bins, **kwargs)
+  P, edges = np.histogram(data, bins=bins, **kwargs)
 
-  if x != 'edges': edges = np.diff(edges) / 2. + edges[:-1]
+  if not return_edges: edges = np.diff(edges) / 2. + edges[:-1]
 
-  return P,edges
+  return P, edges
 
 # ==================================================================================================
 
@@ -245,24 +246,30 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
   **bins** (``<int>``)
     Number of entries in each bin (the last bin is extended to fit the data).
 
-  **x** ([``'edges'``] | [``'mid'``])
-    Return x-coordinate as edges or mid-points.
+  **return_edges** ([``True``] | [``False``])
+    Return the bin edges if set to ``True``, return their midpoints otherwise.
   '''
 
-  x    = kwargs.pop('x'   , 'edges').lower()
-  N    = kwargs.pop('bins', 10     )
-  N    = int(np.floor(float(len(data))/float(N)))
+  return_edges = kwargs.pop('return_edges', True)
 
-  bins = np.sort(np.array(data,copy=True))[:len(data)-len(data)%N].reshape(-1,N)
-  bins = bins[:,0].ravel()
+  bins = kwargs.pop('bins', 10)
 
-  if len(data)%N != 0: bins = np.hstack(( bins, np.max(data) ))
+  count = int(np.floor(float(len(data))/float(bins))) * np.ones(bins, dtype='int')
 
-  P,edges = np.histogram(data, bins=bins, **kwargs)
+  count[np.linspace(0, bins-1, len(data)-np.sum(count)).astype(np.int)] += 1
 
-  if x != 'edges': edges = np.diff(edges) / 2. + edges[:-1]
+  idx = np.empty((bins+1), dtype='int')
+  idx[0 ] = 0
+  idx[1:] = np.cumsum(count)
+  idx[-1] = len(data) - 1
 
-  return P,edges
+  edges = np.unique(np.sort(data)[idx])
+
+  P, edges = np.histogram(data, bins=edges, **kwargs)
+
+  if not return_edges: edges = np.diff(edges) / 2. + edges[:-1]
+
+  return P, edges
 
 # ==================================================================================================
 
@@ -273,15 +280,16 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
 :extra options:
 
-  **x** ([``'edges'``] | [``'mid'``])
-    Return x-coordinate as edges or mid-points.
+  **return_edges** ([``True``] | [``False``])
+    Return the bin edges if set to ``True``, return their midpoints otherwise.
 
   **normalize** ([``False``] | ``True``)
     Normalize such that the final probability is one. In this case the function returns the (binned)
     cumulative probability density.
   '''
 
-  x    = kwargs.pop('x', 'edges').lower()
+  return_edges = kwargs.pop('return_edges', True)
+
   norm = kwargs.pop('normalize', False)
 
   P, edges = np.histogram(data, **kwargs)
@@ -290,9 +298,59 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
   if norm: P = P/P[-1]
 
-  if x != 'edges': edges = np.diff(edges) / 2. + edges[:-1]
+  if not return_edges: edges = np.diff(edges) / 2. + edges[:-1]
 
   return P, edges
+
+# ==================================================================================================
+
+def hist(P, edges, **kwargs):
+
+  from matplotlib.collections import PatchCollection
+  from matplotlib.patches     import Polygon
+
+  # extract local options
+  axis      = kwargs.pop( 'axis'      , plt.gca() )
+  cindex    = kwargs.pop( 'cindex'    , None      )
+  autoscale = kwargs.pop( 'autoscale' , True      )
+
+  # set defaults
+  kwargs.setdefault('edgecolor','k')
+
+  # no color-index -> set transparent
+  if cindex is None:
+    kwargs.setdefault('facecolor',(0.,0.,0.,0.))
+
+  # convert -> list of Polygons
+  poly = []
+  for p, xl, xu in zip(P, edges[:-1], edges[1:]):
+    coor = np.array([
+      [xl, 0.],
+      [xu, 0.],
+      [xu, p ],
+      [xl, p ],
+    ])
+    poly.append(Polygon(coor))
+  args = (poly)
+
+  # convert patches -> matplotlib-objects
+  p = PatchCollection(args,**kwargs)
+  # add colors to patches
+  if cindex is not None:
+    p.set_array(cindex)
+  # add patches to axis
+  axis.add_collection(p)
+
+  # rescale the axes manually
+  if autoscale:
+    # - get limits
+    xlim = [ edges[0], edges[-1] ]
+    ylim = [ 0       , np.max(P) ]
+    # - set limits +/- 10% extra margin
+    axis.set_xlim([xlim[0]-.1*(xlim[1]-xlim[0]),xlim[1]+.1*(xlim[1]-xlim[0])])
+    axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]),ylim[1]+.1*(ylim[1]-ylim[0])])
+
+  return p
 
 # ==================================================================================================
 
@@ -402,6 +460,7 @@ Add patches to plot. The color of the patches is indexed according to a specifie
   coor      = kwargs.pop( 'coor'      , None      )
   conn      = kwargs.pop( 'conn'      , None      )
   autoscale = kwargs.pop( 'autoscale' , True      )
+
   # set defaults
   kwargs.setdefault('edgecolor','k')
 
@@ -430,8 +489,8 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     xlim = [ np.min(coor[:,0]) , np.max(coor[:,0]) ]
     ylim = [ np.min(coor[:,1]) , np.max(coor[:,1]) ]
     # - set limits +/- 10% extra margin
-    plt.xlim([xlim[0]-.1*(xlim[1]-xlim[0]),xlim[1]+.1*(xlim[1]-xlim[0])])
-    plt.ylim([ylim[0]-.1*(ylim[1]-ylim[0]),ylim[1]+.1*(ylim[1]-ylim[0])])
+    axis.set_xlim([xlim[0]-.1*(xlim[1]-xlim[0]),xlim[1]+.1*(xlim[1]-xlim[0])])
+    axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]),ylim[1]+.1*(ylim[1]-ylim[0])])
 
   return p
 
