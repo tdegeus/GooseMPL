@@ -20,7 +20,6 @@ Basic
 .. literalinclude:: plot.py
    :language: python
 
-
 Subplot
 -------
 
