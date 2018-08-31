@@ -130,8 +130,8 @@ Set limits the the floor/ceil values in terms of decades.
 
 :options:
 
-  **axis** ([``None``] | ...)
-    Specify the axis to which to apply the limits (default: ``plt.gca()``).
+  **axis** ([``plt.gca()``] | ...)
+    Specify the axis to which to apply the limits.
 
   **direction** ([``None``] | ``'x'`` | ``'y'``)
     Limit the application to a certain direction (default: both).
@@ -187,6 +187,186 @@ Scale limits to be 5% wider, to have a nice plot.
   lim[1] += (factor-1.)/2. * D
 
   return lim
+
+# ==================================================================================================
+
+def rel2abs_x(x, axis=None):
+  r'''
+Transform relative x-coordinates to absolute x-coordinates. Relative coordinates correspond to a
+fraction of the relevant axis.
+
+:arguments:
+
+  **x** (``float``, ``list``)
+    Relative coordinates.
+
+:options:
+
+  **axis** ([``plt.gca()``] | ...)
+    Specify the axis to which to apply the limits.
+
+:returns:
+
+  **x** (``float``, ``list``)
+    Absolute coordinates.
+  '''
+
+  # get current axis
+  if axis is None:
+    axis = plt.gca()
+
+  # get current limits
+  xmin, xmax = axis.get_xlim()
+
+  # transform
+  # - log scale
+  if axis.get_xscale() == 'log':
+    try   : return [10.**(np.log10(xmin)+i*(np.log10(xmax)-np.log10(xmin))) if i is not None else i for i in x]
+    except: return  10.**(np.log10(xmin)+x*(np.log10(xmax)-np.log10(xmin)))
+  # - normal scale
+  else:
+    try   : return [xmin+i*(xmax-xmin) if i is not None else i for i in x]
+    except: return  xmin+x*(xmax-xmin)
+
+# --------------------------------------------------------------------------------------------------
+
+def rel2abs_y(y, axis=None):
+  r'''
+Transform relative y-coordinates to absolute y-coordinates. Relative coordinates correspond to a
+fraction of the relevant axis.
+
+:arguments:
+
+  **y** (``float``, ``list``)
+    Relative coordinates.
+
+:options:
+
+  **axis** ([``plt.gca()``] | ...)
+    Specify the axis to which to apply the limits.
+
+:returns:
+
+  **y** (``float``, ``list``)
+    Absolute coordinates.
+  '''
+
+  # get current axis
+  if axis is None:
+    axis = plt.gca()
+
+  # get current limits
+  ymin, ymax = axis.get_ylim()
+
+  # transform
+  # - log scale
+  if axis.get_xscale() == 'log':
+    try   : return [10.**(np.log10(ymin)+i*(np.log10(ymax)-np.log10(ymin))) if i is not None else i for i in y]
+    except: return  10.**(np.log10(ymin)+y*(np.log10(ymax)-np.log10(ymin)))
+  # - normal scale
+  else:
+    try   : return [ymin+i*(ymax-ymin) if i is not None else i for i in y]
+    except: return  ymin+y*(ymax-ymin)
+
+# ==================================================================================================
+
+def plot_powerlaw(exp, startx, starty, width=None, **kwargs):
+  r'''
+Plot a power-law.
+
+:arguments:
+
+  **exp** (``float``)
+    The power-law exponent.
+
+  **startx, starty** (``float``)
+    Start coordinates.
+
+:options:
+
+  **width, height, endx, endy** (``float``)
+    Definition of the end coordinate (only on of these options is needed).
+
+  **units** ([``'relative'``] | ``'absolute'``)
+    The type of units in which the coordinates are specified. Relative coordinates correspond to a
+    fraction of the relevant axis.
+
+  **axis** ([``plt.gca()``] | ...)
+    Specify the axis to which to apply the limits.
+
+  ...
+    Any ``plt.plot(...)`` option.
+
+:returns:
+
+  The handle of the ``plt.plot(...)`` command.
+  '''
+
+  # get options/defaults
+  endx   = kwargs.pop('endx'  , None      )
+  endy   = kwargs.pop('endy'  , None      )
+  height = kwargs.pop('height', None      )
+  units  = kwargs.pop('units' , 'relative')
+  axis   = kwargs.pop('axis'  , plt.gca() )
+
+  # apply width/height
+  if width  is not None: endx = startx + width
+  if height is not None: endy = starty + height
+
+  # transform
+  if units.lower() == 'relative':
+    [startx, endx] = rel2abs_x([startx, endx], axis)
+    [starty, endy] = rel2abs_y([starty, endy], axis)
+
+  # determine multiplication constant
+  const = starty / ( startx**exp )
+
+  # get end x/y-coordinate
+  if   endx is not None: endy = const * endx**exp
+  elif endy is not None: endx = ( endy / const )**( -exp )
+
+  # plot
+  return axis.plot([startx, endx], [starty, endy], **kwargs)
+
+# ==================================================================================================
+
+def text(x, y, text, units='absolute', axis=None, **kwargs):
+  r'''
+Plot a text.
+
+:arguments:
+
+  **x, y** (``float``)
+    Coordinates.
+
+  **text** (``str``)
+    Text to plot.
+
+:options:
+
+  **units** ([``'absolute'``] | ``'relative'``)
+    The type of units in which the coordinates are specified. Relative coordinates correspond to a
+    fraction of the relevant axis.
+
+  ...
+    Any ``plt.text(...)`` option.
+
+:returns:
+
+  The handle of the ``plt.text(...)`` command.
+  '''
+
+  # get current axis
+  if axis is None:
+    axis = plt.gca()
+
+  # transform
+  if units.lower() == 'relative':
+    x = rel2abs_x(x, axis)
+    y = rel2abs_y(y, axis)
+
+  # plot
+  return axis.text(x, y, text, **kwargs)
 
 # ==================================================================================================
 
@@ -305,6 +485,9 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 # ==================================================================================================
 
 def hist(P, edges, **kwargs):
+  r'''
+Plot histogram.
+  '''
 
   from matplotlib.collections import PatchCollection
   from matplotlib.patches     import Polygon

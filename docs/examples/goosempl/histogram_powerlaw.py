@@ -54,5 +54,8 @@ for ax in axes:
   ax.set_xlim([10**0   , 10**3])
   ax.set_ylim([10**(-3), 10**0])
 
+  gplt.plot_powerlaw(exp=-1.3, startx=.4, starty=.5, width=.2, axis=ax, units='relative')
+  gplt.text(.5, .4, r'$-1.3$', axis=ax, units='relative')
+
 plt.savefig('histogram_powerlaw.svg')
 plt.show()
