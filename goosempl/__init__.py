@@ -193,7 +193,7 @@ Scale limits to be 5% wider, to have a nice plot.
 def rel2abs_x(x, axis=None):
   r'''
 Transform relative x-coordinates to absolute x-coordinates. Relative coordinates correspond to a
-fraction of the relevant axis.
+fraction of the relevant axis. Be sure to set the limits and scale before calling this function!
 
 :arguments:
 
@@ -233,7 +233,7 @@ fraction of the relevant axis.
 def rel2abs_y(y, axis=None):
   r'''
 Transform relative y-coordinates to absolute y-coordinates. Relative coordinates correspond to a
-fraction of the relevant axis.
+fraction of the relevant axis. Be sure to set the limits and scale before calling this function!
 
 :arguments:
 
@@ -270,6 +270,44 @@ fraction of the relevant axis.
 
 # ==================================================================================================
 
+def plot(x, y, units='absolute', axis=None, **kwargs):
+  r'''
+Plot.
+
+:arguments:
+
+  **x, y** (``list``)
+    Coordinates.
+
+:options:
+
+  **units** ([``'absolute'``] | ``'relative'``)
+    The type of units in which the coordinates are specified. Relative coordinates correspond to a
+    fraction of the relevant axis. If you use relative coordinates, be sure to set the limits and
+    scale before calling this function!
+
+  ...
+    Any ``plt.plot(...)`` option.
+
+:returns:
+
+  The handle of the ``plt.plot(...)`` command.
+  '''
+
+  # get current axis
+  if axis is None:
+    axis = plt.gca()
+
+  # transform
+  if units.lower() == 'relative':
+    x = rel2abs_x(x, axis)
+    y = rel2abs_y(y, axis)
+
+  # plot
+  return axis.plot(x, y, **kwargs)
+
+# ==================================================================================================
+
 def plot_powerlaw(exp, startx, starty, width=None, **kwargs):
   r'''
 Plot a power-law.
@@ -289,7 +327,8 @@ Plot a power-law.
 
   **units** ([``'relative'``] | ``'absolute'``)
     The type of units in which the coordinates are specified. Relative coordinates correspond to a
-    fraction of the relevant axis.
+    fraction of the relevant axis. If you use relative coordinates, be sure to set the limits and
+    scale before calling this function!
 
   **axis** ([``plt.gca()``] | ...)
     Specify the axis to which to apply the limits.
@@ -346,7 +385,8 @@ Plot a text.
 
   **units** ([``'absolute'``] | ``'relative'``)
     The type of units in which the coordinates are specified. Relative coordinates correspond to a
-    fraction of the relevant axis.
+    fraction of the relevant axis. If you use relative coordinates, be sure to set the limits and
+    scale before calling this function!
 
   ...
     Any ``plt.text(...)`` option.

@@ -14,6 +14,17 @@ Set axes
   goosempl.scale_lim
   goosempl.set_decade_lims
 
+Plot in relative coordinates
+----------------------------
+
+.. autosummary::
+
+  goosempl.rel2abs_x
+  goosempl.rel2abs_y
+  goosempl.text
+  goosempl.plot
+  goosempl.plot_powerlaw
+
 Plot mesh
 ---------
 
