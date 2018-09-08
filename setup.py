@@ -8,29 +8,25 @@ class PostInstallCommand(install):
 
   def run(self):
 
-    import goosempl
-    goosempl.copy_style()
+    import GooseMPL
+    GooseMPL.copy_style()
 
     install.run(self)
 
 # --------------------------------------------------------------------------------------------------
 
-__version__ = '0.2.3'
-
-# --------------------------------------------------------------------------------------------------
-
 setup(
-  name              = 'goosempl',
-  version           = __version__,
+  name              = 'GooseMPL',
+  version           = '0.2.5',
   author            = 'Tom de Geus',
   author_email      = 'tom@geus.me',
   url               = 'https://github.com/tdegeus/GooseMPL',
-  keywords          = 'matplotlib style',
+  keywords          = 'matplotlib, style',
   description       = 'Style and extension functions for matplotlib',
   long_description  = '',
   license           = 'MIT',
-  install_requires  = ['matplotlib>=2.0.0'],
-  packages          = ['goosempl'],
+  install_requires  = ['matplotlib>=2.0.0', 'numpy>=1.0.0'],
+  packages          = ['GooseMPL'],
   cmdclass          = {'install': PostInstallCommand},
 )
 

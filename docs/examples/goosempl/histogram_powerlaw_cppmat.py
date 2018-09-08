@@ -1,6 +1,6 @@
 
 import matplotlib.pyplot as plt
-import goosempl          as gplt
+import GooseMPL          as gplt
 import GooseTensor       as gt
 import numpy             as np
 

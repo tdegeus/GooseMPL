@@ -1,6 +1,6 @@
 
 import matplotlib.pyplot as plt
-import goosempl          as gplt
+import GooseMPL          as gplt
 import numpy             as np
 
 from mpl_toolkits.axes_grid1 import make_axes_locatable

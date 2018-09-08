@@ -270,6 +270,25 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
 
 # ==================================================================================================
 
+def subplots(**kwargs):
+  r'''
+Run ``matplotlib.pyplot.subplots`` with ``figsize`` set to the correct multiple of the default.
+  '''
+
+  if 'figsize' in kwargs: return plt.subplots(**kwargs)
+
+  width, height = mpl.rcParams['figure.figsize']
+
+  nrows = kwargs.pop('nrows', 1)
+  ncols = kwargs.pop('ncols', 1)
+
+  width  = ncols * width
+  height = nrows * height
+
+  return plt.subplots(nrows=nrows, ncols=ncols, figsize=(width,height), **kwargs)
+
+# ==================================================================================================
+
 def plot(x, y, units='absolute', axis=None, **kwargs):
   r'''
 Plot.
@@ -305,6 +324,84 @@ Plot.
 
   # plot
   return axis.plot(x, y, **kwargs)
+
+# ==================================================================================================
+
+def annotate_powerlaw(text, exp, startx, starty, width=None, rx=0.5, ry=0.5, **kwargs):
+  r'''
+Added a label to the middle of a power-law annotation (see ``goosempl.plot_powerlaw``).
+
+:arguments:
+
+  **exp** (``float``)
+    The power-law exponent.
+
+  **startx, starty** (``float``)
+    Start coordinates.
+
+:options:
+
+  **width, height, endx, endy** (``float``)
+    Definition of the end coordinate (only on of these options is needed).
+
+  **rx, ry** (``float``)
+    Shift in x- and y-direction w.r.t. the default coordinates.
+
+  **units** ([``'relative'``] | ``'absolute'``)
+    The type of units in which the coordinates are specified. Relative coordinates correspond to a
+    fraction of the relevant axis. If you use relative coordinates, be sure to set the limits and
+    scale before calling this function!
+
+  **axis** ([``plt.gca()``] | ...)
+    Specify the axis to which to apply the limits.
+
+  ...
+    Any ``plt.text(...)`` option.
+
+:returns:
+
+  The handle of the ``plt.text(...)`` command.
+  '''
+
+  # get options/defaults
+  endx   = kwargs.pop('endx'  , None      )
+  endy   = kwargs.pop('endy'  , None      )
+  height = kwargs.pop('height', None      )
+  units  = kwargs.pop('units' , 'relative')
+  axis   = kwargs.pop('axis'  , plt.gca() )
+
+  # apply width/height
+  if width is not None:
+
+    endx = startx + width
+    endy = None
+
+  elif height is not None:
+
+    if   exp >  0: endy = starty + height
+    elif exp == 0: endy = starty
+    else         : endy = starty - height
+
+    endx = None
+
+  # transform
+  if units.lower() == 'relative':
+    [startx, endx] = rel2abs_x([startx, endx], axis)
+    [starty, endy] = rel2abs_y([starty, endy], axis)
+
+  # determine multiplication constant
+  const = starty / ( startx**exp )
+
+  # get end x/y-coordinate
+  if endx is not None: endy = const * endx**exp
+  else               : endx = ( endy / const )**( 1/exp )
+
+  # middle
+  x = 10. ** ( np.log10(startx) + rx * ( np.log10(endx) - np.log10(startx) ) )
+  y = 10. ** ( np.log10(starty) + ry * ( np.log10(endy) - np.log10(starty) ) )
+
+  # plot
+  return axis.text(x, y, text, **kwargs)
 
 # ==================================================================================================
 
@@ -349,8 +446,18 @@ Plot a power-law.
   axis   = kwargs.pop('axis'  , plt.gca() )
 
   # apply width/height
-  if width  is not None: endx = startx + width
-  if height is not None: endy = starty + height
+  if width is not None:
+
+    endx = startx + width
+    endy = None
+
+  elif height is not None:
+
+    if   exp >  0: endy = starty + height
+    elif exp == 0: endy = starty
+    else         : endy = starty - height
+
+    endx = None
 
   # transform
   if units.lower() == 'relative':
@@ -361,8 +468,8 @@ Plot a power-law.
   const = starty / ( startx**exp )
 
   # get end x/y-coordinate
-  if   endx is not None: endy = const * endx**exp
-  elif endy is not None: endx = ( endy / const )**( -exp )
+  if endx is not None: endy = const * endx**exp
+  else               : endx = ( endy / const )**( 1/exp )
 
   # plot
   return axis.plot([startx, endx], [starty, endy], **kwargs)
