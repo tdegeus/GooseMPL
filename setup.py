@@ -10,43 +10,11 @@ class PostInstallCommand(install):
 
   def run(self):
 
-    try:
+    import GooseMPL
 
-      import GooseMPL
+    GooseMPL.copy_style()
 
-      GooseMPL.copy_style()
-
-      install.run(self)
-
-    except:
-
-      import goosempl
-
-      goosempl.copy_style()
-
-      install.run(self)
-
-# --------------------------------------------------------------------------------------------------
-
-if os.path.isdir('GooseMPL'):
-
-  packages = ['GooseMPL']
-
-else:
-
-  packages = ['goosempl']
-
-  text = open('docs/goosempl.rst', 'r').read()
-
-  while True:
-
-    if len(text.split('GooseMPL.')) <= 1: break
-
-    text = text.replace('GooseMPL.', 'goosempl.')
-
-  text = text.replace('.. automodule:: GooseMPL', '.. automodule:: goosempl')
-
-  open('docs/goosempl.rst', 'w').write(text)
+    install.run(self)
 
 # --------------------------------------------------------------------------------------------------
 
@@ -61,7 +29,7 @@ setup(
   long_description  = '',
   license           = 'MIT',
   install_requires  = ['matplotlib>=2.0.0', 'numpy>=1.0.0'],
-  packages          = packages,
+  packages          = ['GooseMPL'],
   cmdclass          = {'install': PostInstallCommand},
 )
 
