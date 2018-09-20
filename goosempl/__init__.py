@@ -48,6 +48,8 @@ Find an available font to mimic LaTeX.
       if re.match(match,font):
         return name(font)
 
+  return None
+
 # --------------------------------------------------------------------------------------------------
 
 def copy_style():
@@ -86,21 +88,23 @@ image.origin         : lower
 savefig.facecolor    : none
 figure.autolayout    : True
 errorbar.capsize     : 2
-  '''
+'''
 
   styles['goose-tick-in.mplstyle'] = '''
 xtick.direction      : in
 ytick.direction      : in
-  '''
+'''
 
   styles['goose-tick-lower.mplstyle'] = '''
 xtick.top            : False
 ytick.right          : False
 axes.spines.top      : False
 axes.spines.right    : False
-  '''
+'''
 
-  styles['goose-latex.mplstyle'] = r'''
+  if find_latex_font_serif() is not None:
+
+    styles['goose-latex.mplstyle'] = r'''
 font.family          : serif
 font.serif           : {serif:s}
 font.weight          : bold
@@ -108,6 +112,16 @@ font.size            : 18
 text.usetex          : true
 text.latex.preamble  : \usepackage{{amsmath}},\usepackage{{amsfonts}},\usepackage{{amssymb}},\usepackage{{bm}}
 '''.format(serif=find_latex_font_serif())
+
+  else:
+
+    styles['goose-latex.mplstyle'] = r'''
+font.family          : serif
+font.weight          : bold
+font.size            : 18
+text.usetex          : true
+text.latex.preamble  : \usepackage{{amsmath}},\usepackage{{amsfonts}},\usepackage{{amssymb}},\usepackage{{bm}}
+'''
 
   # write style definitions
   # -----------------------
