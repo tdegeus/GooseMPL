@@ -17,6 +17,14 @@ Create a new release
       $ python3 setup.py bdist_wheel --universal
       $ twine upload dist/*
 
+.. note::
+
+  Get ``twine`` by
+
+  .. code-block:: bash
+
+    python3 -m pip install --user --upgrade twine
+
 References
 ==========
 
