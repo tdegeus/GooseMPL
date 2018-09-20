@@ -44,7 +44,7 @@ else:
 
     text = text.replace('GooseMPL.', 'goosempl.')
 
-  text.replace('.. automodule:: GooseMPL', '.. automodule:: goosempl')
+  text = text.replace('.. automodule:: GooseMPL', '.. automodule:: goosempl')
 
   open('docs/goosempl.rst', 'w').write(text)
 
