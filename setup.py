@@ -28,8 +28,25 @@ class PostInstallCommand(install):
 
 # --------------------------------------------------------------------------------------------------
 
-if os.path.isdir('GooseMPL'): packages = ['GooseMPL']
-else                        : packages = ['goosempl']
+if os.path.isdir('GooseMPL'):
+
+  packages = ['GooseMPL']
+
+else:
+
+  packages = ['goosempl']
+
+  text = open('docs/goosempl.rst', 'r').read()
+
+  while True:
+
+    if len(text.split('GooseMPL.')) <= 1: break
+
+    text = text.replace('GooseMPL.', 'goosempl.')
+
+  text.replace('.. automodule:: GooseMPL', '.. automodule:: goosempl')
+
+  open('docs/goosempl.rst', 'w').write(text)
 
 # --------------------------------------------------------------------------------------------------
 
