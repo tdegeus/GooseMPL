@@ -190,6 +190,86 @@ Scale limits to be 5% wider, to have a nice plot.
 
 # ==================================================================================================
 
+def abs2rel_x(x, axis=None):
+  r'''
+Transform absolute x-coordinates to relative x-coordinates. Relative coordinates correspond to a
+fraction of the relevant axis. Be sure to set the limits and scale before calling this function!
+
+:arguments:
+
+  **x** (``float``, ``list``)
+    Absolute coordinates.
+
+:options:
+
+  **axis** ([``plt.gca()``] | ...)
+    Specify the axis to which to apply the limits.
+
+:returns:
+
+  **x** (``float``, ``list``)
+    Relative coordinates.
+  '''
+
+  # get current axis
+  if axis is None:
+    axis = plt.gca()
+
+  # get current limits
+  xmin, xmax = axis.get_xlim()
+
+  # transform
+  # - log scale
+  if axis.get_xscale() == 'log':
+    try   : return [(np.log10(i)-np.log10(xmin))/(np.log10(xmax)-np.log10(xmin)) if i is not None else i for i in x]
+    except: return  (np.log10(x)-np.log10(xmin))/(np.log10(xmax)-np.log10(xmin))
+  # - normal scale
+  else:
+    try   : return [(i-xmin)/(xmax-xmin) if i is not None else i for i in x]
+    except: return  (x-xmin)/(xmax-xmin)
+
+# ==================================================================================================
+
+def abs2rel_y(y, axis=None):
+  r'''
+Transform absolute y-coordinates to relative y-coordinates. Relative coordinates correspond to a
+fraction of the relevant axis. Be sure to set the limits and scale before calling this function!
+
+:arguments:
+
+  **y** (``float``, ``list``)
+    Absolute coordinates.
+
+:options:
+
+  **axis** ([``plt.gca()``] | ...)
+    Specify the axis to which to apply the limits.
+
+:returns:
+
+  **y** (``float``, ``list``)
+    Relative coordinates.
+  '''
+
+  # get current axis
+  if axis is None:
+    axis = plt.gca()
+
+  # get current limits
+  ymin, ymax = axis.get_ylim()
+
+  # transform
+  # - log scale
+  if axis.get_xscale() == 'log':
+    try   : return [(np.log10(i)-np.log10(ymin))/(np.log10(ymax)-np.log10(ymin)) if i is not None else i for i in y]
+    except: return  (np.log10(y)-np.log10(ymin))/(np.log10(ymax)-np.log10(ymin))
+  # - normal scale
+  else:
+    try   : return [(i-ymin)/(ymax-ymin) if i is not None else i for i in y]
+    except: return  (y-ymin)/(ymax-ymin)
+
+# ==================================================================================================
+
 def rel2abs_x(x, axis=None):
   r'''
 Transform relative x-coordinates to absolute x-coordinates. Relative coordinates correspond to a
@@ -370,6 +450,10 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
   units  = kwargs.pop('units' , 'relative')
   axis   = kwargs.pop('axis'  , plt.gca() )
 
+  # check
+  if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
+    raise IOError('This function only works on a log-log scale, where the power-law is a straight line')
+
   # apply width/height
   if width is not None:
 
@@ -445,6 +529,10 @@ Plot a power-law.
   units  = kwargs.pop('units' , 'relative')
   axis   = kwargs.pop('axis'  , plt.gca() )
 
+  # check
+  if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
+    raise IOError('This function only works on a log-log scale, where the power-law is a straight line')
+
   # apply width/height
   if width is not None:
 
@@ -473,6 +561,135 @@ Plot a power-law.
 
   # plot
   return axis.plot([startx, endx], [starty, endy], **kwargs)
+
+# ==================================================================================================
+
+def grid_powerlaw(exp, insert=0, skip=0, end=-1, step=0, axis=None, **kwargs):
+  r'''
+Draw a power-law grid: a grid that respects a certain power-law exponent. The grid-lines start from
+the positions of the ticks.
+
+:arguments:
+
+  **exp** (``float``)
+    The power-law exponent.
+
+:options:
+
+  **insert** (``<int>``)
+    Insert extra lines in between the default lines set by the tick positions.
+
+  **skip, end, step** (``<int>``)
+    Select from the lines based on ``coor = coor[skip:end:step]``.
+
+  **axis** ([``plt.gca()``] | ...)
+    Specify the axis to which to apply the limits.
+
+  ...
+    Any ``plt.plot(...)`` option.
+
+:returns:
+
+  The handle of the ``plt.plot(...)`` command.
+  '''
+
+  # default axis
+  if axis is None: axis = plt.gca()
+
+  # default plot settings
+  kwargs.setdefault('color'    , 'k' )
+  kwargs.setdefault('linestyle', '--')
+  kwargs.setdefault('linewidth',  1  )
+
+  # check
+  if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
+    raise IOError('This function only works on a log-log scale, where the power-law is a straight line')
+
+  # zero-exponent: draw horizontal lines
+  if exp == 0:
+
+    # y-coordinate of the start positions
+    starty = abs2rel_y(axis.get_yticks())
+
+    # insert extra coordinates
+    if insert > 0:
+
+      n  = len(starty)
+      x  = np.linspace(0,1,n+(n-1)*int(insert))
+      xp = np.linspace(0,1,n)
+
+      starty = np.interp(x, xp, starty)
+
+    # skip coordinates
+    starty = starty[int(skip):int(end):int(1+step)]
+
+    # set remaining coordinates
+    endy   = starty
+    startx = np.zeros((len(starty)))
+    endx   = np.ones ((len(starty)))
+
+  # all other exponents
+  else:
+
+    # get the axis' size in real coordinates
+    # - get the limits
+    xmin, xmax = axis.get_xlim()
+    ymin, ymax = axis.get_ylim()
+    # - compute the size in both directions
+    deltax = np.log10(xmax) - np.log10(xmin)
+    deltay = np.log10(ymax) - np.log10(ymin)
+
+    # convert the exponent in real coordinates to an exponent in relative coordinates
+    b = np.abs(exp) * deltax / deltay
+
+    # x-coordinate of the start positions
+    startx = abs2rel_x(axis.get_xticks())
+
+    # compute how many labels need to be prepended
+    Dx   = startx[1] - startx[0]
+    nneg = int(np.floor(1./(b*Dx))) - 1
+
+    # add extra to be sure
+    if insert > 0:
+      nneg += 1
+
+    # prepend
+    if nneg > 0:
+      startx = np.hstack(( startx[0]+np.cumsum(-Dx * np.ones((nneg)))[::-1], startx ))
+
+    # insert extra coordinates
+    if insert > 0:
+
+      n  = len(startx)
+      x  = np.linspace(0,1,n+(n-1)*int(insert))
+      xp = np.linspace(0,1,n)
+
+      startx = np.interp(x, xp, startx)
+
+    # skip coordinates
+    if step > 0:
+
+      startx = startx[int(skip)::int(1+step)]
+
+    # x-coordinate of the end of the lines
+    endx = startx + 1/b
+
+    # y-coordinate of the start and the end of the lines
+    if exp > 0:
+      starty = np.zeros((len(startx)))
+      endy   = np.ones ((len(startx)))
+    else:
+      starty = np.ones ((len(startx)))
+      endy   = np.zeros((len(startx)))
+
+  # convert to real coordinates
+  startx = rel2abs_x(startx, axis)
+  endx   = rel2abs_x(endx  , axis)
+  starty = rel2abs_y(starty, axis)
+  endy   = rel2abs_y(endy  , axis)
+
+  # plot
+  return axis.plot(np.vstack(( startx, endx )), np.vstack(( starty, endy )), **kwargs)
 
 # ==================================================================================================
 
