@@ -1,3 +1,2 @@
-GooseMPL>=0.2.3
 matplotlib==2.2.2
 numpy==1.15.1

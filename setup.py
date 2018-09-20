@@ -8,11 +8,21 @@ class PostInstallCommand(install):
 
   def run(self):
 
-    import GooseMPL
+    try:
 
-    GooseMPL.copy_style()
+      import GooseMPL
 
-    install.run(self)
+      GooseMPL.copy_style()
+
+      install.run(self)
+
+    except:
+
+      import goosempl
+
+      goosempl.copy_style()
+
+      install.run(self)
 
 # --------------------------------------------------------------------------------------------------
 
