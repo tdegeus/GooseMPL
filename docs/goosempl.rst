@@ -19,11 +19,21 @@ Plot in relative coordinates
 
 .. autosummary::
 
+  goosempl.plot
+  goosempl.text
   goosempl.rel2abs_x
   goosempl.rel2abs_y
-  goosempl.text
-  goosempl.plot
+  goosempl.abs2rel_x
+  goosempl.abs2rel_y
+
+Annotate power-law
+------------------
+
+.. autosummary::
+
+  goosempl.grid_powerlaw
   goosempl.plot_powerlaw
+  goosempl.annotate_powerlaw
 
 Plot mesh
 ---------
