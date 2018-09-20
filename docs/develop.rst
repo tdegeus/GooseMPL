@@ -25,6 +25,8 @@ Create a new release
 
     python3 -m pip install --user --upgrade twine
 
+  Be sure to follow the possible directives about setting the user's path.
+
 References
 ==========
 

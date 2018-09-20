@@ -11,50 +11,50 @@ Set axes
 
 .. autosummary::
 
-  goosempl.scale_lim
-  goosempl.set_decade_lims
+  GooseMPL.scale_lim
+  GooseMPL.set_decade_lims
 
 Plot in relative coordinates
 ----------------------------
 
 .. autosummary::
 
-  goosempl.plot
-  goosempl.text
-  goosempl.rel2abs_x
-  goosempl.rel2abs_y
-  goosempl.abs2rel_x
-  goosempl.abs2rel_y
+  GooseMPL.plot
+  GooseMPL.text
+  GooseMPL.rel2abs_x
+  GooseMPL.rel2abs_y
+  GooseMPL.abs2rel_x
+  GooseMPL.abs2rel_y
 
 Annotate power-law
 ------------------
 
 .. autosummary::
 
-  goosempl.grid_powerlaw
-  goosempl.plot_powerlaw
-  goosempl.annotate_powerlaw
+  GooseMPL.grid_powerlaw
+  GooseMPL.plot_powerlaw
+  GooseMPL.annotate_powerlaw
 
 Plot mesh
 ---------
 
 .. autosummary::
 
-  goosempl.patch
+  GooseMPL.patch
 
 Plot statistics
 ---------------
 
 .. autosummary::
 
-  goosempl.histogram
-  goosempl.histogram_log
-  goosempl.histogram_uniform
-  goosempl.histogram_cumulative
-  goosempl.cdf
+  GooseMPL.histogram
+  GooseMPL.histogram_log
+  GooseMPL.histogram_uniform
+  GooseMPL.histogram_cumulative
+  GooseMPL.cdf
 
 Documentation
 =============
 
-.. automodule:: goosempl
+.. automodule:: GooseMPL
   :members:
