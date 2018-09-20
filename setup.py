@@ -9,6 +9,7 @@ class PostInstallCommand(install):
   def run(self):
 
     import GooseMPL
+
     GooseMPL.copy_style()
 
     install.run(self)
