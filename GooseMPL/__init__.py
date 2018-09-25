@@ -610,9 +610,6 @@ the positions of the ticks.
   # default axis
   if axis is None: axis = plt.gca()
 
-  # plot option
-  label = kwargs.pop('label', None)
-
   # default plot settings
   kwargs.setdefault('color'    , 'k' )
   kwargs.setdefault('linestyle', '--')
@@ -705,17 +702,14 @@ the positions of the ticks.
   starty = rel2abs_y(starty, axis)
   endy   = rel2abs_y(endy  , axis)
 
-  # initialize output
-  out = []
-
   # plot
-  for i in range(len(startx)):
-    if label and i==0:
-      out += [ axis.plot([startx[i], endx[i]], [starty[i], endy[i]], label=label, **kwargs) ]
-    else:
-      out += [ axis.plot([startx[i], endx[i]], [starty[i], endy[i]], **kwargs) ]
+  lines = axis.plot(np.vstack(( startx, endx )), np.vstack(( starty, endy )), **kwargs)
 
-  return out
+  # remove access in labels
+  plt.setp(lines[1:], label="_")
+
+  # return handles
+  return lines
 
 # ==================================================================================================
 
