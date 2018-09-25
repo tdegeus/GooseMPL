@@ -17,5 +17,5 @@ frame = legend.get_frame()
 frame.set_facecolor('white')
 frame.set_edgecolor('black')
 
-plt.savefig('legend.svg')
+plt.savefig('legend_external.svg')
 plt.show()

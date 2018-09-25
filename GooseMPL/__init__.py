@@ -610,6 +610,9 @@ the positions of the ticks.
   # default axis
   if axis is None: axis = plt.gca()
 
+  # plot option
+  label = kwargs.pop('label', None)
+
   # default plot settings
   kwargs.setdefault('color'    , 'k' )
   kwargs.setdefault('linestyle', '--')
@@ -623,7 +626,7 @@ the positions of the ticks.
   if exp == 0:
 
     # y-coordinate of the start positions
-    starty = abs2rel_y(axis.get_yticks())
+    starty = abs2rel_y(axis.get_yticks(), axis=axis)
 
     # insert extra coordinates
     if insert > 0:
@@ -657,7 +660,7 @@ the positions of the ticks.
     b = np.abs(exp) * deltax / deltay
 
     # x-coordinate of the start positions
-    startx = abs2rel_x(axis.get_xticks())
+    startx = abs2rel_x(axis.get_xticks(), axis=axis)
 
     # compute how many labels need to be prepended
     Dx   = startx[1] - startx[0]
@@ -702,8 +705,17 @@ the positions of the ticks.
   starty = rel2abs_y(starty, axis)
   endy   = rel2abs_y(endy  , axis)
 
+  # initialize output
+  out = []
+
   # plot
-  return axis.plot(np.vstack(( startx, endx )), np.vstack(( starty, endy )), **kwargs)
+  for i in range(len(startx)):
+    if label and i==0:
+      out += [ axis.plot([startx[i], endx[i]], [starty[i], endy[i]], label=label, **kwargs) ]
+    else:
+      out += [ axis.plot([startx[i], endx[i]], [starty[i], endy[i]], **kwargs) ]
+
+  return out
 
 # ==================================================================================================
 

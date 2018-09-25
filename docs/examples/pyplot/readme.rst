@@ -32,10 +32,10 @@ Subplot
 .. literalinclude:: subplot.py
    :language: python
 
-Legend
-------
+Legend - external
+-----------------
 
-.. image:: legend.svg
+.. image:: legend_external.svg
   :width: 600px
   :align: center
 
@@ -43,9 +43,9 @@ Legend
 
   `StackOverflow - "How to put the legend out of matplotlib plot" <https://stackoverflow.com/a/4701285/2646505>`_
 
-[:download:`source: legend.py <legend.py>`]
+[:download:`source: legend_external.py <legend_external.py>`]
 
-.. literalinclude:: legend.py
+.. literalinclude:: legend_external.py
    :language: python
 
 Line-color from colormap
