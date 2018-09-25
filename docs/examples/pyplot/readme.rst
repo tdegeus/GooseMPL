@@ -32,6 +32,18 @@ Subplot
 .. literalinclude:: subplot.py
    :language: python
 
+Legend - background
+-------------------
+
+.. image:: legend_background.svg
+  :width: 600px
+  :align: center
+
+[:download:`source: legend_background.py <legend_background.py>`]
+
+.. literalinclude:: legend_background.py
+   :language: python
+
 Legend - external
 -----------------
 
