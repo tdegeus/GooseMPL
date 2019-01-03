@@ -790,7 +790,7 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
   bins = kwargs.pop('bins', 10)
 
-  if type(bins) == int: bins = np.logspace(np.log10(np.min(data)),np.log10(np.max(data)),bins)
+  if type(bins) == int: bins = np.logspace(np.log10(np.min(data)),np.log10(np.max(data)),bins+1)
 
   P, edges = np.histogram(data, bins=bins, **kwargs)
 
@@ -828,6 +828,56 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
   idx[-1] = len(data) - 1
 
   edges = np.unique(np.sort(data)[idx])
+
+  P, edges = np.histogram(data, bins=edges, **kwargs)
+
+  if not return_edges: edges = np.diff(edges) / 2. + edges[:-1]
+
+  return P, edges
+
+# ==================================================================================================
+
+def histogram_uniform_logcutoff(data,**kwargs):
+  r'''
+Compute histogram using bins that contain a uniform number of items. To better capture a cutoff at
+high 'x' the last ``nend`` bins are converted in ``nlog`` logarithmic bins.
+See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`_
+
+:extra options:
+
+  **bins** (``<int>``)
+    Number of entries in each bin (the last bin is extended to fit the data).
+
+  **nend** ([``1``] | ``<int>``)
+    Last 'n' bins to convert to logarithmic bins.
+
+  **nlog** ([``4``] | ``<int>``)
+    Number of logarithmic bins to use in the cut-off.
+
+  **return_edges** ([``True``] | [``False``])
+    Return the bin edges if set to ``True``, return their midpoints otherwise.
+  '''
+
+  return_edges = kwargs.pop('return_edges', True)
+
+  bins = kwargs.pop('bins', 10)
+  nend = kwargs.pop('nend', 1 ) + 1
+  nlog = kwargs.pop('nlog', 1 )
+
+  count = int(np.floor(float(len(data))/float(bins))) * np.ones(bins, dtype='int')
+
+  count[np.linspace(0, bins-1, len(data)-np.sum(count)).astype(np.int)] += 1
+
+  idx = np.empty((bins+1), dtype='int')
+  idx[0 ] = 0
+  idx[1:] = np.cumsum(count)
+  idx[-1] = len(data) - 1
+
+  edges = np.unique(np.sort(data)[idx])
+
+  edges = np.hstack((
+    edges[:-nend], np.logspace(np.log10(edges[-nend]),np.log10(edges[-1]),nlog+1)
+  ))
 
   P, edges = np.histogram(data, bins=edges, **kwargs)
 

@@ -17,7 +17,7 @@ def distribution(a=100, b=3, g=-.3, size=10000):
 
 data = distribution()
 
-fig, axes = plt.subplots(ncols=3, figsize=(24,8))
+fig, axes = gplt.subplots(ncols=3)
 
 # configure axes
 
@@ -29,8 +29,8 @@ for ax in axes:
   ax.set_xscale('log')
   ax.set_yscale('log')
 
-  ax.set_xlim([10**0   , 10**3])
-  ax.set_ylim([10**(-3), 10**0])
+  ax.set_xlim([1e+0, 1e+3])
+  ax.set_ylim([1e-3, 1e+0])
 
 # histogram
 
@@ -61,9 +61,6 @@ axes[2].set_title(r'histogram\_uniform')
 for ax in axes:
 
   gplt.grid_powerlaw(exp=-1.3, axis=ax)
-
-  gplt.plot_powerlaw(               exp=-1.3, startx=.4, starty=.5, width=.2, axis=ax, units='relative')
-  gplt.annotate_powerlaw(r'$-1.3$', exp=-1.3, startx=.4, starty=.5, width=.2, axis=ax, units='relative', rx=.55)
 
 plt.savefig('histogram_powerlaw.svg')
 plt.show()
