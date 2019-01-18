@@ -24,7 +24,7 @@ import os,re,sys
 
 def find_latex_font_serif():
   r'''
-Find an available font to mimic LaTeX.
+Find an available font to mimic LaTeX, and return its name.
   '''
 
   import os, re
@@ -322,7 +322,7 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
     try   : return [xmin+i*(xmax-xmin) if i is not None else i for i in x]
     except: return  xmin+x*(xmax-xmin)
 
-# --------------------------------------------------------------------------------------------------
+# ==================================================================================================
 
 def rel2abs_y(y, axis=None):
   r'''
@@ -418,6 +418,115 @@ Plot.
 
   # plot
   return axis.plot(x, y, **kwargs)
+
+# ==================================================================================================
+
+def text(x, y, text, units='absolute', axis=None, **kwargs):
+  r'''
+Plot a text.
+
+:arguments:
+
+  **x, y** (``float``)
+    Coordinates.
+
+  **text** (``str``)
+    Text to plot.
+
+:options:
+
+  **units** ([``'absolute'``] | ``'relative'``)
+    The type of units in which the coordinates are specified. Relative coordinates correspond to a
+    fraction of the relevant axis. If you use relative coordinates, be sure to set the limits and
+    scale before calling this function!
+
+  ...
+    Any ``plt.text(...)`` option.
+
+:returns:
+
+  The handle of the ``plt.text(...)`` command.
+  '''
+
+  # get current axis
+  if axis is None:
+    axis = plt.gca()
+
+  # transform
+  if units.lower() == 'relative':
+    x = rel2abs_x(x, axis)
+    y = rel2abs_y(y, axis)
+
+  # plot
+  return axis.text(x, y, text, **kwargs)
+
+# ==================================================================================================
+
+def diagonal_powerlaw(exp, ll=None, lr=None, tl=None, tr=None, width=None, height=None, plot=False, **kwargs):
+  r'''
+Set the limits such that a power-law with a certain exponent lies on the diagonal.
+
+:arguments:
+
+  **exp** (``<float>``)
+    The power-law exponent.
+
+  **ll, lr, tl, tr** (``<list>``)
+    Coordinates of the lower-left, or the lower-right, or the top-left, or the top-right corner.
+
+  **width, height** (``<float>``)
+    Width or the height.
+
+:options:
+
+  **axis** ([``plt.gca()``] | ...)
+    Specify the axis to which to apply the limits.
+
+  **plot** ([``False``] | ``True``)
+    Plot the diagonal.
+
+  ...
+    Any ``plt.plot(...)`` option.
+
+:returns:
+
+  The handle of the ``plt.plot(...)`` command (if any).
+  '''
+
+  axis = kwargs.pop('axis', plt.gca())
+
+  if   width  and not height: width  = np.log(width )
+  elif height and not width : height = np.log(height)
+  else: raise IOError('Specify "width" or "height"')
+
+  if   ll and not lr and not tl and not tr: ll = [ np.log(ll[0]), np.log(ll[1]) ]
+  elif lr and not ll and not tl and not tr: lr = [ np.log(lr[0]), np.log(lr[1]) ]
+  elif tl and not lr and not ll and not tr: tl = [ np.log(tl[0]), np.log(tl[1]) ]
+  elif tr and not lr and not tl and not ll: tr = [ np.log(tr[0]), np.log(tr[1]) ]
+  else: raise IOError('Specify "ll" or "lr" or "tl" or "tr"')
+
+  axis.set_xscale('log')
+  axis.set_yscale('log')
+
+  if   width : height = width  * np.abs(exp)
+  elif height: width  = height / np.abs(exp)
+
+  if ll:
+    axis.set_xlim(sorted([np.exp(ll[0]), np.exp(ll[0]+width )]))
+    axis.set_ylim(sorted([np.exp(ll[1]), np.exp(ll[1]+height)]))
+  elif lr:
+    axis.set_xlim(sorted([np.exp(lr[0]), np.exp(lr[0]-width )]))
+    axis.set_ylim(sorted([np.exp(lr[1]), np.exp(lr[1]+height)]))
+  elif tl:
+    axis.set_xlim(sorted([np.exp(tl[0]), np.exp(tl[0]+width )]))
+    axis.set_ylim(sorted([np.exp(tl[1]), np.exp(tl[1]-height)]))
+  elif tr:
+    axis.set_xlim(sorted([np.exp(tr[0]), np.exp(tr[0]-width )]))
+    axis.set_ylim(sorted([np.exp(tr[1]), np.exp(tr[1]-height)]))
+
+  if plot:
+    if exp > 0: return plot_powerlaw(exp, 0., 0., 1., **kwargs)
+    else      : return plot_powerlaw(exp, 0., 1., 1., **kwargs)
 
 # ==================================================================================================
 
@@ -713,47 +822,6 @@ the positions of the ticks.
 
 # ==================================================================================================
 
-def text(x, y, text, units='absolute', axis=None, **kwargs):
-  r'''
-Plot a text.
-
-:arguments:
-
-  **x, y** (``float``)
-    Coordinates.
-
-  **text** (``str``)
-    Text to plot.
-
-:options:
-
-  **units** ([``'absolute'``] | ``'relative'``)
-    The type of units in which the coordinates are specified. Relative coordinates correspond to a
-    fraction of the relevant axis. If you use relative coordinates, be sure to set the limits and
-    scale before calling this function!
-
-  ...
-    Any ``plt.text(...)`` option.
-
-:returns:
-
-  The handle of the ``plt.text(...)`` command.
-  '''
-
-  # get current axis
-  if axis is None:
-    axis = plt.gca()
-
-  # transform
-  if units.lower() == 'relative':
-    x = rel2abs_x(x, axis)
-    y = rel2abs_y(y, axis)
-
-  # plot
-  return axis.text(x, y, text, **kwargs)
-
-# ==================================================================================================
-
 def histogram(data,**kwargs):
   r'''
 Compute histogram.
@@ -763,15 +831,36 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
   **return_edges** ([``True``] | [``False``])
     Return the bin edges if set to ``True``, return their midpoints otherwise.
+
+  **remove_empty** ([``False``] | [``True``])
+    Remove empty bins (only allowed when ``return_edges = False``).
   '''
 
-  return_edges = kwargs.pop('return_edges', True)
+  # extract relevant input options
+  remove_empty = kwargs.pop('remove_empty', False)
+  return_edges = kwargs.pop('return_edges', True )
 
+  # check options
+  if remove_empty and return_edges:
+    raise IOError('Only allowed when ``return_edges = False``')
+
+  # use NumPy's default function to compute the histogram
   P, edges = np.histogram(data, **kwargs)
 
-  if not return_edges: edges = np.diff(edges) / 2. + edges[:-1]
+  # return default output
+  if return_edges: return P, edges
 
-  return P, edges
+  # convert edges -> mid-points of each bin
+  x = np.diff(edges) / 2. + edges[:-1]
+
+  # optionally remove empty bins
+  if remove_empty:
+    idx = np.where(P>0)[0]
+    P   = P[idx]
+    x   = x[idx]
+
+  # return with bin mid-points
+  return P, x
 
 # ==================================================================================================
 
@@ -784,19 +873,40 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
   **return_edges** ([``True``] | [``False``])
     Return the bin edges if set to ``True``, return their midpoints otherwise.
+
+  **remove_empty** ([``False``] | [``True``])
+    Remove empty bins (only allowed when ``return_edges = False``).
   '''
 
-  return_edges = kwargs.pop('return_edges', True)
+  # extract relevant input options
+  remove_empty = kwargs.pop('remove_empty', False)
+  return_edges = kwargs.pop('return_edges', True )
+  bins         = kwargs.pop('bins'        , 10   )
 
-  bins = kwargs.pop('bins', 10)
+  # check options
+  if remove_empty and return_edges:
+    raise IOError('Only allowed when ``return_edges = False``')
 
+  # if only the number of bins is supplied: automatically set the bin-edges
   if type(bins) == int: bins = np.logspace(np.log10(np.min(data)),np.log10(np.max(data)),bins+1)
 
+  # use NumPy's default function to compute the histogram
   P, edges = np.histogram(data, bins=bins, **kwargs)
 
-  if not return_edges: edges = np.diff(edges) / 2. + edges[:-1]
+  # return default output
+  if return_edges: return P, edges
 
-  return P, edges
+  # convert edges -> mid-points of each bin
+  x = np.diff(edges) / 2. + edges[:-1]
+
+  # optionally remove empty bins
+  if remove_empty:
+    idx = np.where(P>0)[0]
+    P   = P[idx]
+    x   = x[idx]
+
+  # return with bin mid-points
+  return P, x
 
 # ==================================================================================================
 
@@ -812,78 +922,53 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
   **return_edges** ([``True``] | [``False``])
     Return the bin edges if set to ``True``, return their midpoints otherwise.
+
+  **remove_empty** ([``False``] | [``True``])
+    Remove empty bins (only allowed when ``return_edges = False``).
   '''
 
-  return_edges = kwargs.pop('return_edges', True)
+  # extract relevant input options
+  remove_empty = kwargs.pop('remove_empty', False)
+  return_edges = kwargs.pop('return_edges', True )
+  bins         = kwargs.pop('bins'        , 10   )
 
-  bins = kwargs.pop('bins', 10)
+  # check options
+  if remove_empty and return_edges:
+    raise IOError('Only allowed when ``return_edges = False``')
 
+  # number of data-points in each bin (equal for each)
   count = int(np.floor(float(len(data))/float(bins))) * np.ones(bins, dtype='int')
 
+  # increase the number of data-points by one is an many bins as needed,
+  # such that the total fits the total number of data-points
   count[np.linspace(0, bins-1, len(data)-np.sum(count)).astype(np.int)] += 1
 
+  # determine the bin-edges
+  # - list to split the data
   idx = np.empty((bins+1), dtype='int')
   idx[0 ] = 0
   idx[1:] = np.cumsum(count)
   idx[-1] = len(data) - 1
+  # - convert to bin-edges
+  bins = np.unique(np.sort(data)[idx])
 
-  edges = np.unique(np.sort(data)[idx])
+  # use NumPy's default function to compute the histogram
+  P, edges = np.histogram(data, bins=bins, **kwargs)
 
-  P, edges = np.histogram(data, bins=edges, **kwargs)
+  # return default output
+  if return_edges: return P, edges
 
-  if not return_edges: edges = np.diff(edges) / 2. + edges[:-1]
+  # convert edges -> mid-points of each bin
+  x = np.diff(edges) / 2. + edges[:-1]
 
-  return P, edges
+  # optionally remove empty bins
+  if remove_empty:
+    idx = np.where(P>0)[0]
+    P   = P[idx]
+    x   = x[idx]
 
-# ==================================================================================================
-
-def histogram_uniform_logcutoff(data,**kwargs):
-  r'''
-Compute histogram using bins that contain a uniform number of items. To better capture a cutoff at
-high 'x' the last ``nend`` bins are converted in ``nlog`` logarithmic bins.
-See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`_
-
-:extra options:
-
-  **bins** (``<int>``)
-    Number of entries in each bin (the last bin is extended to fit the data).
-
-  **nend** ([``1``] | ``<int>``)
-    Last 'n' bins to convert to logarithmic bins.
-
-  **nlog** ([``4``] | ``<int>``)
-    Number of logarithmic bins to use in the cut-off.
-
-  **return_edges** ([``True``] | [``False``])
-    Return the bin edges if set to ``True``, return their midpoints otherwise.
-  '''
-
-  return_edges = kwargs.pop('return_edges', True)
-
-  bins = kwargs.pop('bins', 10)
-  nend = kwargs.pop('nend', 1 ) + 1
-  nlog = kwargs.pop('nlog', 1 )
-
-  count = int(np.floor(float(len(data))/float(bins))) * np.ones(bins, dtype='int')
-
-  count[np.linspace(0, bins-1, len(data)-np.sum(count)).astype(np.int)] += 1
-
-  idx = np.empty((bins+1), dtype='int')
-  idx[0 ] = 0
-  idx[1:] = np.cumsum(count)
-  idx[-1] = len(data) - 1
-
-  edges = np.unique(np.sort(data)[idx])
-
-  edges = np.hstack((
-    edges[:-nend], np.logspace(np.log10(edges[-nend]),np.log10(edges[-1]),nlog+1)
-  ))
-
-  P, edges = np.histogram(data, bins=edges, **kwargs)
-
-  if not return_edges: edges = np.diff(edges) / 2. + edges[:-1]
-
-  return P, edges
+  # return with bin mid-points
+  return P, x
 
 # ==================================================================================================
 

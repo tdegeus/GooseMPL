@@ -6,8 +6,8 @@ GooseMPL custom plot functions
 Overview
 ========
 
-Set axes
---------
+Set axes limits
+---------------
 
 .. autosummary::
 
@@ -34,6 +34,7 @@ Annotate power-law
   GooseMPL.grid_powerlaw
   GooseMPL.plot_powerlaw
   GooseMPL.annotate_powerlaw
+  GooseMPL.diagonal_powerlaw
 
 Plot mesh
 ---------
@@ -42,8 +43,8 @@ Plot mesh
 
   GooseMPL.patch
 
-Plot statistics
----------------
+(Plot) statistics
+-----------------
 
 .. autosummary::
 
@@ -52,6 +53,16 @@ Plot statistics
   GooseMPL.histogram_uniform
   GooseMPL.histogram_cumulative
   GooseMPL.cdf
+  GooseMPL.hist
+
+Styles
+------
+
+.. autosummary::
+
+  GooseMPL.subplots
+  GooseMPL.copy_style
+  GooseMPL.find_latex_font_serif
 
 Documentation
 =============

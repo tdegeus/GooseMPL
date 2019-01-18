@@ -8,19 +8,19 @@ Styles in GooseMPL
 
 The following styles are part of GooseMPL (they become available upon installing GooseMPL):
 
-*   `goose <https://github.com/tdegeus/GooseMPL/blob/master/goosempl/stylelib/goose.mplstyle>`_
+*   ``goose``
 
     Customized layout settings.
 
-*   `goose-latex <https://github.com/tdegeus/GooseMPL/blob/master/goosempl/stylelib/goose-latex.mplstyle>`_
+*   ``goose-latex``
 
     Extend a style to enable the use of LaTeX, and change the font to LaTeX default Computer Modern font.
 
-*   `goose-tick-in <https://github.com/tdegeus/GooseMPL/blob/master/goosempl/stylelib/goose-tick-in.mplstyle>`_
+*   ``goose-tick-in``
 
     Place the tick-markers (*the little lines*) at the inside of the axes rather than at the outside.
 
-*   `goose-tick-lower <https://github.com/tdegeus/GooseMPL/blob/master/goosempl/stylelib/goose-tick-lower.mplstyle>`_
+*   ``goose-tick-lower``
 
     Shown only axes on the bottom and left side of the figure (those on the top and right are not shown).
 
