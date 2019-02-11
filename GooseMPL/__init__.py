@@ -832,32 +832,33 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
   **return_edges** ([``True``] | [``False``])
     Return the bin edges if set to ``True``, return their midpoints otherwise.
 
-  **remove_empty** ([``False``] | [``True``])
-    Remove empty bins (only allowed when ``return_edges = False``).
+  **integer** ([``False``] | [``True``])
+    If ``True``, bins not encompassing an integer are removed
+    (e.g. a bin with edges ``[1.1, 1.9]`` is removed, but ``[0.9, 1.1]`` is not removed).
   '''
 
   # extract relevant input options
-  remove_empty = kwargs.pop('remove_empty', False)
+  integer      = kwargs.pop('integer'     , False)
   return_edges = kwargs.pop('return_edges', True )
+  bins         = kwargs.pop('bins'        , 10   )
 
-  # check options
-  if remove_empty and return_edges:
-    raise IOError('Only allowed when ``return_edges = False``')
+  # compute bins
+  _, bin_edges = np.histogram(data, bins=bins, **kwargs)
+
+  # select only bins that encompass an integer (and retain the original bounds)
+  if integer:
+    idx = np.where(np.diff(np.floor(bin_edges))>=1)[0]
+    idx = np.unique(np.hstack((0, idx, len(bin_edges)-1)))
+    bin_edges = bin_edges[idx]
 
   # use NumPy's default function to compute the histogram
-  P, edges = np.histogram(data, **kwargs)
+  P, bin_edges = np.histogram(data, bins=bin_edges, **kwargs)
 
   # return default output
-  if return_edges: return P, edges
+  if return_edges: return P, bin_edges
 
-  # convert edges -> mid-points of each bin
-  x = np.diff(edges) / 2. + edges[:-1]
-
-  # optionally remove empty bins
-  if remove_empty:
-    idx = np.where(P>0)[0]
-    P   = P[idx]
-    x   = x[idx]
+  # convert bin_edges -> mid-points of each bin
+  x = np.diff(bin_edges) / 2. + bin_edges[:-1]
 
   # return with bin mid-points
   return P, x
@@ -874,36 +875,40 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
   **return_edges** ([``True``] | [``False``])
     Return the bin edges if set to ``True``, return their midpoints otherwise.
 
-  **remove_empty** ([``False``] | [``True``])
-    Remove empty bins (only allowed when ``return_edges = False``).
+  **integer** ([``False``] | [``True``])
+    If ``True``, bins not encompassing an integer are removed
+    (e.g. a bin with edges ``[1.1, 1.9]`` is removed, but ``[0.9, 1.1]`` is not removed).
   '''
 
   # extract relevant input options
-  remove_empty = kwargs.pop('remove_empty', False)
+  integer      = kwargs.pop('integer'     , False)
   return_edges = kwargs.pop('return_edges', True )
-  bins         = kwargs.pop('bins'        , 10   )
-
-  # check options
-  if remove_empty and return_edges:
-    raise IOError('Only allowed when ``return_edges = False``')
+  bin_edges    = kwargs.pop('bins'        , 10   )
 
   # if only the number of bins is supplied: automatically set the bin-edges
-  if type(bins) == int: bins = np.logspace(np.log10(np.min(data)),np.log10(np.max(data)),bins+1)
+  if not hasattr(bin_edges, '__len__'):
+    # - get bin-edges
+    bin_edges = np.logspace(np.log10(np.min(data)),np.log10(np.max(data)),bin_edges+1)
+    # - count data in each bin
+    P, _ = np.histogram(data, bins=bin_edges)
+    # - remove empty starting and ending bin (related to an unfortunate choice of bin-edges)
+    if P[ 0] == 0: bin_edges = bin_edges[1:  ]
+    if P[-1] == 0: bin_edges = bin_edges[ :-1]
+
+  # select only bins that encompass an integer (and retain the original bounds)
+  if integer:
+    idx = np.where(np.diff(np.floor(bin_edges))>=1)[0]
+    idx = np.unique(np.hstack((0, idx, len(bin_edges)-1)))
+    bin_edges = bin_edges[idx]
 
   # use NumPy's default function to compute the histogram
-  P, edges = np.histogram(data, bins=bins, **kwargs)
+  P, bin_edges = np.histogram(data, bins=bin_edges, **kwargs)
 
   # return default output
-  if return_edges: return P, edges
+  if return_edges: return P, bin_edges
 
-  # convert edges -> mid-points of each bin
-  x = np.diff(edges) / 2. + edges[:-1]
-
-  # optionally remove empty bins
-  if remove_empty:
-    idx = np.where(P>0)[0]
-    P   = P[idx]
-    x   = x[idx]
+  # convert bin_edges -> mid-points of each bin
+  x = np.diff(bin_edges) / 2. + bin_edges[:-1]
 
   # return with bin mid-points
   return P, x
@@ -922,19 +927,11 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
   **return_edges** ([``True``] | [``False``])
     Return the bin edges if set to ``True``, return their midpoints otherwise.
-
-  **remove_empty** ([``False``] | [``True``])
-    Remove empty bins (only allowed when ``return_edges = False``).
   '''
 
   # extract relevant input options
-  remove_empty = kwargs.pop('remove_empty', False)
   return_edges = kwargs.pop('return_edges', True )
   bins         = kwargs.pop('bins'        , 10   )
-
-  # check options
-  if remove_empty and return_edges:
-    raise IOError('Only allowed when ``return_edges = False``')
 
   # number of data-points in each bin (equal for each)
   count = int(np.floor(float(len(data))/float(bins))) * np.ones(bins, dtype='int')
@@ -960,12 +957,6 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
   # convert edges -> mid-points of each bin
   x = np.diff(edges) / 2. + edges[:-1]
-
-  # optionally remove empty bins
-  if remove_empty:
-    idx = np.where(P>0)[0]
-    P   = P[idx]
-    x   = x[idx]
 
   # return with bin mid-points
   return P, x
