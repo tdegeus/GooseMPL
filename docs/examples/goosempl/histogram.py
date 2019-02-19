@@ -21,33 +21,39 @@ fig, axes = plt.subplots(ncols=3, nrows=2, figsize=(3*8,2*6))
 
 # --- histogram ---
 
-P,x = gplt.histogram(data, bins=41, density=False)
+bin_edges = gplt.histogram_bin_edges(data, bins=41)
 
-gplt.hist(P,x,facecolor=[.2,.2,.2],axis=axes[0,0])
+P, x = gplt.histogram(data, bins=bin_edges, density=False)
 
-P,x = gplt.histogram(data, bins=41, density=True)
+gplt.hist(P, x, facecolor=[.2,.2,.2], axis=axes[0,0])
 
-gplt.hist(P,x,facecolor=[.2,.2,.2],axis=axes[1,0])
+P, x = gplt.histogram(data, bins=bin_edges, density=True)
+
+gplt.hist(P, x, facecolor=[.2,.2,.2], axis=axes[1,0])
 
 # --- histogram_log ---
 
-P,x = gplt.histogram_log(data, bins=41, density=False)
+bin_edges = gplt.histogram_bin_edges(data, bins=41, mode='log')
 
-gplt.hist(P,x,facecolor='b',axis=axes[0,1])
+P, x = gplt.histogram(data, bins=bin_edges, density=False)
 
-P,x = gplt.histogram_log(data, bins=41, density=True)
+gplt.hist(P, x, facecolor='b', axis=axes[0,1])
 
-gplt.hist(P,x,facecolor='b',axis=axes[1,1])
+P, x = gplt.histogram(data, bins=bin_edges, density=True)
+
+gplt.hist(P, x, facecolor='b', axis=axes[1,1])
 
 # --- histogram_uniform ---
 
-P,x = gplt.histogram_uniform(data, bins=41, density=False)
+bin_edges = gplt.histogram_bin_edges(data, bins=41, mode='uniform')
 
-gplt.hist(P,x,facecolor='r',axis=axes[0,2])
+P, x = gplt.histogram(data, bins=bin_edges, density=False)
 
-P,x = gplt.histogram_uniform(data, bins=41, density=True)
+gplt.hist(P, x, facecolor='r', axis=axes[0,2])
 
-gplt.hist(P,x,facecolor='r',axis=axes[1,2])
+P, x = gplt.histogram(data, bins=bin_edges, density=True)
+
+gplt.hist(P, x, facecolor='r', axis=axes[1,2])
 
 # --- axes settings ---
 

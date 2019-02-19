@@ -20,7 +20,7 @@ class PostInstallCommand(install):
 
 setup(
   name              = 'GooseMPL',
-  version           = '0.2.10',
+  version           = '0.2.11',
   author            = 'Tom de Geus',
   author_email      = 'tom@geus.me',
   url               = 'https://github.com/tdegeus/GooseMPL',

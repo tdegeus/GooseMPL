@@ -822,7 +822,153 @@ the positions of the ticks.
 
 # ==================================================================================================
 
-def histogram(data,**kwargs):
+def histogram_bin_edges_mincount(data, min_count, bins):
+  r'''
+Merge bins with right-neighbour until each bin has a minimum number of data-points.
+
+:arguments:
+
+  **data** (``<array_like>``)
+    Input data. The histogram is computed over the flattened array.
+
+  **bins** (``<array_like>`` | ``<int>``)
+    The bin-edges (or the number of bins, automatically converted to equal-sized bins).
+
+  **min_count** (``<int>``)
+    The minimum number of data-points per bin.
+  '''
+
+  # escape
+  if min_count is None : return bins
+  if min_count is False: return bins
+
+  # check
+  if type(min_count) != int: raise IOError('"min_count" must be an integer number')
+
+  # keep removing where needed
+  while True:
+
+    P, _ = np.histogram(data, bins=bins, density=False)
+
+    idx = np.where(P < min_count)[0]
+
+    if len(idx) == 0: return bins
+
+    idx = idx[0]
+
+    if idx+1 == len(P): bins = np.hstack(( bins[:(idx)  ], bins[-1]       ))
+    else              : bins = np.hstack(( bins[:(idx+1)], bins[(idx+2):] ))
+
+# ==================================================================================================
+
+def histogram_bin_edges(data, bins=10, mode='equal', min_count=None, integer=False, remove_empty_edges=True):
+  r'''
+Determine bin-edges.
+
+:arguments:
+
+  **data** (``<array_like>``)
+    Input data. The histogram is computed over the flattened array.
+
+:options:
+
+  **bins** ([``10``] | ``<int>``)
+    The number of bins.
+
+  **mode** ([``'equal'`` | ``<str>``)
+    Mode with which to compute the bin-edges:
+    * ``'equal'``: each bin has equal width.
+    * ``'log'``: logarithmic spacing.
+    * ``'uniform'``: uniform number of data-points per bin.
+
+  **min_count** (``<int>``)
+    The minimum number of data-points per bin.
+
+  **integer** ([``False``] | [``True``])
+    If ``True``, bins not encompassing an integer are removed
+    (e.g. a bin with edges ``[1.1, 1.9]`` is removed, but ``[0.9, 1.1]`` is not removed).
+
+  **remove_empty_edges** ([``True``] | [``False``])
+    Remove empty bins at the beginning or the end.
+
+:returns:
+
+  **bin_edges** (``<array of dtype float>``)
+    The edges to pass into histogram.
+  '''
+
+  # determine the bin-edges
+
+  if mode == 'equal':
+
+    bin_edges = np.linspace(np.min(data),np.max(data),bins+1)
+
+  elif mode == 'log':
+
+    bin_edges = np.logspace(np.log10(np.min(data)),np.log10(np.max(data)),bins+1)
+
+  elif mode == 'uniform':
+
+    # - check
+    if hasattr(bins, "__len__"):
+      raise IOError('Only the number of bins can be specified')
+
+    # - use the minimum count to estimate the number of bins
+    if min_count is not None and min_count is not False:
+      if type(min_count) != int: raise IOError('"min_count" must be an integer number')
+      bins = int(np.floor(float(len(data))/float(min_count)))
+
+    # - number of data-points in each bin (equal for each)
+    count = int(np.floor(float(len(data))/float(bins))) * np.ones(bins, dtype='int')
+
+    # - increase the number of data-points by one is an many bins as needed,
+    #   such that the total fits the total number of data-points
+    count[np.linspace(0, bins-1, len(data)-np.sum(count)).astype(np.int)] += 1
+
+    # - split the data
+    idx     = np.empty((bins+1), dtype='int')
+    idx[0 ] = 0
+    idx[1:] = np.cumsum(count)
+    idx[-1] = len(data) - 1
+
+    # - determine the bin-edges
+    bin_edges = np.unique(np.sort(data)[idx])
+
+  else:
+
+    raise IOError('Unknown option')
+
+  # remove empty starting and ending bin (related to an unfortunate choice of bin-edges)
+
+  if remove_empty_edges:
+
+    N, _ = np.histogram(data, bins=bin_edges, density=False)
+
+    idx = np.min(np.where(N>0)[0])
+    jdx = np.max(np.where(N>0)[0])
+
+    bin_edges = bin_edges[(idx):(jdx+2)]
+
+  # merge bins with too few data-points (if needed)
+
+  bin_edges = histogram_bin_edges_mincount(data, min_count=min_count, bins=bin_edges)
+
+  # select only bins that encompass an integer (and retain the original bounds)
+
+  if integer:
+
+    idx = np.where(np.diff(np.floor(bin_edges))>=1)[0]
+    idx = np.unique(np.hstack((0, idx, len(bin_edges)-1)))
+
+    bin_edges = bin_edges[idx]
+
+  # return
+
+  return bin_edges
+
+# ==================================================================================================
+
+def histogram(data, return_edges=True, **kwargs):
   r'''
 Compute histogram.
 See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`_
@@ -831,132 +977,16 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
   **return_edges** ([``True``] | [``False``])
     Return the bin edges if set to ``True``, return their midpoints otherwise.
-
-  **integer** ([``False``] | [``True``])
-    If ``True``, bins not encompassing an integer are removed
-    (e.g. a bin with edges ``[1.1, 1.9]`` is removed, but ``[0.9, 1.1]`` is not removed).
   '''
 
-  # extract relevant input options
-  integer      = kwargs.pop('integer'     , False)
-  return_edges = kwargs.pop('return_edges', True )
-  bins         = kwargs.pop('bins'        , 10   )
-
-  # compute bins
-  _, bin_edges = np.histogram(data, bins=bins, **kwargs)
-
-  # select only bins that encompass an integer (and retain the original bounds)
-  if integer:
-    idx = np.where(np.diff(np.floor(bin_edges))>=1)[0]
-    idx = np.unique(np.hstack((0, idx, len(bin_edges)-1)))
-    bin_edges = bin_edges[idx]
-
   # use NumPy's default function to compute the histogram
-  P, bin_edges = np.histogram(data, bins=bin_edges, **kwargs)
+  P, bin_edges = np.histogram(data, **kwargs)
 
   # return default output
   if return_edges: return P, bin_edges
 
   # convert bin_edges -> mid-points of each bin
   x = np.diff(bin_edges) / 2. + bin_edges[:-1]
-
-  # return with bin mid-points
-  return P, x
-
-# ==================================================================================================
-
-def histogram_log(data,**kwargs):
-  r'''
-Compute histogram using log-binning.
-See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`_
-
-:extra options:
-
-  **return_edges** ([``True``] | [``False``])
-    Return the bin edges if set to ``True``, return their midpoints otherwise.
-
-  **integer** ([``False``] | [``True``])
-    If ``True``, bins not encompassing an integer are removed
-    (e.g. a bin with edges ``[1.1, 1.9]`` is removed, but ``[0.9, 1.1]`` is not removed).
-  '''
-
-  # extract relevant input options
-  integer      = kwargs.pop('integer'     , False)
-  return_edges = kwargs.pop('return_edges', True )
-  bin_edges    = kwargs.pop('bins'        , 10   )
-
-  # if only the number of bins is supplied: automatically set the bin-edges
-  if not hasattr(bin_edges, '__len__'):
-    # - get bin-edges
-    bin_edges = np.logspace(np.log10(np.min(data)),np.log10(np.max(data)),bin_edges+1)
-    # - count data in each bin
-    P, _ = np.histogram(data, bins=bin_edges)
-    # - remove empty starting and ending bin (related to an unfortunate choice of bin-edges)
-    if P[ 0] == 0: bin_edges = bin_edges[1:  ]
-    if P[-1] == 0: bin_edges = bin_edges[ :-1]
-
-  # select only bins that encompass an integer (and retain the original bounds)
-  if integer:
-    idx = np.where(np.diff(np.floor(bin_edges))>=1)[0]
-    idx = np.unique(np.hstack((0, idx, len(bin_edges)-1)))
-    bin_edges = bin_edges[idx]
-
-  # use NumPy's default function to compute the histogram
-  P, bin_edges = np.histogram(data, bins=bin_edges, **kwargs)
-
-  # return default output
-  if return_edges: return P, bin_edges
-
-  # convert bin_edges -> mid-points of each bin
-  x = np.diff(bin_edges) / 2. + bin_edges[:-1]
-
-  # return with bin mid-points
-  return P, x
-
-# ==================================================================================================
-
-def histogram_uniform(data,**kwargs):
-  r'''
-Compute histogram using bins that contain a uniform number of items.
-See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`_
-
-:extra options:
-
-  **bins** (``<int>``)
-    Number of entries in each bin (the last bin is extended to fit the data).
-
-  **return_edges** ([``True``] | [``False``])
-    Return the bin edges if set to ``True``, return their midpoints otherwise.
-  '''
-
-  # extract relevant input options
-  return_edges = kwargs.pop('return_edges', True )
-  bins         = kwargs.pop('bins'        , 10   )
-
-  # number of data-points in each bin (equal for each)
-  count = int(np.floor(float(len(data))/float(bins))) * np.ones(bins, dtype='int')
-
-  # increase the number of data-points by one is an many bins as needed,
-  # such that the total fits the total number of data-points
-  count[np.linspace(0, bins-1, len(data)-np.sum(count)).astype(np.int)] += 1
-
-  # determine the bin-edges
-  # - list to split the data
-  idx = np.empty((bins+1), dtype='int')
-  idx[0 ] = 0
-  idx[1:] = np.cumsum(count)
-  idx[-1] = len(data) - 1
-  # - convert to bin-edges
-  bins = np.unique(np.sort(data)[idx])
-
-  # use NumPy's default function to compute the histogram
-  P, edges = np.histogram(data, bins=bins, **kwargs)
-
-  # return default output
-  if return_edges: return P, edges
-
-  # convert edges -> mid-points of each bin
-  x = np.diff(edges) / 2. + edges[:-1]
 
   # return with bin mid-points
   return P, x

@@ -34,19 +34,25 @@ for ax in axes:
 
 # histogram
 
-P,x = gplt.histogram(data, bins=41, density=True, return_edges=False)
+bin_edges = gplt.histogram_bin_edges(data, bins=41)
+
+P, x = gplt.histogram(data, bins=bin_edges, density=True, return_edges=False)
 
 axes[0].plot(x,P,marker='o', linestyle='none', markersize=5., color='k')
 
 # histogram_log
 
-P,x = gplt.histogram_log(data, bins=41, density=True, return_edges=False)
+bin_edges = gplt.histogram_bin_edges(data, bins=41, mode='log')
+
+P, x = gplt.histogram(data, bins=bin_edges, density=True, return_edges=False)
 
 axes[1].plot(x,P,marker='o', linestyle='none', markersize=5., color='b')
 
 # histogram_uniform
 
-P,x = gplt.histogram_uniform(data, bins=41, density=True, return_edges=False)
+bin_edges = gplt.histogram_bin_edges(data, bins=41, mode='uniform')
+
+P, x = gplt.histogram(data, bins=bin_edges, density=True, return_edges=False)
 
 axes[2].plot(x,P,marker='o', linestyle='none', markersize=5., color='r')
 
