@@ -822,6 +822,37 @@ the positions of the ticks.
 
 # ==================================================================================================
 
+def histogram_bin_edges_minwidth(min_width, bins):
+  r'''
+Merge bins with right-neighbour until each bin has a minimum width.
+
+:arguments:
+
+  **bins** (``<array_like>``)
+    The bin-edges.
+
+  **min_width** (``<float>``)
+    The minimum bin width.
+  '''
+
+  # escape
+  if min_width is None : return bins
+  if min_width is False: return bins
+
+  # keep removing where needed
+  while True:
+
+    idx = np.where(np.diff(bins) < min_width)[0]
+
+    if len(idx) == 0: return bins
+
+    idx = idx[0]
+
+    if idx+1 == len(bins)-1: bins = np.hstack(( bins[:(idx)  ], bins[-1]       ))
+    else                   : bins = np.hstack(( bins[:(idx+1)], bins[(idx+2):] ))
+
+# ==================================================================================================
+
 def histogram_bin_edges_mincount(data, min_count, bins):
   r'''
 Merge bins with right-neighbour until each bin has a minimum number of data-points.
@@ -861,7 +892,7 @@ Merge bins with right-neighbour until each bin has a minimum number of data-poin
 
 # ==================================================================================================
 
-def histogram_bin_edges(data, bins=10, mode='equal', min_count=None, integer=False, remove_empty_edges=True):
+def histogram_bin_edges(data, bins=10, mode='equal', min_count=None, integer=False, remove_empty_edges=True, min_width=None):
   r'''
 Determine bin-edges.
 
@@ -883,6 +914,9 @@ Determine bin-edges.
 
   **min_count** (``<int>``)
     The minimum number of data-points per bin.
+
+  **min_width** (``<float>``)
+    The minimum width of each bin.
 
   **integer** ([``False``] | [``True``])
     If ``True``, bins not encompassing an integer are removed
@@ -952,6 +986,10 @@ Determine bin-edges.
   # merge bins with too few data-points (if needed)
 
   bin_edges = histogram_bin_edges_mincount(data, min_count=min_count, bins=bin_edges)
+
+  # merge bins that have too small of a width
+
+  bin_edges = histogram_bin_edges_minwidth(min_width=min_width, bins=bin_edges)
 
   # select only bins that encompass an integer (and retain the original bounds)
 

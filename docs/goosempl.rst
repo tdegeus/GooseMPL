@@ -49,8 +49,9 @@ Plot mesh
 .. autosummary::
 
   GooseMPL.histogram
-  GooseMPL.histogram_log
-  GooseMPL.histogram_uniform
+  GooseMPL.histogram_bin_edges
+  GooseMPL.histogram_bin_edges_minwidth
+  GooseMPL.histogram_bin_edges_mincount
   GooseMPL.histogram_cumulative
   GooseMPL.cdf
   GooseMPL.hist

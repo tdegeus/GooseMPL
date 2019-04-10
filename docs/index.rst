@@ -11,14 +11,14 @@ To obtain GooseMPL one can do either of the following.
 
     .. code-block:: bash
 
-      $ pip install goosempl
+      $ pip install GooseMPL
 
     Then install the matplotlib-style files using:
 
     .. code-block:: python
 
-      >>> import goosempl
-      >>> goosempl.copy_style()
+      >>> import GooseMPL
+      >>> GooseMPL.copy_style()
 
     You'll only have to do this once after installing/updating.
 
