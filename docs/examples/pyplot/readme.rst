@@ -115,6 +115,18 @@ This example is just a copy of `this nice answer <https://stackoverflow.com/a/47
 Tick formatter
 --------------
 
+[:download:`source: tick-log.py <tick-log.py>`]
+
+.. literalinclude:: tick-log.py
+   :language: python
+
+.. image:: tick-log.svg
+  :width: 600px
+  :align: center
+
+Ticks along a log-scale axis
+----------------------------
+
 [:download:`source: tick-formatter.py <tick-formatter.py>`]
 
 .. note:: References
