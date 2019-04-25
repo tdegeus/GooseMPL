@@ -9,7 +9,7 @@ d    = np.sqrt(x**2+y**2)
 
 fig,ax = plt.subplots()
 
-cax  = ax.imshow(d)
+cax = ax.imshow(d)
 
 cbar = fig.colorbar(cax,aspect=10)
 cbar.set_ticks([0,np.sqrt(2.)])

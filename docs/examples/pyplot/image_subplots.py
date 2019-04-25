@@ -17,8 +17,8 @@ fig, axes  = plt.subplots(ncols=3, figsize=(18,6))
 
 # --- left subplot ---
 
-ax   = axes[0]
-im   = ax.imshow(a,clim=(0,1))
+ax = axes[0]
+im = ax.imshow(a,clim=(0,1))
 ax.xaxis.set_ticks([0,100])
 ax.yaxis.set_ticks([0,100])
 ax.set_xlim([0,100])
@@ -33,8 +33,8 @@ cbar.set_ticks([0,1])
 
 # --- middle subplot ---
 
-ax   = axes[1]
-im   = ax.imshow(b,clim=(0,1))
+ax = axes[1]
+im = ax.imshow(b,clim=(0,1))
 ax.xaxis.set_ticks([0,100])
 ax.yaxis.set_ticks([0,100])
 ax.set_xlim([0,100])
@@ -49,8 +49,8 @@ cbar.set_ticks([0,1])
 
 # --- right subplot ---
 
-ax   = axes[2]
-im   = ax.imshow(d,clim=(0,1))
+ax = axes[2]
+im = ax.imshow(d,clim=(0,1))
 ax.xaxis.set_ticks([0,100])
 ax.yaxis.set_ticks([0,100])
 ax.set_xlim([0,100])

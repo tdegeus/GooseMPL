@@ -364,14 +364,29 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
 
 # ==================================================================================================
 
-def subplots(**kwargs):
+def subplots(scale_x=None, scale_y=None, scale=None, **kwargs):
   r'''
 Run ``matplotlib.pyplot.subplots`` with ``figsize`` set to the correct multiple of the default.
+
+:additional options:
+
+  **scale, scale_x, scale_y** (``<float>``)
+    Scale the figure-size (along one of the dimensions).
   '''
 
   if 'figsize' in kwargs: return plt.subplots(**kwargs)
 
   width, height = mpl.rcParams['figure.figsize']
+
+  if scale is not None:
+    width  *= scale
+    height *= scale
+
+  if scale_x is not None:
+    width *= scale_x
+
+  if scale_y is not None:
+    height *= scale_y
 
   nrows = kwargs.pop('nrows', 1)
   ncols = kwargs.pop('ncols', 1)

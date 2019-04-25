@@ -5,6 +5,10 @@
 Examples
 ********
 
+.. contents:: **Outline**
+    :local:
+    :backlinks: top
+
 Plot
 ====
 
@@ -32,8 +36,11 @@ Subplot
 .. literalinclude:: subplot.py
    :language: python
 
-Legend - background
--------------------
+Legend
+------
+
+Set background colour
+^^^^^^^^^^^^^^^^^^^^^
 
 .. image:: legend_background.svg
   :width: 600px
@@ -44,8 +51,8 @@ Legend - background
 .. literalinclude:: legend_background.py
    :language: python
 
-Legend - external
------------------
+Move legend outside the plot
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. image:: legend_external.svg
   :width: 600px
@@ -89,8 +96,11 @@ Line-color from colormap
   :width: 600px
   :align: center
 
+Ticks
+-----
+
 Aligning tick labels
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 [:download:`source: tick-position.py <tick-position.py>`]
 
@@ -113,19 +123,7 @@ This example is just a copy of `this nice answer <https://stackoverflow.com/a/47
   :align: center
 
 Tick formatter
---------------
-
-[:download:`source: tick-log.py <tick-log.py>`]
-
-.. literalinclude:: tick-log.py
-   :language: python
-
-.. image:: tick-log.svg
-  :width: 600px
-  :align: center
-
-Ticks along a log-scale axis
-----------------------------
+^^^^^^^^^^^^^^
 
 [:download:`source: tick-formatter.py <tick-formatter.py>`]
 
@@ -143,6 +141,51 @@ Ticks along a log-scale axis
    :language: python
 
 .. image:: tick-formatter.svg
+  :width: 600px
+  :align: center
+
+Logarithmic scale
+^^^^^^^^^^^^^^^^^
+
+Tick rotation
+"""""""""""""
+
+[:download:`source: tick-rotation-log.py <tick-rotation-log.py>`]
+
+.. literalinclude:: tick-rotation-log.py
+   :language: python
+
+.. image:: tick-rotation-log.svg
+  :width: 600px
+  :align: center
+
+Specifying ticks
+""""""""""""""""
+
+[:download:`source: tick-log_1.py <tick-log_1.py>`]
+
+.. literalinclude:: tick-log_1.py
+   :language: python
+
+.. image:: tick-log_1.svg
+  :width: 600px
+  :align: center
+
+Selecting ticks
+"""""""""""""""
+
+[:download:`source: tick-log_2.py <tick-log_2.py>`]
+
+.. note:: References
+
+  * `Selectively remove ticklabels (major and/or minor) from logarithmic axis <https://stackoverflow.com/a/55691264/2646505>`_
+
+To have ticks at multiples of 1 and 2 of integer powers of the logarithmic base (10) use ``matplotlib.ticker.LogLocator(subs=(1,2,))``. Then use ``matplotlib.ticker.NullLocator()`` to turn minor labels off.
+
+.. literalinclude:: tick-log_2.py
+   :language: python
+
+.. image:: tick-log_2.svg
   :width: 600px
   :align: center
 
