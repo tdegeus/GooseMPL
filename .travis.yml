@@ -7,7 +7,7 @@ python:
 # command to install dependencies
 install:
   - pip install numpy matplotlib
-  - pip install
+  - pip install .
 # configure a headless display to test plot generation
 before_script:
 - "export DISPLAY=:99.0"
