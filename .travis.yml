@@ -4,6 +4,10 @@ python:
   # - "3.5"
   # - "3.6"
   - "3.7"
+# install LaTeX
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y texlive-base texlive-latex-base texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra
 # command to install dependencies
 install:
   - pip install numpy matplotlib
