@@ -11,14 +11,13 @@ ax.set_yscale('log')
 ax.set_xlim([2e-2, 2e-1])
 ax.set_ylim([2e+1, 2e+3])
 
-ax.plot([0.02, 0.1, 0.2], [20, 1000, 2000])
+ax.plot([0.01, 0.1, 1.0], [20, 200, 2000])
 
 ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
 ax.get_xaxis().set_minor_formatter(matplotlib.ticker.ScalarFormatter())
 
-ax.set_xticks([])
-ax.set_xticks([], minor=True)
-ax.set_xticks([0.02, 0.1, 0.2])
+plt.setp(ax.xaxis.get_majorticklabels(), rotation=45)
+plt.setp(ax.xaxis.get_minorticklabels(), rotation=45)
 
-plt.savefig('tick-log.svg')
+plt.savefig('tick-rotation-log.svg')
 plt.show()

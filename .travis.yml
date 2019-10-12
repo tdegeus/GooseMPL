@@ -1,0 +1,37 @@
+language: python
+python:
+  - "3.6"
+  - "3.7"
+# install LaTeX
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y texlive-base texlive-latex-base texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra
+  - sudo apt-get install dvipng
+# command to install dependencies
+install:
+  - pip install numpy matplotlib
+  - pip install .
+  - export MPLBACKEND=Agg
+  - python -c "import GooseMPL; GooseMPL.copy_style()"
+# command to run tests
+script:
+  - python docs/examples/goosempl/histogram.py
+  - python docs/examples/goosempl/histogram_powerlaw.py
+  - python docs/examples/goosempl/patch.py
+  - python docs/examples/pyplot/colorbar.py
+  - python docs/examples/pyplot/colormap-part.py
+  - python docs/examples/pyplot/colormap.py
+  - python docs/examples/pyplot/image.py
+  - python docs/examples/pyplot/image_subplots.py
+  - python docs/examples/pyplot/image_subplots_bottom.py
+  - python docs/examples/pyplot/legend_background.py
+  - python docs/examples/pyplot/legend_external.py
+  - python docs/examples/pyplot/plot-cmap.py
+  - python docs/examples/pyplot/plot.py
+  - python docs/examples/pyplot/subplot.py
+  - python docs/examples/pyplot/tick-formatter.py
+  - python docs/examples/pyplot/tick-log.py
+  - python docs/examples/pyplot/tick-log_1.py
+  - python docs/examples/pyplot/tick-log_2.py
+  - python docs/examples/pyplot/tick-position.py
+  - python docs/examples/pyplot/tick-rotation-log.py

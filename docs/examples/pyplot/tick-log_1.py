@@ -20,5 +20,5 @@ ax.set_xticks([])
 ax.set_xticks([], minor=True)
 ax.set_xticks([0.02, 0.1, 0.2])
 
-plt.savefig('tick-log.svg')
+plt.savefig('tick-log_1.svg')
 plt.show()

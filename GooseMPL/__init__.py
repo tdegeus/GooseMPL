@@ -16,9 +16,8 @@ This module provides some extensions to matplotlib.
 # ==================================================================================================
 
 import matplotlib.pyplot as plt
-import matplotlib        as mpl
-import numpy             as np
-import os,re,sys
+import matplotlib as mpl
+import numpy as np
 
 # ==================================================================================================
 
@@ -27,7 +26,8 @@ def find_latex_font_serif():
 Find an available font to mimic LaTeX, and return its name.
   '''
 
-  import os, re
+  import os
+  import re
   import matplotlib.font_manager
 
   name = lambda font: os.path.splitext(os.path.split(font)[-1])[0].split(' - ')[0]
@@ -45,7 +45,7 @@ Find an available font to mimic LaTeX, and return its name.
 
   for match in matches:
     for font in fonts:
-      if re.match(match,font):
+      if re.match(match, font):
         return name(font)
 
   return None
@@ -110,7 +110,7 @@ font.serif           : {serif:s}
 font.weight          : bold
 font.size            : 18
 text.usetex          : true
-text.latex.preamble  : \usepackage{{amsmath}},\usepackage{{amsfonts}},\usepackage{{amssymb}},\usepackage{{bm}}
+text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
 '''.format(serif=find_latex_font_serif())
 
   else:
@@ -120,7 +120,7 @@ font.family          : serif
 font.weight          : bold
 font.size            : 18
 text.usetex          : true
-text.latex.preamble  : \usepackage{{amsmath}},\usepackage{{amsfonts}},\usepackage{{amssymb}},\usepackage{{bm}}
+text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
 '''
 
   # write style definitions
@@ -130,11 +130,12 @@ text.latex.preamble  : \usepackage{{amsmath}},\usepackage{{amsfonts}},\usepackag
   dirname = os.path.abspath(os.path.join(matplotlib.get_configdir(), 'stylelib'))
 
   # make directory if it does not yet exist
-  if not os.path.isdir(dirname): os.makedirs(dirname)
+  if not os.path.isdir(dirname):
+    os.makedirs(dirname)
 
   # write all styles
   for fname, style in styles.items():
-    open(os.path.join(dirname, fname),'w').write(style)
+    open(os.path.join(dirname, fname), 'w').write(style)
 
 # ==================================================================================================
 
@@ -160,8 +161,8 @@ Set limits the the floor/ceil values in terms of decades.
     # - get current limits
     MIN,MAX = axis.get_xlim()
     # - floor/ceil to full decades
-    MIN = 10 ** ( np.floor(np.log10(MIN)) )
-    MAX = 10 ** ( np.ceil (np.log10(MAX)) )
+    MIN = 10 ** (np.floor(np.log10(MIN)))
+    MAX = 10 ** (np.ceil (np.log10(MAX)))
     # - apply
     axis.set_xlim([MIN,MAX])
 
@@ -170,8 +171,8 @@ Set limits the the floor/ceil values in terms of decades.
     # - get current limits
     MIN,MAX = axis.get_ylim()
     # - floor/ceil to full decades
-    MIN = 10 ** ( np.floor(np.log10(MIN)) )
-    MAX = 10 ** ( np.ceil (np.log10(MAX)) )
+    MIN = 10 ** (np.floor(np.log10(MIN)))
+    MAX = 10 ** (np.ceil (np.log10(MAX)))
     # - apply
     axis.set_ylim([MIN,MAX])
 
@@ -398,6 +399,31 @@ Run ``matplotlib.pyplot.subplots`` with ``figsize`` set to the correct multiple 
 
 # ==================================================================================================
 
+def savefig(*args, **kwargs):
+  r'''
+Run ``matplotlib.pyplot.savefig`` while making sure that the directory exists.
+  '''
+
+  import os
+
+  dirname = os.path.dirname(args[0])
+
+  if not os.path.isdir(dirname):
+    os.makedirs(dirname)
+
+  return plt.savefig(*args, **kwargs)
+
+# ==================================================================================================
+
+def close(*args, **kwargs):
+  r'''
+Run ``matplotlib.pyplot.close``.
+  '''
+
+  return plt.close(*args, **kwargs)
+
+# ==================================================================================================
+
 def plot(x, y, units='absolute', axis=None, **kwargs):
   r'''
 Plot.
@@ -582,11 +608,11 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
   '''
 
   # get options/defaults
-  endx   = kwargs.pop('endx'  , None      )
-  endy   = kwargs.pop('endy'  , None      )
-  height = kwargs.pop('height', None      )
-  units  = kwargs.pop('units' , 'relative')
-  axis   = kwargs.pop('axis'  , plt.gca() )
+  endx   = kwargs.pop('endx', None)
+  endy   = kwargs.pop('endy', None)
+  height = kwargs.pop('height', None)
+  units  = kwargs.pop('units', 'relative')
+  axis   = kwargs.pop('axis', plt.gca())
 
   # check
   if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
@@ -619,8 +645,8 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
   else               : endx = ( endy / const )**( 1/exp )
 
   # middle
-  x = 10. ** ( np.log10(startx) + rx * ( np.log10(endx) - np.log10(startx) ) )
-  y = 10. ** ( np.log10(starty) + ry * ( np.log10(endy) - np.log10(starty) ) )
+  x = 10. ** (np.log10(startx) + rx * (np.log10(endx) - np.log10(startx)))
+  y = 10. ** (np.log10(starty) + ry * (np.log10(endy) - np.log10(starty)))
 
   # plot
   return axis.text(x, y, text, **kwargs)
@@ -661,11 +687,11 @@ Plot a power-law.
   '''
 
   # get options/defaults
-  endx   = kwargs.pop('endx'  , None      )
-  endy   = kwargs.pop('endy'  , None      )
-  height = kwargs.pop('height', None      )
-  units  = kwargs.pop('units' , 'relative')
-  axis   = kwargs.pop('axis'  , plt.gca() )
+  endx   = kwargs.pop('endx', None)
+  endy   = kwargs.pop('endy', None)
+  height = kwargs.pop('height', None)
+  units  = kwargs.pop('units', 'relative')
+  axis   = kwargs.pop('axis', plt.gca())
 
   # check
   if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
@@ -695,7 +721,7 @@ Plot a power-law.
 
   # get end x/y-coordinate
   if endx is not None: endy = const * endx**exp
-  else               : endx = ( endy / const )**( 1/exp )
+  else               : endx = (endy / const)**(1/exp)
 
   # plot
   return axis.plot([startx, endx], [starty, endy], **kwargs)
@@ -735,9 +761,9 @@ the positions of the ticks.
   if axis is None: axis = plt.gca()
 
   # default plot settings
-  kwargs.setdefault('color'    , 'k' )
+  kwargs.setdefault('color', 'k')
   kwargs.setdefault('linestyle', '--')
-  kwargs.setdefault('linewidth',  1  )
+  kwargs.setdefault('linewidth',  1)
 
   # check
   if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
@@ -793,7 +819,7 @@ the positions of the ticks.
 
     # prepend
     if nneg > 0:
-      startx = np.hstack(( startx[0]+np.cumsum(-Dx * np.ones((nneg)))[::-1], startx ))
+      startx = np.hstack((startx[0]+np.cumsum(-Dx * np.ones((nneg)))[::-1], startx))
 
     # insert extra coordinates
     if insert > 0:
@@ -827,7 +853,7 @@ the positions of the ticks.
   endy   = rel2abs_y(endy  , axis)
 
   # plot
-  lines = axis.plot(np.vstack(( startx, endx )), np.vstack(( starty, endy )), **kwargs)
+  lines = axis.plot(np.vstack((startx, endx)), np.vstack((starty, endy)), **kwargs)
 
   # remove access in labels
   plt.setp(lines[1:], label="_")
@@ -851,20 +877,25 @@ Merge bins with right-neighbour until each bin has a minimum width.
   '''
 
   # escape
-  if min_width is None : return bins
-  if min_width is False: return bins
+  if min_width is None:
+    return bins
+  if min_width is False:
+    return bins
 
   # keep removing where needed
   while True:
 
     idx = np.where(np.diff(bins) < min_width)[0]
 
-    if len(idx) == 0: return bins
+    if len(idx) == 0:
+      return bins
 
     idx = idx[0]
 
-    if idx+1 == len(bins)-1: bins = np.hstack(( bins[:(idx)  ], bins[-1]       ))
-    else                   : bins = np.hstack(( bins[:(idx+1)], bins[(idx+2):] ))
+    if idx+1 == len(bins)-1:
+      bins = np.hstack((bins[:(idx)], bins[-1]))
+    else:
+      bins = np.hstack((bins[:(idx+1)], bins[(idx+2):]))
 
 # ==================================================================================================
 
@@ -885,11 +916,14 @@ Merge bins with right-neighbour until each bin has a minimum number of data-poin
   '''
 
   # escape
-  if min_count is None : return bins
-  if min_count is False: return bins
+  if min_count is None:
+    return bins
+  if min_count is False:
+    return bins
 
   # check
-  if type(min_count) != int: raise IOError('"min_count" must be an integer number')
+  if type(min_count) != int:
+    raise IOError('"min_count" must be an integer number')
 
   # keep removing where needed
   while True:
@@ -898,16 +932,20 @@ Merge bins with right-neighbour until each bin has a minimum number of data-poin
 
     idx = np.where(P < min_count)[0]
 
-    if len(idx) == 0: return bins
+    if len(idx) == 0:
+      return bins
 
     idx = idx[0]
 
-    if idx+1 == len(P): bins = np.hstack(( bins[:(idx)  ], bins[-1]       ))
-    else              : bins = np.hstack(( bins[:(idx+1)], bins[(idx+2):] ))
+    if idx+1 == len(P):
+      bins = np.hstack((bins[:(idx)], bins[-1]))
+    else:
+      bins = np.hstack((bins[:(idx+1)], bins[(idx+2):]))
 
 # ==================================================================================================
 
-def histogram_bin_edges(data, bins=10, mode='equal', min_count=None, integer=False, remove_empty_edges=True, min_width=None):
+def histogram_bin_edges(data, bins=10, mode='equal', min_count=None,
+  integer=False, remove_empty_edges=True, min_width=None):
   r'''
 Determine bin-edges.
 
@@ -1086,9 +1124,9 @@ Plot histogram.
   from matplotlib.patches     import Polygon
 
   # extract local options
-  axis      = kwargs.pop( 'axis'      , plt.gca() )
-  cindex    = kwargs.pop( 'cindex'    , None      )
-  autoscale = kwargs.pop( 'autoscale' , True      )
+  axis      = kwargs.pop('axis'      , plt.gca())
+  cindex    = kwargs.pop('cindex'    , None     )
+  autoscale = kwargs.pop('autoscale' , True     )
 
   # set defaults
   kwargs.setdefault('edgecolor','k')
@@ -1123,8 +1161,8 @@ Plot histogram.
     xlim = [ edges[0], edges[-1] ]
     ylim = [ 0       , np.max(P) ]
     # - set limits +/- 10% extra margin
-    axis.set_xlim([xlim[0]-.1*(xlim[1]-xlim[0]),xlim[1]+.1*(xlim[1]-xlim[0])])
-    axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]),ylim[1]+.1*(ylim[1]-ylim[0])])
+    axis.set_xlim([xlim[0]-.1*(xlim[1]-xlim[0]), xlim[1]+.1*(xlim[1]-xlim[0])])
+    axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]), ylim[1]+.1*(ylim[1]-ylim[0])])
 
   return p
 
@@ -1148,7 +1186,7 @@ Return cumulative density.
     Data points.
   '''
 
-  return ( np.linspace(0.0,1.0,len(data)), np.sort(data) )
+  return (np.linspace(0.0,1.0,len(data)), np.sort(data))
 
 # ==================================================================================================
 
@@ -1231,18 +1269,18 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     raise IOError('Specify both "coor" and "conn"')
 
   # extract local options
-  axis      = kwargs.pop( 'axis'      , plt.gca() )
-  cindex    = kwargs.pop( 'cindex'    , None      )
-  coor      = kwargs.pop( 'coor'      , None      )
-  conn      = kwargs.pop( 'conn'      , None      )
-  autoscale = kwargs.pop( 'autoscale' , True      )
+  axis = kwargs.pop('axis', plt.gca())
+  cindex = kwargs.pop('cindex', None)
+  coor = kwargs.pop('coor', None)
+  conn = kwargs.pop('conn', None)
+  autoscale = kwargs.pop('autoscale', True)
 
   # set defaults
-  kwargs.setdefault('edgecolor','k')
+  kwargs.setdefault('edgecolor', 'k')
 
   # no color-index -> set transparent
   if cindex is None:
-    kwargs.setdefault('facecolor',(0.,0.,0.,0.))
+    kwargs.setdefault('facecolor', (0.0, 0.0, 0.0, 0.0))
 
   # convert mesh -> list of Polygons
   if coor is not None and conn is not None:
@@ -1262,14 +1300,12 @@ Add patches to plot. The color of the patches is indexed according to a specifie
   # rescale the axes manually
   if autoscale:
     # - get limits
-    xlim = [ np.min(coor[:,0]) , np.max(coor[:,0]) ]
-    ylim = [ np.min(coor[:,1]) , np.max(coor[:,1]) ]
+    xlim = [np.min(coor[:,0]), np.max(coor[:,0])]
+    ylim = [np.min(coor[:,1]), np.max(coor[:,1])]
     # - set limits +/- 10% extra margin
-    axis.set_xlim([xlim[0]-.1*(xlim[1]-xlim[0]),xlim[1]+.1*(xlim[1]-xlim[0])])
-    axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]),ylim[1]+.1*(ylim[1]-ylim[0])])
+    axis.set_xlim([xlim[0]-.1*(xlim[1]-xlim[0]), xlim[1]+.1*(xlim[1]-xlim[0])])
+    axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]), ylim[1]+.1*(ylim[1]-ylim[0])])
 
   return p
 
 # ==================================================================================================
-
-

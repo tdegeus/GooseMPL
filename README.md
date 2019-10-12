@@ -1,10 +1,12 @@
+[![Travis](https://travis-ci.com/tdegeus/GooseMPL.svg?branch=master)](https://travis-ci.com/tdegeus/GooseMPL)
+
 [![Documentation Status](https://readthedocs.org/projects/goosempl/badge/?version=latest)](http://goosempl.readthedocs.io/en/latest/?badge=latest)
 
 # GooseMPL
 
 GooseMPL provides a style and several style extensions for matplotlib, some custom functions that extend matplotlib, and several examples to make professional plot using matplotlib. 
 
-Documentation: [goosempl.geus.me](http://goosempl.geus.me)
+Documentation: [goosempl.readthedocs.io](https://goosempl.readthedocs.io)
 
 >   **Disclaimer**
 >   
