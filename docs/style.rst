@@ -66,7 +66,7 @@ Combining different styles is easily accomplished by including a list of styles.
 
 .. code-block:: python
 
-  plt.style.use(['dark_background','presentation'])
+  plt.style.use(['dark_background', 'presentation'])
 
 Temporary styling
 -----------------

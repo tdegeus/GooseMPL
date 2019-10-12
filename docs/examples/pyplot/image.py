@@ -1,8 +1,8 @@
 
-import numpy             as np
+import numpy as np
 import matplotlib.pyplot as plt
 
-plt.style.use(['goose','goose-latex'])
+plt.style.use(['goose', 'goose-latex'])
 
 x,y  = np.meshgrid(np.linspace(0,1,100),np.linspace(0,1,100))
 d    = np.sqrt(x**2+y**2)

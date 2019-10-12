@@ -1,11 +1,11 @@
 
-import numpy             as np
+import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib        as mpl
+import matplotlib as mpl
 
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-plt.style.use(['goose','goose-latex'])
+plt.style.use(['goose', 'goose-latex'])
 
 np.random.seed(1)
 data = np.sort(np.random.rand(8,12))

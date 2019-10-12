@@ -1,11 +1,11 @@
 
 import matplotlib.pyplot as plt
-import GooseMPL          as gplt
-import numpy             as np
+import GooseMPL as gplt
+import numpy as np
 
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-plt.style.use(['goose','goose-latex'])
+plt.style.use(['goose', 'goose-latex'])
 
 coor = np.array([
   [ 0.0, 0.0 ],

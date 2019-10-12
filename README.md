@@ -4,7 +4,7 @@
 
 GooseMPL provides a style and several style extensions for matplotlib, some custom functions that extend matplotlib, and several examples to make professional plot using matplotlib. 
 
-Documentation: [goosempl.geus.me](http://goosempl.geus.me)
+Documentation: [goosempl.readthedocs.io](https://goosempl.readthedocs.io)
 
 >   **Disclaimer**
 >   

@@ -5,10 +5,6 @@
 Examples
 ********
 
-.. contents:: **Outline**
-    :local:
-    :backlinks: top
-
 Plot
 ====
 
@@ -19,7 +15,7 @@ Basic
   :width: 600px
   :align: center
 
-[:download:`source: plot.py <plot.py>`]
+:download:`source: plot.py <plot.py>`
 
 .. literalinclude:: plot.py
    :language: python
@@ -31,7 +27,7 @@ Subplot
   :width: 1000px
   :align: center
 
-[:download:`source: subplot.py <subplot.py>`]
+:download:`source: subplot.py <subplot.py>`
 
 .. literalinclude:: subplot.py
    :language: python
@@ -46,7 +42,7 @@ Set background colour
   :width: 600px
   :align: center
 
-[:download:`source: legend_background.py <legend_background.py>`]
+:download:`source: legend_background.py <legend_background.py>`
 
 .. literalinclude:: legend_background.py
    :language: python
@@ -62,7 +58,7 @@ Move legend outside the plot
 
   `StackOverflow - "How to put the legend out of matplotlib plot" <https://stackoverflow.com/a/4701285/2646505>`_
 
-[:download:`source: legend_external.py <legend_external.py>`]
+:download:`source: legend_external.py <legend_external.py>`
 
 .. literalinclude:: legend_external.py
    :language: python
@@ -70,7 +66,7 @@ Move legend outside the plot
 Line-color from colormap
 ------------------------
 
-[:download:`source: plot-cmap.py <plot-cmap.py>`]
+:download:`source: plot-cmap.py <plot-cmap.py>`
 
 .. note:: References
 
@@ -102,7 +98,7 @@ Ticks
 Aligning tick labels
 ^^^^^^^^^^^^^^^^^^^^
 
-[:download:`source: tick-position.py <tick-position.py>`]
+:download:`source: tick-position.py <tick-position.py>`
 
 This example is just a copy of `this nice answer <https://stackoverflow.com/a/47500319/2646505>`_. See also `the blog <https://gorelik.net/2017/11/23/how-to-make-a-graph-less-readable-rotate-the-text-labels/>`_ of the author.
 
@@ -125,7 +121,7 @@ This example is just a copy of `this nice answer <https://stackoverflow.com/a/47
 Tick formatter
 ^^^^^^^^^^^^^^
 
-[:download:`source: tick-formatter.py <tick-formatter.py>`]
+:download:`source: tick-formatter.py <tick-formatter.py>`
 
 .. note:: References
 
@@ -150,7 +146,7 @@ Logarithmic scale
 Tick rotation
 """""""""""""
 
-[:download:`source: tick-rotation-log.py <tick-rotation-log.py>`]
+:download:`source: tick-rotation-log.py <tick-rotation-log.py>`
 
 .. literalinclude:: tick-rotation-log.py
    :language: python
@@ -162,7 +158,7 @@ Tick rotation
 Specifying ticks
 """"""""""""""""
 
-[:download:`source: tick-log_1.py <tick-log_1.py>`]
+:download:`source: tick-log_1.py <tick-log_1.py>`
 
 .. literalinclude:: tick-log_1.py
    :language: python
@@ -174,7 +170,7 @@ Specifying ticks
 Selecting ticks
 """""""""""""""
 
-[:download:`source: tick-log_2.py <tick-log_2.py>`]
+:download:`source: tick-log_2.py <tick-log_2.py>`
 
 .. note:: References
 
@@ -192,7 +188,7 @@ To have ticks at multiples of 1 and 2 of integer powers of the logarithmic base 
 Image
 =====
 
-[:download:`source: image.py <image.py>`]
+:download:`source: image.py <image.py>`
 
 .. literalinclude:: image.py
    :language: python
@@ -207,7 +203,7 @@ Colorbar
 Basic
 -----
 
-[:download:`source: image_subplots.py <image_subplots.py>`]
+:download:`source: image_subplots.py <image_subplots.py>`
 
 .. literalinclude:: image_subplots.py
    :language: python
@@ -223,7 +219,7 @@ Basic
 Colorbar positioning
 --------------------
 
-[:download:`source: image_subplots_bottom.py <image_subplots_bottom.py>`]
+:download:`source: image_subplots_bottom.py <image_subplots_bottom.py>`
 
 .. literalinclude:: image_subplots_bottom.py
    :language: python
@@ -235,7 +231,7 @@ Colorbar positioning
 Stand-alone colorbar
 --------------------
 
-[:download:`source: colorbar.py <colorbar.py>`]
+:download:`source: colorbar.py <colorbar.py>`
 
 .. note:: References
 
@@ -254,7 +250,7 @@ Colormap
 Combined colormap
 -----------------
 
-[:download:`source: colormap.py <colormap.py>`]
+:download:`source: colormap.py <colormap.py>`
 
 This example shows how to create a custom colormap. To do this one has to create an RGBA-matrix: a matrix with on each row the amount (between 0 and 1) of Red, Green, Blue, and Alpha (transparency; 0 means that the pixel does not have any coverage information and is transparent).
 
@@ -281,7 +277,7 @@ As an example the distance to some point is plotted in two dimensions. Then:
 Sub-colormap vs. interpolated colormap
 --------------------------------------
 
-[:download:`source: colormap-part.py <colormap-part.py>`]
+:download:`source: colormap-part.py <colormap-part.py>`
 
 This example contains a simple example to derive a custom colormap from an existing colormap, see `this answer <https://stackoverflow.com/a/51036472/2646505>`_.
 

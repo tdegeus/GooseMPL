@@ -1,9 +1,9 @@
 
 import matplotlib.pyplot as plt
-import GooseMPL          as gplt
-import numpy             as np
+import GooseMPL as gplt
+import numpy as np
 
-plt.style.use(['goose','goose-latex'])
+plt.style.use(['goose', 'goose-latex'])
 
 # ------------------------------------------------------------------------------
 

@@ -1,8 +1,8 @@
-import numpy             as np
-import matplotlib        as mpl
+import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-plt.style.use(['goose','goose-latex'])
+plt.style.use(['goose', 'goose-latex'])
 
 x      = np.linspace(0, 5, 100)
 N      = 21

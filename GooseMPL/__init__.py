@@ -110,7 +110,7 @@ font.serif           : {serif:s}
 font.weight          : bold
 font.size            : 18
 text.usetex          : true
-text.latex.preamble  : \usepackage{{amsmath}},\usepackage{{amsfonts}},\usepackage{{amssymb}},\usepackage{{bm}}
+text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
 '''.format(serif=find_latex_font_serif())
 
   else:
@@ -120,7 +120,7 @@ font.family          : serif
 font.weight          : bold
 font.size            : 18
 text.usetex          : true
-text.latex.preamble  : \usepackage{{amsmath}},\usepackage{{amsfonts}},\usepackage{{amssymb}},\usepackage{{bm}}
+text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
 '''
 
   # write style definitions
@@ -160,8 +160,8 @@ Set limits the the floor/ceil values in terms of decades.
     # - get current limits
     MIN,MAX = axis.get_xlim()
     # - floor/ceil to full decades
-    MIN = 10 ** ( np.floor(np.log10(MIN)) )
-    MAX = 10 ** ( np.ceil (np.log10(MAX)) )
+    MIN = 10 ** (np.floor(np.log10(MIN)))
+    MAX = 10 ** (np.ceil (np.log10(MAX)))
     # - apply
     axis.set_xlim([MIN,MAX])
 
@@ -170,8 +170,8 @@ Set limits the the floor/ceil values in terms of decades.
     # - get current limits
     MIN,MAX = axis.get_ylim()
     # - floor/ceil to full decades
-    MIN = 10 ** ( np.floor(np.log10(MIN)) )
-    MAX = 10 ** ( np.ceil (np.log10(MAX)) )
+    MIN = 10 ** (np.floor(np.log10(MIN)))
+    MAX = 10 ** (np.ceil (np.log10(MAX)))
     # - apply
     axis.set_ylim([MIN,MAX])
 
@@ -395,6 +395,31 @@ Run ``matplotlib.pyplot.subplots`` with ``figsize`` set to the correct multiple 
   height = nrows * height
 
   return plt.subplots(nrows=nrows, ncols=ncols, figsize=(width,height), **kwargs)
+
+# ==================================================================================================
+
+def savefig(*args, **kwargs):
+  r'''
+Run ``matplotlib.pyplot.savefig`` while making sure that the directory exists.
+  '''
+
+  import os
+
+  dirname = os.path.dirname(args[0])
+
+  if not os.path.isdir(dirname):
+    os.makedirs(dirname)
+
+  return plt.savefig(*args, **kwargs)
+
+# ==================================================================================================
+
+def close(*args, **kwargs):
+  r'''
+Run ``matplotlib.pyplot.close``.
+  '''
+
+  return plt.close(*args, **kwargs)
 
 # ==================================================================================================
 
@@ -1086,9 +1111,9 @@ Plot histogram.
   from matplotlib.patches     import Polygon
 
   # extract local options
-  axis      = kwargs.pop( 'axis'      , plt.gca() )
-  cindex    = kwargs.pop( 'cindex'    , None      )
-  autoscale = kwargs.pop( 'autoscale' , True      )
+  axis      = kwargs.pop('axis'      , plt.gca())
+  cindex    = kwargs.pop('cindex'    , None     )
+  autoscale = kwargs.pop('autoscale' , True     )
 
   # set defaults
   kwargs.setdefault('edgecolor','k')
@@ -1123,8 +1148,8 @@ Plot histogram.
     xlim = [ edges[0], edges[-1] ]
     ylim = [ 0       , np.max(P) ]
     # - set limits +/- 10% extra margin
-    axis.set_xlim([xlim[0]-.1*(xlim[1]-xlim[0]),xlim[1]+.1*(xlim[1]-xlim[0])])
-    axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]),ylim[1]+.1*(ylim[1]-ylim[0])])
+    axis.set_xlim([xlim[0]-.1*(xlim[1]-xlim[0]), xlim[1]+.1*(xlim[1]-xlim[0])])
+    axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]), ylim[1]+.1*(ylim[1]-ylim[0])])
 
   return p
 
@@ -1231,11 +1256,11 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     raise IOError('Specify both "coor" and "conn"')
 
   # extract local options
-  axis      = kwargs.pop( 'axis'      , plt.gca() )
-  cindex    = kwargs.pop( 'cindex'    , None      )
-  coor      = kwargs.pop( 'coor'      , None      )
-  conn      = kwargs.pop( 'conn'      , None      )
-  autoscale = kwargs.pop( 'autoscale' , True      )
+  axis      = kwargs.pop('axis'     , plt.gca())
+  cindex    = kwargs.pop('cindex'   , None     )
+  coor      = kwargs.pop('coor'     , None     )
+  conn      = kwargs.pop('conn'     , None     )
+  autoscale = kwargs.pop('autoscale', True     )
 
   # set defaults
   kwargs.setdefault('edgecolor','k')
@@ -1262,8 +1287,8 @@ Add patches to plot. The color of the patches is indexed according to a specifie
   # rescale the axes manually
   if autoscale:
     # - get limits
-    xlim = [ np.min(coor[:,0]) , np.max(coor[:,0]) ]
-    ylim = [ np.min(coor[:,1]) , np.max(coor[:,1]) ]
+    xlim = [np.min(coor[:,0]), np.max(coor[:,0])]
+    ylim = [np.min(coor[:,1]), np.max(coor[:,1])]
     # - set limits +/- 10% extra margin
     axis.set_xlim([xlim[0]-.1*(xlim[1]-xlim[0]),xlim[1]+.1*(xlim[1]-xlim[0])])
     axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]),ylim[1]+.1*(ylim[1]-ylim[0])])

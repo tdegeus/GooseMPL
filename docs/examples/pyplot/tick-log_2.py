@@ -13,12 +13,9 @@ ax.set_ylim([2e+1, 2e+3])
 
 ax.plot([0.02, 0.1, 0.2], [20, 1000, 2000])
 
-ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-ax.get_xaxis().set_minor_formatter(matplotlib.ticker.ScalarFormatter())
+ax.xaxis.set_major_locator(matplotlib.ticker.LogLocator(subs=(1,2,)))
+ax.xaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
 
-ax.set_xticks([])
-ax.set_xticks([], minor=True)
-ax.set_xticks([0.02, 0.1, 0.2])
-
-plt.savefig('tick-log.svg')
+plt.savefig('tick-log_2.svg')
 plt.show()
