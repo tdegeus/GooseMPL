@@ -16,9 +16,9 @@ This module provides some extensions to matplotlib.
 # ==================================================================================================
 
 import matplotlib.pyplot as plt
-import matplotlib        as mpl
-import numpy             as np
-import os,re,sys
+import matplotlib as mpl
+import numpy as np
+import os, re, sys
 
 # ==================================================================================================
 
@@ -45,7 +45,7 @@ Find an available font to mimic LaTeX, and return its name.
 
   for match in matches:
     for font in fonts:
-      if re.match(match,font):
+      if re.match(match, font):
         return name(font)
 
   return None
@@ -607,11 +607,11 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
   '''
 
   # get options/defaults
-  endx   = kwargs.pop('endx'  , None      )
-  endy   = kwargs.pop('endy'  , None      )
-  height = kwargs.pop('height', None      )
-  units  = kwargs.pop('units' , 'relative')
-  axis   = kwargs.pop('axis'  , plt.gca() )
+  endx   = kwargs.pop('endx', None)
+  endy   = kwargs.pop('endy', None)
+  height = kwargs.pop('height', None)
+  units  = kwargs.pop('units', 'relative')
+  axis   = kwargs.pop('axis', plt.gca())
 
   # check
   if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
@@ -644,8 +644,8 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
   else               : endx = ( endy / const )**( 1/exp )
 
   # middle
-  x = 10. ** ( np.log10(startx) + rx * ( np.log10(endx) - np.log10(startx) ) )
-  y = 10. ** ( np.log10(starty) + ry * ( np.log10(endy) - np.log10(starty) ) )
+  x = 10. ** (np.log10(startx) + rx * (np.log10(endx) - np.log10(startx)))
+  y = 10. ** (np.log10(starty) + ry * (np.log10(endy) - np.log10(starty)))
 
   # plot
   return axis.text(x, y, text, **kwargs)
@@ -686,11 +686,11 @@ Plot a power-law.
   '''
 
   # get options/defaults
-  endx   = kwargs.pop('endx'  , None      )
-  endy   = kwargs.pop('endy'  , None      )
-  height = kwargs.pop('height', None      )
-  units  = kwargs.pop('units' , 'relative')
-  axis   = kwargs.pop('axis'  , plt.gca() )
+  endx   = kwargs.pop('endx', None)
+  endy   = kwargs.pop('endy', None)
+  height = kwargs.pop('height', None)
+  units  = kwargs.pop('units', 'relative')
+  axis   = kwargs.pop('axis', plt.gca())
 
   # check
   if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
@@ -720,7 +720,7 @@ Plot a power-law.
 
   # get end x/y-coordinate
   if endx is not None: endy = const * endx**exp
-  else               : endx = ( endy / const )**( 1/exp )
+  else               : endx = (endy / const)**(1/exp)
 
   # plot
   return axis.plot([startx, endx], [starty, endy], **kwargs)
@@ -760,9 +760,9 @@ the positions of the ticks.
   if axis is None: axis = plt.gca()
 
   # default plot settings
-  kwargs.setdefault('color'    , 'k' )
+  kwargs.setdefault('color', 'k')
   kwargs.setdefault('linestyle', '--')
-  kwargs.setdefault('linewidth',  1  )
+  kwargs.setdefault('linewidth',  1)
 
   # check
   if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
@@ -818,7 +818,7 @@ the positions of the ticks.
 
     # prepend
     if nneg > 0:
-      startx = np.hstack(( startx[0]+np.cumsum(-Dx * np.ones((nneg)))[::-1], startx ))
+      startx = np.hstack((startx[0]+np.cumsum(-Dx * np.ones((nneg)))[::-1], startx))
 
     # insert extra coordinates
     if insert > 0:
@@ -852,7 +852,7 @@ the positions of the ticks.
   endy   = rel2abs_y(endy  , axis)
 
   # plot
-  lines = axis.plot(np.vstack(( startx, endx )), np.vstack(( starty, endy )), **kwargs)
+  lines = axis.plot(np.vstack((startx, endx)), np.vstack((starty, endy)), **kwargs)
 
   # remove access in labels
   plt.setp(lines[1:], label="_")
