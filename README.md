@@ -1,3 +1,5 @@
+[![Travis](https://travis-ci.com/tdegeus/GooseMPL.svg?branch=master)](https://travis-ci.com/tdegeus/GooseMPL)
+
 [![Documentation Status](https://readthedocs.org/projects/goosempl/badge/?version=latest)](http://goosempl.readthedocs.io/en/latest/?badge=latest)
 
 # GooseMPL
