@@ -9,6 +9,7 @@ install:
   - pip install numpy matplotlib
   - pip install .
   - export MPLBACKEND=Agg
+  - python -c "import GooseMPL; GooseMPL.copy_style()"
 # command to run tests
 script:
   - python docs/examples/goosempl/histogram.py
