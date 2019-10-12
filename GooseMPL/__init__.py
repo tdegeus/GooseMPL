@@ -149,6 +149,8 @@ font.size            : 18
 text.usetex          : false
 '''
 
+  print(styles)
+
   # write style definitions
   # -----------------------
 
