@@ -52,6 +52,22 @@ Find an available font to mimic LaTeX, and return its name.
 
 # --------------------------------------------------------------------------------------------------
 
+def has_latex():
+  r'''
+Check if the system has LaTeX available.
+  '''
+
+  try:
+    fig, ax = plt.subplots()
+    ax.plot([0,1], [0,1])
+    ax.set_xlabel(r'$x$', usetex=True)
+    plt.close()
+    return True
+  except:
+    return False
+
+# --------------------------------------------------------------------------------------------------
+
 def copy_style():
   r'''
 Write all goose-styles to the relevant matplotlib configuration directory.
@@ -121,6 +137,16 @@ font.weight          : bold
 font.size            : 18
 text.usetex          : true
 text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
+'''
+
+  # fall-back if latex was not found
+  if not has_latex():
+
+    styles['goose-latex.mplstyle'] = r'''
+font.family          : serif
+font.weight          : bold
+font.size            : 18
+text.usetex          : false
 '''
 
   # write style definitions
