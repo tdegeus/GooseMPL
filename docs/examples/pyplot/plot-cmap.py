@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 
 plt.style.use(['goose', 'goose-latex'])
 
-x      = np.linspace(0, 5, 100)
-N      = 21
-cmap   = plt.get_cmap('jet',N)
+x = np.linspace(0, 5, 100)
+N = 21
+cmap = plt.get_cmap('jet',N)
 
-fig,ax = plt.subplots()
+fig, ax = plt.subplots()
 
-for i,n in enumerate(np.linspace(0,2,N)):
+for i, n in enumerate(np.linspace(0, 2, N)):
   ax.plot(x, np.sin(x)*x**n, color=cmap(i))
 
 ax.set_xlabel(r'$x$')

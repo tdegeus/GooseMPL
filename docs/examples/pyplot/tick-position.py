@@ -1,16 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-n       = 5
-x       = np.arange(n)
-y       = np.sin(np.linspace(-3,3,n))
+n = 5
+x = np.arange(n)
+y = np.sin(np.linspace(-3,3,n))
 xlabels = ['Long ticklabel %i' % i for i in range(n)]
 
 plt.style.use(['goose', 'goose-latex'])
 
 fig, ax = plt.subplots()
 
-ax.plot(x,y, 'o-')
+ax.plot(x, y, 'o-')
 
 ax.set_xticks(x)
 

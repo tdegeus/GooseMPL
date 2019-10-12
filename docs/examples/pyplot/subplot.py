@@ -22,31 +22,31 @@ ax1.plot(x,np.sin(x-np.pi/4.),label=r'$\sin \big( x - \tfrac{\pi}{4} \big)$')
 
 ax1.set_title('First subplot')
 
-ax1.xaxis.set_ticklabels(['0',r'$\pi$',r'$2\pi$'])
-ax1.xaxis.set_ticks([0,np.pi,2*np.pi])
-ax1.yaxis.set_ticks([-1,0,1])
+ax1.xaxis.set_ticklabels(['0', r'$\pi$', r'$2\pi$'])
+ax1.xaxis.set_ticks([0, np.pi, 2*np.pi])
+ax1.yaxis.set_ticks([-1, 0, 1])
 
 ax1.legend(loc='upper right')
 
-ax1.set_xlim([0,2*np.pi])
+ax1.set_xlim([0, 2*np.pi])
 
 ax1.set_xlabel(r'$x$')
 ax1.set_ylabel(r'$y$')
 
 # --- second subplot ---
 
-ax2.plot(x,np.cos(x)         ,linestyle='--',label=r'$\cos \big( x \big)$')
-ax2.plot(x,np.cos(x-np.pi/4.),linestyle='--',label=r'$\cos \big( x - \tfrac{\pi}{4} \big)$')
+ax2.plot(x, np.cos(x), linestyle='--', label=r'$\cos \big( x \big)$')
+ax2.plot(x, np.cos(x-np.pi/4.), linestyle='--', label=r'$\cos \big( x - \tfrac{\pi}{4} \big)$')
 
 ax2.set_title('Second subplot')
 
-ax2.xaxis.set_ticklabels(['0',r'$\pi$',r'$2\pi$'])
-ax2.xaxis.set_ticks([0,np.pi,2*np.pi])
-ax2.yaxis.set_ticks([-1,0,1])
+ax2.xaxis.set_ticklabels(['0', r'$\pi$', r'$2\pi$'])
+ax2.xaxis.set_ticks([0, np.pi, 2*np.pi])
+ax2.yaxis.set_ticks([-1, 0, 1])
 
 ax2.legend(loc='upper center')
 
-ax2.set_xlim([0,2*np.pi])
+ax2.set_xlim([0, 2*np.pi])
 
 ax2.set_xlabel(r'$x$')
 ax2.set_ylabel(r'$y$')
