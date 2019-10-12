@@ -1,0 +1,32 @@
+language: python
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+# command to install dependencies
+install:
+  - pip install numpy matplotlib
+  - pip install .
+# command to run tests
+script:
+  - python goosempl/histogram.py
+  - python goosempl/histogram_powerlaw.py
+  - python goosempl/patch.py
+  - python pyplot/colorbar.py
+  - python pyplot/colormap-part.py
+  - python pyplot/colormap.py
+  - python pyplot/image.py
+  - python pyplot/image_subplots.py
+  - python pyplot/image_subplots_bottom.py
+  - python pyplot/legend_background.py
+  - python pyplot/legend_external.py
+  - python pyplot/plot-cmap.py
+  - python pyplot/plot.py
+  - python pyplot/subplot.py
+  - python pyplot/tick-formatter.py
+  - python pyplot/tick-log.py
+  - python pyplot/tick-log_1.py
+  - python pyplot/tick-log_2.py
+  - python pyplot/tick-position.py
+  - python pyplot/tick-rotation-log.py
