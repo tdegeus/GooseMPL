@@ -48,6 +48,7 @@ Contents
    goosempl.rst
    examples/pyplot/readme.rst
    examples/goosempl/readme.rst
+   tips.rst
    develop.rst
 
 Indices and tables
