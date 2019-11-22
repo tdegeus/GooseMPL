@@ -5,7 +5,7 @@ GooseMPL
 
 GooseMPL provides a style and several style extensions for matplotlib, some custom functions that extend matplotlib, and several examples to make professional plots using matplotlib.
 
-To obtain GooseMPL one can do either of the following:
+To obtain GooseMPL one can do one of the following:
 
 1.  Using Conda:
 
