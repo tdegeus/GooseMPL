@@ -9,28 +9,27 @@ To obtain GooseMPL one can do either of the following:
 
 1.  Using Conda:
 
-    .. code-block:: bash
+    .. code-block:: none
 
       conda install -c conda-forge goosempl
 
 2.  Using PyPi:
 
-    .. code-block:: bash
+    .. code-block:: none
 
       pip install GooseMPL
 
 3.  Manual installation. After `downloading <https://github.com/tdegeus/GooseMPL/zipball/master>`_ run
 
-    .. code-block:: bash
+    .. code-block:: none
 
       python setup.py install
 
 Then install the matplotlib-style files using:
 
-.. code-block:: python
+.. code-block:: none
 
-  >>> import GooseMPL
-  >>> GooseMPL.copy_style()
+  python -c "import GooseMPL; GooseMPL.copy_style()"
 
 You'll only have to do this once after installing/updating.
 
