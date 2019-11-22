@@ -1,87 +1,37 @@
-language: cpp
-dist: trusty
-env:
-matrix:
-  fast_finish: true
-  include:
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-      env: COMPILER=gcc GCC=7
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-6.0
-          packages:
-            - clang-6.0
-      env: COMPILER=clang CLANG=6.0
-    - os: osx
-      osx_image: xcode8
-      compiler: clang
-env:
-  global:
-    - MINCONDA_VERSION="latest"
-    - MINCONDA_LINUX="Linux-x86_64"
-    - MINCONDA_OSX="MacOSX-x86_64"
+language: python
+python:
+  - "3.6"
+  - "3.7"
+# install LaTeX
 before_install:
-    - |
-      # Configure build variables
-      if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-        if [[ "$COMPILER" == "gcc" ]]; then
-          export CXX=g++-$GCC CC=gcc-$GCC;
-        fi
-        if [[ "$COMPILER" == "clang" ]]; then
-          export CXX=clang++-$CLANG CC=clang-$CLANG;
-        fi
-      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-        export CXX=clang++ CC=clang;
-      fi
+  - sudo apt-get -qq update
+  - sudo apt-get install -y texlive-base texlive-latex-base texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra
+  - sudo apt-get install dvipng
+# command to install dependencies
 install:
-    # Set environment using Conda
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-        MINCONDA_OS=$MINCONDA_LINUX;
-      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-        MINCONDA_OS=$MINCONDA_OSX;
-      fi
-    - wget "http://repo.continuum.io/miniconda/Miniconda3-$MINCONDA_VERSION-$MINCONDA_OS.sh" -O miniconda.sh;
-    - bash miniconda.sh -b -p $HOME/miniconda
-    - export PATH="$HOME/miniconda/bin:$PATH"
-    - hash -r
-    - conda config --set always_yes yes --set changeps1 no
-    - conda update -q conda
-    - conda install python -c conda-forge
-    - conda install numpy -c conda-forge
-    - conda install matplotlib -c conda-forge
-    - conda install texlive-core -c conda-forge
-    # Install library
-    - python setup.py install
-    - python -c "import GooseMPL; GooseMPL.copy_style()"
+  - pip install numpy matplotlib
+  - pip install .
+  - export MPLBACKEND=Agg
+  - python -c "import GooseMPL; GooseMPL.copy_style()"
+# command to run tests
 script:
-    # Run examples
-    - python docs/examples/goosempl/histogram.py
-    - python docs/examples/goosempl/histogram_powerlaw.py
-    - python docs/examples/goosempl/patch.py
-    - python docs/examples/pyplot/colorbar.py
-    - python docs/examples/pyplot/colormap-part.py
-    - python docs/examples/pyplot/colormap.py
-    - python docs/examples/pyplot/image.py
-    - python docs/examples/pyplot/image_subplots.py
-    - python docs/examples/pyplot/image_subplots_bottom.py
-    - python docs/examples/pyplot/legend_background.py
-    - python docs/examples/pyplot/legend_external.py
-    - python docs/examples/pyplot/plot-cmap.py
-    - python docs/examples/pyplot/plot.py
-    - python docs/examples/pyplot/subplot.py
-    - python docs/examples/pyplot/tick-formatter.py
-    - python docs/examples/pyplot/tick-log.py
-    - python docs/examples/pyplot/tick-log_1.py
-    - python docs/examples/pyplot/tick-log_2.py
-    - python docs/examples/pyplot/tick-position.py
-    - python docs/examples/pyplot/tick-rotation-log.py
-
+  - python docs/examples/goosempl/histogram.py
+  - python docs/examples/goosempl/histogram_powerlaw.py
+  - python docs/examples/goosempl/patch.py
+  - python docs/examples/pyplot/colorbar.py
+  - python docs/examples/pyplot/colormap-part.py
+  - python docs/examples/pyplot/colormap.py
+  - python docs/examples/pyplot/image.py
+  - python docs/examples/pyplot/image_subplots.py
+  - python docs/examples/pyplot/image_subplots_bottom.py
+  - python docs/examples/pyplot/legend_background.py
+  - python docs/examples/pyplot/legend_external.py
+  - python docs/examples/pyplot/plot-cmap.py
+  - python docs/examples/pyplot/plot.py
+  - python docs/examples/pyplot/subplot.py
+  - python docs/examples/pyplot/tick-formatter.py
+  - python docs/examples/pyplot/tick-log.py
+  - python docs/examples/pyplot/tick-log_1.py
+  - python docs/examples/pyplot/tick-log_2.py
+  - python docs/examples/pyplot/tick-position.py
+  - python docs/examples/pyplot/tick-rotation-log.py
