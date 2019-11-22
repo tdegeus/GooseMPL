@@ -25,4 +25,4 @@ ax.set_xlabel(r'$x$')
 ax.set_ylabel(r'$y$')
 
 plt.savefig('image.svg')
-plt.show()
+plt.close()

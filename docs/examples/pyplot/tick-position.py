@@ -20,5 +20,5 @@ for i, label in enumerate(labels):
   label.set_y(label.get_position()[1] - (i % 2) * 0.075)
 
 plt.savefig('tick-position.svg')
-plt.show()
+plt.close()
 

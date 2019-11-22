@@ -51,4 +51,4 @@ cbar = plt.colorbar(im, cax=cax, orientation='horizontal')
 
 # save/show the image
 plt.savefig('colormap.svg')
-plt.show()
+plt.close()

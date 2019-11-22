@@ -5,30 +5,33 @@ GooseMPL
 
 GooseMPL provides a style and several style extensions for matplotlib, some custom functions that extend matplotlib, and several examples to make professional plots using matplotlib.
 
-To obtain GooseMPL one can do either of the following.
+To obtain GooseMPL one can do one of the following:
 
-1.  Using PyPi:
+1.  Using Conda:
 
-    .. code-block:: bash
+    .. code-block:: none
 
-      $ pip install GooseMPL
+      conda install -c conda-forge goosempl
 
-    Then install the matplotlib-style files using:
+2.  Using PyPi:
 
-    .. code-block:: python
+    .. code-block:: none
 
-      >>> import GooseMPL
-      >>> GooseMPL.copy_style()
+      pip install GooseMPL
 
-    You'll only have to do this once after installing/updating.
+3.  Manual installation. After `downloading <https://github.com/tdegeus/GooseMPL/zipball/master>`_ run
 
-2.  Manual installation. After `downloading <https://github.com/tdegeus/GooseMPL/zipball/master>`_ run
+    .. code-block:: none
 
-    .. code-block:: bash
+      python setup.py install
 
-      $ python setup.py install
+Then install the matplotlib-style files using:
 
-    The matplotlib-style files are automatically copied during this process.
+.. code-block:: none
+
+  python -c "import GooseMPL; GooseMPL.copy_style()"
+
+You'll only have to do this once after installing/updating.
 
 .. note::
 
@@ -48,6 +51,7 @@ Contents
    goosempl.rst
    examples/pyplot/readme.rst
    examples/goosempl/readme.rst
+   tips.rst
    develop.rst
 
 Indices and tables

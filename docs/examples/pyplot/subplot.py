@@ -54,5 +54,5 @@ ax2.set_ylabel(r'$y$')
 # --- save/show ---
 
 plt.savefig('subplot.svg')
-plt.show()
+plt.close()
 

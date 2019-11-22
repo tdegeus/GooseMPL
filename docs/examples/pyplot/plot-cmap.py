@@ -26,4 +26,4 @@ cbar = plt.colorbar(sm, ticks=ticks, boundaries=boundaries)
 cbar.ax.set_yticklabels(['{0:.1f}'.format(i) for i in labels])
 
 plt.savefig('plot-cmap.svg')
-plt.show()
+plt.close()

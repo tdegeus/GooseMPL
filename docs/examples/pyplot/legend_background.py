@@ -12,4 +12,4 @@ for i in range(10):
 ax.legend(loc='center right', facecolor='white', framealpha=1)
 
 plt.savefig('legend_background.svg')
-plt.show()
+plt.close()

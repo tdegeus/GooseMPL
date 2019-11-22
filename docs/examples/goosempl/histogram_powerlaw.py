@@ -69,4 +69,4 @@ for ax in axes:
   gplt.grid_powerlaw(exp=-1.3, axis=ax)
 
 plt.savefig('histogram_powerlaw.svg')
-plt.show()
+plt.close()

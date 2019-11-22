@@ -14,4 +14,4 @@ cbar = mpl.colorbar.ColorbarBase(ax,
 cbar.set_label('Some Units')
 
 plt.savefig('colorbar.svg')
-plt.show()
+plt.close()

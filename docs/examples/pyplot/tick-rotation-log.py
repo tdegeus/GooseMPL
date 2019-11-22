@@ -20,4 +20,4 @@ plt.setp(ax.xaxis.get_majorticklabels(), rotation=45)
 plt.setp(ax.xaxis.get_minorticklabels(), rotation=45)
 
 plt.savefig('tick-rotation-log.svg')
-plt.show()
+plt.close()

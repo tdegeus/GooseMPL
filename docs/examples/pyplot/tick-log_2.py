@@ -18,4 +18,4 @@ ax.xaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
 ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
 
 plt.savefig('tick-log_2.svg')
-plt.show()
+plt.close()

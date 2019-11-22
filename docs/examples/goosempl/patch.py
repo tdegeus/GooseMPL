@@ -37,4 +37,4 @@ cax  = div.append_axes("right", size="5%", pad=0.1)
 cbar = plt.colorbar(im, cax=cax)
 
 plt.savefig('patch.svg')
-plt.show()
+plt.close()

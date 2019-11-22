@@ -66,4 +66,4 @@ cbar.set_ticks([0, 1])
 # --- save/show ---
 
 plt.savefig('image_subplots.svg')
-plt.show()
+plt.close()

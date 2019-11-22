@@ -67,4 +67,4 @@ for ax in axes.ravel():
   ax.set_ylabel(r'$N(x)$')
 
 plt.savefig('histogram.svg')
-plt.show()
+plt.close()
