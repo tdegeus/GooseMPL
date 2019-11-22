@@ -1,8 +1,5 @@
 
 from setuptools import setup
-from setuptools.command.install import install
-
-# --------------------------------------------------------------------------------------------------
 
 setup(
   name             = 'GooseMPL',
@@ -17,5 +14,3 @@ setup(
   install_requires = ['matplotlib>=2.0.0', 'numpy>=1.0.0'],
   packages         = ['GooseMPL'],
 )
-
-# --------------------------------------------------------------------------------------------------
