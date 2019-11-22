@@ -14,5 +14,5 @@ ax.plot(x, y)
 ax.yaxis.set_major_formatter(ticker.StrMethodFormatter(r'${x:.1e}$'))
 
 plt.savefig('tick-formatter.svg')
-plt.show()
+plt.close()
 

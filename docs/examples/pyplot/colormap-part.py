@@ -31,5 +31,5 @@ cax  = div.append_axes('right', size='5%', pad=0.1)
 cbar = plt.colorbar(c, cax=cax)
 
 plt.savefig('colormap-part.svg')
-plt.show()
+plt.close()
 

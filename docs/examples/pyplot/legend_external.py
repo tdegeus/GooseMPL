@@ -18,4 +18,4 @@ frame.set_facecolor('white')
 frame.set_edgecolor('black')
 
 plt.savefig('legend_external.svg')
-plt.show()
+plt.close()

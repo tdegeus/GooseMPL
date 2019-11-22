@@ -25,5 +25,5 @@ ax.set_xlabel(r'$x$')
 ax.set_ylabel(r'$y$')
 
 plt.savefig('plot.svg')
-plt.show()
+plt.close()
 
