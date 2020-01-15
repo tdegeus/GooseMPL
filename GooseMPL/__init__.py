@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 # ==================================================================================================
 
@@ -633,8 +633,10 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
     **width, height, endx, endy** (``float``)
         Definition of the end coordinate (only on of these options is needed).
 
-    **rx, ry** (``float``)
-        Shift in x- and y-direction w.r.t. the default coordinates.
+    **rx, ry** ([``0.5``] | ``float``)
+        x- and y-position of the label relative the width and the height of the power-law
+        annotation line (as can be plotted by ``goosempl.plot_powerlaw``).
+        E.g. ``rx = 0.5, ry = 0.5`` corresponds to the middle of the line.
 
     **units** ([``'relative'``] | ``'absolute'``)
         The type of units in which the coordinates are specified. Relative coordinates correspond
