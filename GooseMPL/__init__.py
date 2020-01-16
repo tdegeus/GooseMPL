@@ -634,7 +634,7 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
         Definition of the end coordinate (only on of these options is needed).
 
     **rx, ry** ([``0.5``] | ``float``)
-        x- and y-position of the label relative the width and the height of the power-law
+        x- and y-position of the label relative to the width and the height of the power-law
         annotation line (as can be plotted by ``goosempl.plot_powerlaw``).
         E.g. ``rx = 0.5, ry = 0.5`` corresponds to the middle of the line.
 
