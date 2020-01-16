@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 
-__version__ = '1.0.1'
+__version__ = '1.0.0'
 
 # ==================================================================================================
 
