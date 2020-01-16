@@ -432,8 +432,9 @@ Run ``matplotlib.pyplot.savefig`` while making sure that the directory exists.
 
     dirname = os.path.dirname(args[0])
 
-    if not os.path.isdir(dirname):
-        os.makedirs(dirname)
+    if len(dirname) > 0:
+        if not os.path.isdir(dirname):
+            os.makedirs(dirname)
 
     return plt.savefig(*args, **kwargs)
 
