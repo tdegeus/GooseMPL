@@ -13,15 +13,12 @@ This module provides some extensions to matplotlib.
     | http://www.geus.me
 '''
 
-# ==================================================================================================
-
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 
 __version__ = '1.0.0'
 
-# ==================================================================================================
 
 def find_latex_font_serif():
     r'''
@@ -52,7 +49,6 @@ Find an available font to mimic LaTeX, and return its name.
 
     return None
 
-# --------------------------------------------------------------------------------------------------
 
 def copy_style():
     r'''
@@ -139,7 +135,6 @@ text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
     for fname, style in styles.items():
         open(os.path.join(dirname, fname), 'w').write(style)
 
-# ==================================================================================================
 
 def set_decade_lims(axis=None,direction=None):
     r'''
@@ -178,7 +173,6 @@ Set limits the the floor/ceil values in terms of decades.
         # - apply
         axis.set_ylim([MIN,MAX])
 
-# ==================================================================================================
 
 def scale_lim(lim,factor=1.05):
     r'''
@@ -206,7 +200,6 @@ Scale limits to be 5% wider, to have a nice plot.
 
     return lim
 
-# ==================================================================================================
 
 def abs2rel_x(x, axis=None):
     r'''
@@ -251,7 +244,6 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
         except:
             return (x - xmin) / (xmax - xmin)
 
-# ==================================================================================================
 
 def abs2rel_y(y, axis=None):
     r'''
@@ -296,7 +288,6 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
         except:
             return (y - ymin) / (ymax - ymin)
 
-# ==================================================================================================
 
 def rel2abs_x(x, axis=None):
     r'''
@@ -341,7 +332,6 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
         except:
             return xmin + x * (xmax - xmin)
 
-# ==================================================================================================
 
 def rel2abs_y(y, axis=None):
     r'''
@@ -386,7 +376,6 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
         except:
             return ymin + y * (ymax - ymin)
 
-# ==================================================================================================
 
 def subplots(scale_x=None, scale_y=None, scale=None, **kwargs):
     r'''
@@ -421,7 +410,6 @@ Run ``matplotlib.pyplot.subplots`` with ``figsize`` set to the correct multiple 
 
     return plt.subplots(nrows=nrows, ncols=ncols, figsize=(width, height), **kwargs)
 
-# ==================================================================================================
 
 def savefig(*args, **kwargs):
     r'''
@@ -438,7 +426,6 @@ Run ``matplotlib.pyplot.savefig`` while making sure that the directory exists.
 
     return plt.savefig(*args, **kwargs)
 
-# ==================================================================================================
 
 def close(*args, **kwargs):
     r'''
@@ -447,7 +434,6 @@ Run ``matplotlib.pyplot.close``.
 
     return plt.close(*args, **kwargs)
 
-# ==================================================================================================
 
 def plot(x, y, units='absolute', axis=None, **kwargs):
     r'''
@@ -485,7 +471,6 @@ Plot.
     # plot
     return axis.plot(x, y, **kwargs)
 
-# ==================================================================================================
 
 def text(x, y, text, units='absolute', axis=None, **kwargs):
     r'''
@@ -526,7 +511,6 @@ Plot a text.
     # plot
     return axis.text(x, y, text, **kwargs)
 
-# ==================================================================================================
 
 def diagonal_powerlaw(
     exp,
@@ -615,7 +599,6 @@ Set the limits such that a power-law with a certain exponent lies on the diagona
       else:
           return plot_powerlaw(exp, 0., 1., 1., **kwargs)
 
-# ==================================================================================================
 
 def annotate_powerlaw(text, exp, startx, starty, width=None, rx=0.5, ry=0.5, **kwargs):
     r'''
@@ -702,7 +685,6 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
     # plot
     return axis.text(x, y, text, **kwargs)
 
-# ==================================================================================================
 
 def plot_powerlaw(exp, startx, starty, width=None, **kwargs):
     r'''
@@ -779,7 +761,6 @@ Plot a power-law.
 
     return axis.plot([startx, endx], [starty, endy], **kwargs)
 
-# ==================================================================================================
 
 def grid_powerlaw(exp, insert=0, skip=0, end=-1, step=0, axis=None, **kwargs):
     r'''
@@ -912,7 +893,6 @@ the positions of the ticks.
     # return handles
     return lines
 
-# ==================================================================================================
 
 def histogram_bin_edges_minwidth(min_width, bins):
     r'''
@@ -948,7 +928,6 @@ Merge bins with right-neighbour until each bin has a minimum width.
         else:
             bins = np.hstack((bins[:(idx+1)], bins[(idx+2):]))
 
-# ==================================================================================================
 
 def histogram_bin_edges_mincount(data, min_count, bins):
     r'''
@@ -993,7 +972,6 @@ Merge bins with right-neighbour until each bin has a minimum number of data-poin
         else:
             bins = np.hstack((bins[:(idx+1)], bins[(idx+2):]))
 
-# ==================================================================================================
 
 def histogram_bin_edges(
     data,
@@ -1115,7 +1093,6 @@ Determine bin-edges.
 
     return bin_edges
 
-# ==================================================================================================
 
 def histogram(data, return_edges=True, **kwargs):
     r'''
@@ -1141,7 +1118,6 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
     # return with bin mid-points
     return P, x
 
-# ==================================================================================================
 
 def histogram_cumulative(data,**kwargs):
     r'''
@@ -1174,7 +1150,6 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
     return P, edges
 
-# ==================================================================================================
 
 def hist(P, edges, **kwargs):
     r'''
@@ -1227,7 +1202,6 @@ Plot histogram.
 
     return p
 
-# ==================================================================================================
 
 def cdf(data,mode='continuous',**kwargs):
     '''
@@ -1249,7 +1223,6 @@ Return cumulative density.
 
     return (np.linspace(0.0,1.0,len(data)), np.sort(data))
 
-# ==================================================================================================
 
 def patch(*args,**kwargs):
     '''
@@ -1368,5 +1341,3 @@ Add patches to plot. The color of the patches is indexed according to a specifie
         axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]), ylim[1]+.1*(ylim[1]-ylim[0])])
 
     return p
-
-# ==================================================================================================
