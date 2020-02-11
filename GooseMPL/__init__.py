@@ -13,15 +13,12 @@ This module provides some extensions to matplotlib.
     | http://www.geus.me
 '''
 
-# ==================================================================================================
-
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 
 __version__ = '1.0.0'
 
-# ==================================================================================================
 
 def find_latex_font_serif():
     r'''
@@ -32,17 +29,18 @@ Find an available font to mimic LaTeX, and return its name.
     import re
     import matplotlib.font_manager
 
-    name = lambda font: os.path.splitext(os.path.split(font)[-1])[0].split(' - ')[0]
+    def name(font):
+        return os.path.splitext(os.path.split(font)[-1])[0].split(' - ')[0]
 
     fonts = matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext='ttf')
 
     matches = [
-      r'.*Computer\ Modern\ Roman.*',
-      r'.*CMU\ Serif.*',
-      r'.*CMU.*',
-      r'.*Times.*',
-      r'.*DejaVu.*',
-      r'.*Serif.*',
+        r'.*Computer\ Modern\ Roman.*',
+        r'.*CMU\ Serif.*',
+        r'.*CMU.*',
+        r'.*Times.*',
+        r'.*DejaVu.*',
+        r'.*Serif.*',
     ]
 
     for match in matches:
@@ -52,7 +50,6 @@ Find an available font to mimic LaTeX, and return its name.
 
     return None
 
-# --------------------------------------------------------------------------------------------------
 
 def copy_style():
     r'''
@@ -139,9 +136,8 @@ text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
     for fname, style in styles.items():
         open(os.path.join(dirname, fname), 'w').write(style)
 
-# ==================================================================================================
 
-def set_decade_lims(axis=None,direction=None):
+def set_decade_lims(axis=None, direction=None):
     r'''
 Set limits the the floor/ceil values in terms of decades.
 
@@ -161,26 +157,25 @@ Set limits the the floor/ceil values in terms of decades.
     # x-axis
     if direction is None or direction == 'x':
         # - get current limits
-        MIN,MAX = axis.get_xlim()
+        MIN, MAX = axis.get_xlim()
         # - floor/ceil to full decades
         MIN = 10 ** (np.floor(np.log10(MIN)))
-        MAX = 10 ** (np.ceil (np.log10(MAX)))
+        MAX = 10 ** (np.ceil(np.log10(MAX)))
         # - apply
-        axis.set_xlim([MIN,MAX])
+        axis.set_xlim([MIN, MAX])
 
     # y-axis
     if direction is None or direction == 'y':
         # - get current limits
-        MIN,MAX = axis.get_ylim()
+        MIN, MAX = axis.get_ylim()
         # - floor/ceil to full decades
         MIN = 10 ** (np.floor(np.log10(MIN)))
-        MAX = 10 ** (np.ceil (np.log10(MAX)))
+        MAX = 10 ** (np.ceil(np.log10(MAX)))
         # - apply
-        axis.set_ylim([MIN,MAX])
+        axis.set_ylim([MIN, MAX])
 
-# ==================================================================================================
 
-def scale_lim(lim,factor=1.05):
+def scale_lim(lim, factor=1.05):
     r'''
 Scale limits to be 5% wider, to have a nice plot.
 
@@ -206,7 +201,6 @@ Scale limits to be 5% wider, to have a nice plot.
 
     return lim
 
-# ==================================================================================================
 
 def abs2rel_x(x, axis=None):
     r'''
@@ -241,7 +235,7 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
     if axis.get_xscale() == 'log':
         try:
             return [(np.log10(i) - np.log10(xmin)) / (np.log10(xmax) - np.log10(xmin))
-                if i is not None else i for i in x]
+                    if i is not None else i for i in x]
         except:
             return (np.log10(x) - np.log10(xmin)) / (np.log10(xmax) - np.log10(xmin))
     # - normal scale
@@ -251,7 +245,6 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
         except:
             return (x - xmin) / (xmax - xmin)
 
-# ==================================================================================================
 
 def abs2rel_y(y, axis=None):
     r'''
@@ -286,7 +279,7 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
     if axis.get_xscale() == 'log':
         try:
             return [(np.log10(i) - np.log10(ymin)) / (np.log10(ymax) - np.log10(ymin))
-                if i is not None else i for i in y]
+                    if i is not None else i for i in y]
         except:
             return (np.log10(y) - np.log10(ymin)) / (np.log10(ymax) - np.log10(ymin))
     # - normal scale
@@ -296,7 +289,6 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
         except:
             return (y - ymin) / (ymax - ymin)
 
-# ==================================================================================================
 
 def rel2abs_x(x, axis=None):
     r'''
@@ -331,7 +323,7 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
     if axis.get_xscale() == 'log':
         try:
             return [10.0 ** (np.log10(xmin) + i * (np.log10(xmax) - np.log10(xmin)))
-                if i is not None else i for i in x]
+                    if i is not None else i for i in x]
         except:
             return 10.0 ** (np.log10(xmin) + x * (np.log10(xmax) - np.log10(xmin)))
     # - normal scale
@@ -341,7 +333,6 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
         except:
             return xmin + x * (xmax - xmin)
 
-# ==================================================================================================
 
 def rel2abs_y(y, axis=None):
     r'''
@@ -376,7 +367,7 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
     if axis.get_xscale() == 'log':
         try:
             return [10.0 ** (np.log10(ymin) + i * (np.log10(ymax) - np.log10(ymin)))
-                if i is not None else i for i in y]
+                    if i is not None else i for i in y]
         except:
             return 10.0 ** (np.log10(ymin) + y * (np.log10(ymax) - np.log10(ymin)))
     # - normal scale
@@ -386,7 +377,6 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
         except:
             return ymin + y * (ymax - ymin)
 
-# ==================================================================================================
 
 def subplots(scale_x=None, scale_y=None, scale=None, **kwargs):
     r'''
@@ -421,7 +411,6 @@ Run ``matplotlib.pyplot.subplots`` with ``figsize`` set to the correct multiple 
 
     return plt.subplots(nrows=nrows, ncols=ncols, figsize=(width, height), **kwargs)
 
-# ==================================================================================================
 
 def savefig(*args, **kwargs):
     r'''
@@ -438,7 +427,6 @@ Run ``matplotlib.pyplot.savefig`` while making sure that the directory exists.
 
     return plt.savefig(*args, **kwargs)
 
-# ==================================================================================================
 
 def close(*args, **kwargs):
     r'''
@@ -447,7 +435,6 @@ Run ``matplotlib.pyplot.close``.
 
     return plt.close(*args, **kwargs)
 
-# ==================================================================================================
 
 def plot(x, y, units='absolute', axis=None, **kwargs):
     r'''
@@ -485,7 +472,6 @@ Plot.
     # plot
     return axis.plot(x, y, **kwargs)
 
-# ==================================================================================================
 
 def text(x, y, text, units='absolute', axis=None, **kwargs):
     r'''
@@ -526,18 +512,17 @@ Plot a text.
     # plot
     return axis.text(x, y, text, **kwargs)
 
-# ==================================================================================================
 
 def diagonal_powerlaw(
-    exp,
-    ll=None,
-    lr=None,
-    tl=None,
-    tr=None,
-    width=None,
-    height=None,
-    plot=False,
-    **kwargs):
+        exp,
+        ll=None,
+        lr=None,
+        tl=None,
+        tr=None,
+        width=None,
+        height=None,
+        plot=False,
+        **kwargs):
     r'''
 Set the limits such that a power-law with a certain exponent lies on the diagonal.
 
@@ -610,12 +595,11 @@ Set the limits such that a power-law with a certain exponent lies on the diagona
         axis.set_ylim(sorted([np.exp(tr[1]), np.exp(tr[1] - height)]))
 
     if plot:
-      if exp > 0:
-          return plot_powerlaw(exp, 0., 0., 1., **kwargs)
-      else:
-          return plot_powerlaw(exp, 0., 1., 1., **kwargs)
+        if exp > 0:
+            return plot_powerlaw(exp, 0., 0., 1., **kwargs)
+        else:
+            return plot_powerlaw(exp, 0., 1., 1., **kwargs)
 
-# ==================================================================================================
 
 def annotate_powerlaw(text, exp, startx, starty, width=None, rx=0.5, ry=0.5, **kwargs):
     r'''
@@ -662,7 +646,8 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
     axis = kwargs.pop('axis', plt.gca())
 
     if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
-        raise IOError('This function only works on a log-log scale, where the power-law is a straight line')
+        raise IOError(
+            'This function only works on a log-log scale, where the power-law is a straight line')
 
     # apply width/height
     if width is not None:
@@ -702,7 +687,6 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
     # plot
     return axis.text(x, y, text, **kwargs)
 
-# ==================================================================================================
 
 def plot_powerlaw(exp, startx, starty, width=None, **kwargs):
     r'''
@@ -744,7 +728,8 @@ Plot a power-law.
     axis = kwargs.pop('axis', plt.gca())
 
     if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
-        raise IOError('This function only works on a log-log scale, where the power-law is a straight line')
+        raise IOError(
+            'This function only works on a log-log scale, where the power-law is a straight line')
 
     # apply width/height
     if width is not None:
@@ -754,7 +739,7 @@ Plot a power-law.
 
     elif height is not None:
 
-        if exp >0:
+        if exp > 0:
             endy = starty + height
         elif exp == 0:
             endy = starty
@@ -779,7 +764,6 @@ Plot a power-law.
 
     return axis.plot([startx, endx], [starty, endy], **kwargs)
 
-# ==================================================================================================
 
 def grid_powerlaw(exp, insert=0, skip=0, end=-1, step=0, axis=None, **kwargs):
     r'''
@@ -818,7 +802,8 @@ the positions of the ticks.
     kwargs.setdefault('linewidth',  1)
 
     if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
-        raise IOError('This function only works on a log-log scale, where the power-law is a straight line')
+        raise IOError(
+            'This function only works on a log-log scale, where the power-law is a straight line')
 
     # zero-exponent: draw horizontal lines
     if exp == 0:
@@ -884,7 +869,7 @@ the positions of the ticks.
         # skip coordinates
         if step > 0:
 
-            startx = startx[int(skip): : int(1 + step)]
+            startx = startx[int(skip):: int(1 + step)]
 
         # x-coordinate of the end of the lines
         endx = startx + 1/b
@@ -912,7 +897,6 @@ the positions of the ticks.
     # return handles
     return lines
 
-# ==================================================================================================
 
 def histogram_bin_edges_minwidth(min_width, bins):
     r'''
@@ -948,7 +932,6 @@ Merge bins with right-neighbour until each bin has a minimum width.
         else:
             bins = np.hstack((bins[:(idx+1)], bins[(idx+2):]))
 
-# ==================================================================================================
 
 def histogram_bin_edges_mincount(data, min_count, bins):
     r'''
@@ -993,16 +976,15 @@ Merge bins with right-neighbour until each bin has a minimum number of data-poin
         else:
             bins = np.hstack((bins[:(idx+1)], bins[(idx+2):]))
 
-# ==================================================================================================
 
 def histogram_bin_edges(
-    data,
-    bins=10,
-    mode='equal',
-    min_count=None,
-    integer=False,
-    remove_empty_edges=True,
-    min_width=None):
+        data,
+        bins=10,
+        mode='equal',
+        min_count=None,
+        integer=False,
+        remove_empty_edges=True,
+        min_width=None):
     r'''
 Determine bin-edges.
 
@@ -1045,11 +1027,11 @@ Determine bin-edges.
 
     if mode == 'equal':
 
-        bin_edges = np.linspace(np.min(data),np.max(data),bins+1)
+        bin_edges = np.linspace(np.min(data), np.max(data), bins+1)
 
     elif mode == 'log':
 
-        bin_edges = np.logspace(np.log10(np.min(data)),np.log10(np.max(data)),bins+1)
+        bin_edges = np.logspace(np.log10(np.min(data)), np.log10(np.max(data)), bins+1)
 
     elif mode == 'uniform':
 
@@ -1071,8 +1053,8 @@ Determine bin-edges.
         count[np.linspace(0, bins-1, len(data)-np.sum(count)).astype(np.int)] += 1
 
         # - split the data
-        idx     = np.empty((bins+1), dtype='int')
-        idx[0 ] = 0
+        idx = np.empty((bins+1), dtype='int')
+        idx[0] = 0
         idx[1:] = np.cumsum(count)
         idx[-1] = len(data) - 1
 
@@ -1089,8 +1071,8 @@ Determine bin-edges.
 
         N, _ = np.histogram(data, bins=bin_edges, density=False)
 
-        idx = np.min(np.where(N>0)[0])
-        jdx = np.max(np.where(N>0)[0])
+        idx = np.min(np.where(N > 0)[0])
+        jdx = np.max(np.where(N > 0)[0])
 
         bin_edges = bin_edges[(idx):(jdx+2)]
 
@@ -1106,7 +1088,7 @@ Determine bin-edges.
 
     if integer:
 
-        idx = np.where(np.diff(np.floor(bin_edges))>=1)[0]
+        idx = np.where(np.diff(np.floor(bin_edges)) >= 1)[0]
         idx = np.unique(np.hstack((0, idx, len(bin_edges)-1)))
 
         bin_edges = bin_edges[idx]
@@ -1115,7 +1097,6 @@ Determine bin-edges.
 
     return bin_edges
 
-# ==================================================================================================
 
 def histogram(data, return_edges=True, **kwargs):
     r'''
@@ -1141,9 +1122,8 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
     # return with bin mid-points
     return P, x
 
-# ==================================================================================================
 
-def histogram_cumulative(data,**kwargs):
+def histogram_cumulative(data, **kwargs):
     r'''
 Compute cumulative histogram.
 See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`_
@@ -1174,7 +1154,6 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
 
     return P, edges
 
-# ==================================================================================================
 
 def hist(P, edges, **kwargs):
     r'''
@@ -1190,11 +1169,11 @@ Plot histogram.
     autoscale = kwargs.pop('autoscale', True)
 
     # set defaults
-    kwargs.setdefault('edgecolor','k')
+    kwargs.setdefault('edgecolor', 'k')
 
     # no color-index -> set transparent
     if cindex is None:
-        kwargs.setdefault('facecolor',(0.,0.,0.,0.))
+        kwargs.setdefault('facecolor', (0., 0., 0., 0.))
 
     # convert -> list of Polygons
     poly = []
@@ -1202,14 +1181,14 @@ Plot histogram.
         coor = np.array([
             [xl, 0.],
             [xu, 0.],
-            [xu, p ],
-            [xl, p ],
+            [xu, p],
+            [xl, p],
         ])
         poly.append(Polygon(coor))
     args = (poly)
 
     # convert patches -> matplotlib-objects
-    p = PatchCollection(args,**kwargs)
+    p = PatchCollection(args, **kwargs)
     # add colors to patches
     if cindex is not None:
         p.set_array(cindex)
@@ -1227,9 +1206,8 @@ Plot histogram.
 
     return p
 
-# ==================================================================================================
 
-def cdf(data,mode='continuous',**kwargs):
+def cdf(data, mode='continuous', **kwargs):
     '''
 Return cumulative density.
 
@@ -1247,11 +1225,10 @@ Return cumulative density.
         Data points.
     '''
 
-    return (np.linspace(0.0,1.0,len(data)), np.sort(data))
+    return (np.linspace(0.0, 1.0, len(data)), np.sort(data))
 
-# ==================================================================================================
 
-def patch(*args,**kwargs):
+def patch(*args, **kwargs):
     '''
 Add patches to plot. The color of the patches is indexed according to a specified color-index.
 
@@ -1323,7 +1300,7 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     '''
 
     from matplotlib.collections import PatchCollection
-    from matplotlib.patches     import Polygon
+    from matplotlib.patches import Polygon
 
     # check dependent options
     if 'coor' not in kwargs or 'conn' not in kwargs:
@@ -1347,11 +1324,11 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     if coor is not None and conn is not None:
         poly = []
         for iconn in conn:
-            poly.append(Polygon(coor[iconn,:]))
+            poly.append(Polygon(coor[iconn, :]))
         args = tuple(poly, *args)
 
     # convert patches -> matplotlib-objects
-    p = PatchCollection(args,**kwargs)
+    p = PatchCollection(args, **kwargs)
     # add colors to patches
     if cindex is not None:
         p.set_array(cindex)
@@ -1361,12 +1338,10 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     # rescale the axes manually
     if autoscale:
         # - get limits
-        xlim = [np.min(coor[:,0]), np.max(coor[:,0])]
-        ylim = [np.min(coor[:,1]), np.max(coor[:,1])]
+        xlim = [np.min(coor[:, 0]), np.max(coor[:, 0])]
+        ylim = [np.min(coor[:, 1]), np.max(coor[:, 1])]
         # - set limits +/- 10% extra margin
         axis.set_xlim([xlim[0]-.1*(xlim[1]-xlim[0]), xlim[1]+.1*(xlim[1]-xlim[0])])
         axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]), ylim[1]+.1*(ylim[1]-ylim[0])])
 
     return p
-
-# ==================================================================================================
