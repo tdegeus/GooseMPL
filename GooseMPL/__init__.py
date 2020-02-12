@@ -139,11 +139,13 @@ text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
 
         import warnings
 
-        warnings.warn("""LaTeX is not installed.
+        message = """LaTeX is not installed.
 To use LaTeX with 'goose-latex':
 1) Install LaTeX.
 2) Rerun 'GooseMPL.copy_style()'
-Until that time 'goose-latex' will be an empty style.""", Warning)
+Until that time 'goose-latex' will be an empty style."""
+
+        warnings.warn(message, Warning)
 
         styles['goose-latex.mplstyle'] = ''
 

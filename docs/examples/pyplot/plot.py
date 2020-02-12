@@ -9,7 +9,7 @@ x = np.linspace(0, 2 * np.pi, 400)
 fig, ax = plt.subplots()
 
 ax.plot(x, np.sin(x), label=r'$\sin(x)$')
-ax.plot(x, np.sin(x - np.pi / 4.), label=r'$\sin(x - \tfrac{\pi}{4})$')
+ax.plot(x, np.sin(x - np.pi / 4.), label=r'$\sin(x - \pi/4)$')
 
 ax.set_title('Simple plot')
 
