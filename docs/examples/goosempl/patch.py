@@ -8,20 +8,20 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 plt.style.use(['goose', 'goose-latex'])
 
 coor = np.array([
-  [0.0, 0.0],
-  [1.0, 0.0],
-  [2.0, 0.0],
-  [0.0, 1.0],
-  [1.0, 1.0],
-  [2.0, 1.0]])
+    [0.0, 0.0],
+    [1.0, 0.0],
+    [2.0, 0.0],
+    [0.0, 1.0],
+    [1.0, 1.0],
+    [2.0, 1.0]])
 
 conn = np.array([
-  [0, 1, 4, 3],
-  [1, 2, 5, 4]])
+    [0, 1, 4, 3],
+    [1, 2, 5, 4]])
 
 value = np.array([
-  -1,
-  +1])
+    -1,
+    +1])
 
 fig, ax = plt.subplots()
 
@@ -32,8 +32,8 @@ plt.ylim([-0.1,  1.1])
 
 ax.set_aspect('equal')
 
-div  = make_axes_locatable(ax)
-cax  = div.append_axes("right", size="5%", pad=0.1)
+div = make_axes_locatable(ax)
+cax = div.append_axes("right", size="5%", pad=0.1)
 cbar = plt.colorbar(im, cax=cax)
 
 plt.savefig('patch.svg')
