@@ -20,6 +20,19 @@ import numpy as np
 __version__ = '1.0.0'
 
 
+def system_has_latex():
+    r'''
+Return ``True`` if the system has LaTeX installed.
+    '''
+
+    from distutils.spawn import find_executable
+
+    if find_executable('latex'):
+        return True
+
+    return False
+
+
 def find_latex_font_serif():
     r'''
 Find an available font to mimic LaTeX, and return its name.
@@ -101,7 +114,7 @@ axes.spines.top      : False
 axes.spines.right    : False
 '''
 
-    if find_latex_font_serif() is not None:
+    if system_has_latex() and find_latex_font_serif() is not None:
 
         styles['goose-latex.mplstyle'] = r'''
 font.family          : serif
@@ -112,7 +125,7 @@ text.usetex          : true
 text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
 '''.format(serif=find_latex_font_serif())
 
-    else:
+    elif system_has_latex():
 
         styles['goose-latex.mplstyle'] = r'''
 font.family          : serif
@@ -121,6 +134,18 @@ font.size            : 18
 text.usetex          : true
 text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
 '''
+
+    else:
+
+        import warnings
+
+        warnings.warn("""LaTeX is not installed.
+To use LaTeX with 'goose-latex':
+1) Install LaTeX.
+2) Rerun 'GooseMPL.copy_style()'
+Until that time 'goose-latex' will be an empty style.""", Warning)
+
+        styles['goose-latex.mplstyle'] = ''
 
     # write style definitions
     # -----------------------
@@ -191,7 +216,7 @@ Scale limits to be 5% wider, to have a nice plot.
     '''
 
     # convert string "[...,...]"
-    if type(lim) == str:
+    if isinstance(lim, str):
         lim = eval(lim)
 
     # scale limits
@@ -678,7 +703,7 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
     if endx is not None:
         endy = const * endx ** exp
     else:
-        endx = (endy / const) ** (1/exp)
+        endx = (endy / const) ** (1 / exp)
 
     # middle
     x = 10.0 ** (np.log10(startx) + rx * (np.log10(endx) - np.log10(startx)))
@@ -760,7 +785,7 @@ Plot a power-law.
     if endx is not None:
         endy = const * endx ** exp
     else:
-        endx = (endy / const) ** (1/exp)
+        endx = (endy / const) ** (1 / exp)
 
     return axis.plot([startx, endx], [starty, endy], **kwargs)
 
@@ -799,7 +824,7 @@ the positions of the ticks.
 
     kwargs.setdefault('color', 'k')
     kwargs.setdefault('linestyle', '--')
-    kwargs.setdefault('linewidth',  1)
+    kwargs.setdefault('linewidth', 1)
 
     if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
         raise IOError(
@@ -872,7 +897,7 @@ the positions of the ticks.
             startx = startx[int(skip):: int(1 + step)]
 
         # x-coordinate of the end of the lines
-        endx = startx + 1/b
+        endx = startx + 1 / b
 
         # y-coordinate of the start and the end of the lines
         if exp > 0:
@@ -927,10 +952,10 @@ Merge bins with right-neighbour until each bin has a minimum width.
 
         idx = idx[0]
 
-        if idx+1 == len(bins)-1:
+        if idx + 1 == len(bins) - 1:
             bins = np.hstack((bins[:(idx)], bins[-1]))
         else:
-            bins = np.hstack((bins[:(idx+1)], bins[(idx+2):]))
+            bins = np.hstack((bins[:(idx + 1)], bins[(idx + 2):]))
 
 
 def histogram_bin_edges_mincount(data, min_count, bins):
@@ -956,7 +981,7 @@ Merge bins with right-neighbour until each bin has a minimum number of data-poin
         return bins
 
     # check
-    if type(min_count) != int:
+    if not isinstance(min_count, int):
         raise IOError('"min_count" must be an integer number')
 
     # keep removing where needed
@@ -971,10 +996,10 @@ Merge bins with right-neighbour until each bin has a minimum number of data-poin
 
         idx = idx[0]
 
-        if idx+1 == len(P):
+        if idx + 1 == len(P):
             bins = np.hstack((bins[:(idx)], bins[-1]))
         else:
-            bins = np.hstack((bins[:(idx+1)], bins[(idx+2):]))
+            bins = np.hstack((bins[:(idx + 1)], bins[(idx + 2):]))
 
 
 def histogram_bin_edges(
@@ -1027,11 +1052,11 @@ Determine bin-edges.
 
     if mode == 'equal':
 
-        bin_edges = np.linspace(np.min(data), np.max(data), bins+1)
+        bin_edges = np.linspace(np.min(data), np.max(data), bins + 1)
 
     elif mode == 'log':
 
-        bin_edges = np.logspace(np.log10(np.min(data)), np.log10(np.max(data)), bins+1)
+        bin_edges = np.logspace(np.log10(np.min(data)), np.log10(np.max(data)), bins + 1)
 
     elif mode == 'uniform':
 
@@ -1041,19 +1066,19 @@ Determine bin-edges.
 
         # - use the minimum count to estimate the number of bins
         if min_count is not None and min_count is not False:
-            if type(min_count) != int:
+            if not isinstance(min_count, int):
                 raise IOError('"min_count" must be an integer number')
-            bins = int(np.floor(float(len(data))/float(min_count)))
+            bins = int(np.floor(float(len(data)) / float(min_count)))
 
         # - number of data-points in each bin (equal for each)
-        count = int(np.floor(float(len(data))/float(bins))) * np.ones(bins, dtype='int')
+        count = int(np.floor(float(len(data)) / float(bins))) * np.ones(bins, dtype='int')
 
         # - increase the number of data-points by one is an many bins as needed,
         #   such that the total fits the total number of data-points
-        count[np.linspace(0, bins-1, len(data)-np.sum(count)).astype(np.int)] += 1
+        count[np.linspace(0, bins - 1, len(data) - np.sum(count)).astype(np.int)] += 1
 
         # - split the data
-        idx = np.empty((bins+1), dtype='int')
+        idx = np.empty((bins + 1), dtype='int')
         idx[0] = 0
         idx[1:] = np.cumsum(count)
         idx[-1] = len(data) - 1
@@ -1074,7 +1099,7 @@ Determine bin-edges.
         idx = np.min(np.where(N > 0)[0])
         jdx = np.max(np.where(N > 0)[0])
 
-        bin_edges = bin_edges[(idx):(jdx+2)]
+        bin_edges = bin_edges[(idx):(jdx + 2)]
 
     # merge bins with too few data-points (if needed)
 
@@ -1089,7 +1114,7 @@ Determine bin-edges.
     if integer:
 
         idx = np.where(np.diff(np.floor(bin_edges)) >= 1)[0]
-        idx = np.unique(np.hstack((0, idx, len(bin_edges)-1)))
+        idx = np.unique(np.hstack((0, idx, len(bin_edges) - 1)))
 
         bin_edges = bin_edges[idx]
 
@@ -1147,7 +1172,7 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
     P = np.cumsum(P)
 
     if norm:
-        P = P/P[-1]
+        P = P / P[-1]
 
     if not return_edges:
         edges = np.diff(edges) / 2. + edges[:-1]
@@ -1201,8 +1226,8 @@ Plot histogram.
         xlim = [edges[0], edges[-1]]
         ylim = [0, np.max(P)]
         # - set limits +/- 10% extra margin
-        axis.set_xlim([xlim[0]-.1*(xlim[1]-xlim[0]), xlim[1]+.1*(xlim[1]-xlim[0])])
-        axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]), ylim[1]+.1*(ylim[1]-ylim[0])])
+        axis.set_xlim([xlim[0] - .1 * (xlim[1] - xlim[0]), xlim[1] + .1 * (xlim[1] - xlim[0])])
+        axis.set_ylim([ylim[0] - .1 * (ylim[1] - ylim[0]), ylim[1] + .1 * (ylim[1] - ylim[0])])
 
     return p
 
@@ -1341,7 +1366,7 @@ Add patches to plot. The color of the patches is indexed according to a specifie
         xlim = [np.min(coor[:, 0]), np.max(coor[:, 0])]
         ylim = [np.min(coor[:, 1]), np.max(coor[:, 1])]
         # - set limits +/- 10% extra margin
-        axis.set_xlim([xlim[0]-.1*(xlim[1]-xlim[0]), xlim[1]+.1*(xlim[1]-xlim[0])])
-        axis.set_ylim([ylim[0]-.1*(ylim[1]-ylim[0]), ylim[1]+.1*(ylim[1]-ylim[0])])
+        axis.set_xlim([xlim[0] - .1 * (xlim[1] - xlim[0]), xlim[1] + .1 * (xlim[1] - xlim[0])])
+        axis.set_ylim([ylim[0] - .1 * (ylim[1] - ylim[0]), ylim[1] + .1 * (ylim[1] - ylim[0])])
 
     return p
