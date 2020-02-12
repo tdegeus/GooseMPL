@@ -6,35 +6,43 @@ Custom plot functions
 Overview
 ========
 
+Store plot to HDF5 file
+-----------------------
+
+.. autosummary::
+
+    GooseMPL.write_data
+    GooseMPL.restore_data
+
 Set axes limits
 ---------------
 
 .. autosummary::
 
-  GooseMPL.scale_lim
-  GooseMPL.set_decade_lims
+    GooseMPL.scale_lim
+    GooseMPL.set_decade_lims
 
 Plot in relative coordinates
 ----------------------------
 
 .. autosummary::
 
-  GooseMPL.plot
-  GooseMPL.text
-  GooseMPL.rel2abs_x
-  GooseMPL.rel2abs_y
-  GooseMPL.abs2rel_x
-  GooseMPL.abs2rel_y
+    GooseMPL.plot
+    GooseMPL.text
+    GooseMPL.rel2abs_x
+    GooseMPL.rel2abs_y
+    GooseMPL.abs2rel_x
+    GooseMPL.abs2rel_y
 
 Annotate power-law
 ------------------
 
 .. autosummary::
 
-  GooseMPL.grid_powerlaw
-  GooseMPL.plot_powerlaw
-  GooseMPL.annotate_powerlaw
-  GooseMPL.diagonal_powerlaw
+    GooseMPL.grid_powerlaw
+    GooseMPL.plot_powerlaw
+    GooseMPL.annotate_powerlaw
+    GooseMPL.diagonal_powerlaw
 
 Plot mesh
 ---------
@@ -48,22 +56,22 @@ Plot mesh
 
 .. autosummary::
 
-  GooseMPL.histogram
-  GooseMPL.histogram_bin_edges
-  GooseMPL.histogram_bin_edges_minwidth
-  GooseMPL.histogram_bin_edges_mincount
-  GooseMPL.histogram_cumulative
-  GooseMPL.cdf
-  GooseMPL.hist
+    GooseMPL.histogram
+    GooseMPL.histogram_bin_edges
+    GooseMPL.histogram_bin_edges_minwidth
+    GooseMPL.histogram_bin_edges_mincount
+    GooseMPL.histogram_cumulative
+    GooseMPL.cdf
+    GooseMPL.hist
 
 Styles
 ------
 
 .. autosummary::
 
-  GooseMPL.subplots
-  GooseMPL.copy_style
-  GooseMPL.find_latex_font_serif
+    GooseMPL.subplots
+    GooseMPL.copy_style
+    GooseMPL.find_latex_font_serif
 
 Documentation
 =============
