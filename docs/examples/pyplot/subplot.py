@@ -17,8 +17,8 @@ ax2 = axes[1]
 
 # --- first subplot ---
 
-ax1.plot(x, np.sin(x), label=r'$\sin \big( x \big)$')
-ax1.plot(x, np.sin(x - np.pi / 4.), label=r'$\sin \big( x - \tfrac{\pi}{4} \big)$')
+ax1.plot(x, np.sin(x), label=r'$\sin(x)$')
+ax1.plot(x, np.sin(x - np.pi / 4.), label=r'$\sin(x - \pi/4)$')
 
 ax1.set_title('First subplot')
 
@@ -35,8 +35,8 @@ ax1.set_ylabel(r'$y$')
 
 # --- second subplot ---
 
-ax2.plot(x, np.cos(x), linestyle='--', label=r'$\cos \big( x \big)$')
-ax2.plot(x, np.cos(x - np.pi / 4.), linestyle='--', label=r'$\cos \big( x - \tfrac{\pi}{4} \big)$')
+ax2.plot(x, np.cos(x), linestyle='--', label=r'$\cos(x)$')
+ax2.plot(x, np.cos(x - np.pi / 4.), linestyle='--', label=r'$\cos(x - \pi/4)$')
 
 ax2.set_title('Second subplot')
 

@@ -1,5 +1,7 @@
 [![Travis](https://travis-ci.com/tdegeus/GooseMPL.svg?branch=master)](https://travis-ci.com/tdegeus/GooseMPL)
 
+[![Build status](https://ci.appveyor.com/api/projects/status/q6ty6h7sb9mu9jqx/branch/master?svg=true)](https://ci.appveyor.com/project/tdegeus/goosempl/branch/master)
+
 [![Documentation Status](https://readthedocs.org/projects/goosempl/badge/?version=latest)](http://goosempl.readthedocs.io/en/latest/?badge=latest)
 
 # GooseMPL
