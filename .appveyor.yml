@@ -9,6 +9,7 @@ platform:
 
 image:
   - Visual Studio 2017
+  - Visual Studio 2015
 
 environment:
   matrix:
@@ -27,21 +28,37 @@ init:
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
 
 install:
+  # Set environment using Conda
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
+  - conda install -c conda-forge miktex
   - conda install -c conda-forge python
-  - conda install -c conda-forge setuptools
-  - conda install -c conda-forge pip
-  - conda install -c conda-forge docopt
-  - conda install -c conda-forge click
-  - conda install -c conda-forge pyyaml
-  - conda install -c conda-forge ghostscript
+  - conda install -c conda-forge numpy
   - conda install -c conda-forge matplotlib
-  - python -m pip install .
-  - python test/generate.py
+  # Install library
+  - pip install .
+  - python -c "import GooseMPL; GooseMPL.copy_style()"
 
 build_script:
-  - pdfcombine --version
-  - pdfcombine fig1.pdf fig2.pdf fig3.pdf
-  - pdfcombine -f -y test/combine.yaml
+  # Run tests
+  - python docs/examples/goosempl/histogram.py
+  - python docs/examples/goosempl/histogram_powerlaw.py
+  - python docs/examples/goosempl/patch.py
+  - python docs/examples/pyplot/colorbar.py
+  - python docs/examples/pyplot/colormap-part.py
+  - python docs/examples/pyplot/colormap.py
+  - python docs/examples/pyplot/image.py
+  - python docs/examples/pyplot/image_subplots.py
+  - python docs/examples/pyplot/image_subplots_bottom.py
+  - python docs/examples/pyplot/legend_background.py
+  - python docs/examples/pyplot/legend_external.py
+  - python docs/examples/pyplot/plot-cmap.py
+  - python docs/examples/pyplot/plot.py
+  - python docs/examples/pyplot/subplot.py
+  - python docs/examples/pyplot/tick-formatter.py
+  - python docs/examples/pyplot/tick-log.py
+  - python docs/examples/pyplot/tick-log_1.py
+  - python docs/examples/pyplot/tick-log_2.py
+  - python docs/examples/pyplot/tick-position.py
+  - python docs/examples/pyplot/tick-rotation-log.py
