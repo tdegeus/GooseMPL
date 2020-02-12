@@ -19,11 +19,11 @@ upper = mpl.cm.jet(np.arange(256))
 
 # set lower part: 1 * 256/4 entries
 # - initialize all entries to 1 to make sure that the alpha channel (4th column) is 1
-lower = np.ones((int(256/4), 4))
+lower = np.ones((int(256 / 4), 4))
 # - modify the first three columns (RGB):
 #   range linearly between white (1,1,1) and the first color of the upper colormap
 for i in range(3):
-  lower[:,i] = np.linspace(1, upper[0,i], lower.shape[0])
+    lower[:, i] = np.linspace(1, upper[0, i], lower.shape[0])
 
 # combine parts of colormap
 cmap = np.vstack((lower, upper))
@@ -38,15 +38,15 @@ cmap = mpl.colors.ListedColormap(cmap, name='myColorMap', N=cmap.shape[0])
 fig, ax = plt.subplots()
 
 # some data to plot: distance to point at (50,50)
-x,y = np.meshgrid(np.linspace(0, 99, 100), np.linspace(0, 99, 100))
-z   = (x - 50)**2. + (y - 50)**2.
+x, y = np.meshgrid(np.linspace(0, 99, 100), np.linspace(0, 99, 100))
+z = (x - 50)**2. + (y - 50)**2.
 
 # plot data, apply colormap, set limit such that our interpretation is correct
 im = ax.imshow(z, cmap=cmap, clim=(0, 5000))
 
 # add a colorbar to the bottom of the image
-div  = make_axes_locatable(ax)
-cax  = div.append_axes('bottom', size='5%', pad=0.4)
+div = make_axes_locatable(ax)
+cax = div.append_axes('bottom', size='5%', pad=0.4)
 cbar = plt.colorbar(im, cax=cax, orientation='horizontal')
 
 # save/show the image

@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 
 plt.style.use(['goose', 'goose-latex'])
 
-fig, ax = plt.subplots(figsize=(9,6))
+fig, ax = plt.subplots(figsize=(9, 6))
 
 x = np.arange(10)
 
 for i in range(5):
-  ax.plot(x, i*x, label='$y = {:d}x$'.format(i))
+    ax.plot(x, i * x, label='$y = {:d}x$'.format(i))
 
-legend = ax.legend(loc='center left', bbox_to_anchor=(1., 0.5), fancybox=True, shadow=True)
+legend = ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), fancybox=True, shadow=True)
 
 frame = legend.get_frame()
 frame.set_facecolor('white')

@@ -9,11 +9,11 @@ plt.style.use(['goose', 'goose-latex'])
 # --- some data ----
 
 a, b = np.meshgrid(np.linspace(0, 1, 100), np.linspace(0, 1, 100))
-d = np.sqrt(a**2 + b**2)
+d = np.sqrt(a ** 2 + b ** 2)
 
 # --- open figure with three axes ---
 
-fig, axes  = plt.subplots(ncols=3, figsize=(18, 6))
+fig, axes = plt.subplots(ncols=3, figsize=(18, 6))
 
 # --- left subplot ---
 
@@ -26,8 +26,8 @@ ax.set_ylim([0, 100])
 ax.set_xlabel(r'$x$')
 ax.set_ylabel(r'$y$')
 ax.set_title(r'$a$')
-div  = make_axes_locatable(ax)
-cax  = div.append_axes('right', size='5%', pad=0.1)
+div = make_axes_locatable(ax)
+cax = div.append_axes('right', size='5%', pad=0.1)
 cbar = plt.colorbar(im, cax=cax)
 cbar.set_ticks([0, 1])
 
@@ -42,8 +42,8 @@ ax.set_ylim([0, 100])
 ax.set_xlabel(r'$x$')
 ax.set_ylabel(r'$y$')
 ax.set_title(r'$b$')
-div  = make_axes_locatable(ax)
-cax  = div.append_axes('right', size='5%', pad=0.1)
+div = make_axes_locatable(ax)
+cax = div.append_axes('right', size='5%', pad=0.1)
 cbar = plt.colorbar(im, cax=cax)
 cbar.set_ticks([0, 1])
 
@@ -58,8 +58,8 @@ ax.set_ylim([0, 100])
 ax.set_xlabel(r'$x$')
 ax.set_ylabel(r'$y$')
 ax.set_title(r'$\sqrt{a^2 + b^2}$')
-div  = make_axes_locatable(ax)
-cax  = div.append_axes('right', size='5%', pad=0.1)
+div = make_axes_locatable(ax)
+cax = div.append_axes('right', size='5%', pad=0.1)
 cbar = plt.colorbar(im, cax=cax)
 cbar.set_ticks([0, 1])
 

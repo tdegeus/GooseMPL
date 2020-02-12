@@ -13,7 +13,7 @@ ax.set_ylim([2e+1, 2e+3])
 
 ax.plot([0.02, 0.1, 0.2], [20, 1000, 2000])
 
-ax.xaxis.set_major_locator(matplotlib.ticker.LogLocator(subs=(1,2,)))
+ax.xaxis.set_major_locator(matplotlib.ticker.LogLocator(subs=(1, 2,)))
 ax.xaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
 ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
 
