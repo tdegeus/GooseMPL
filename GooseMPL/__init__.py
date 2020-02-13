@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 
-__version__ = '1.0.0'
+__version__ = '0.3.0'
 
 
 def system_has_latex():
@@ -1384,7 +1384,7 @@ Save plot data to HDF5-file.
 
     **key** (``<str>``)
         Name of the dataset to which to write. This name will be appended with an index
-        if more than one handles is input.
+        if more than one handle is input.
 
     **handles**
         One or more handles.
@@ -1413,16 +1413,17 @@ Save plot data to HDF5-file.
 
         if isinstance(handle, matplotlib.lines.Line2D):
 
-            x, y = handle.get_data()
-            dset = data.create_dataset(key, (x.size, 2), dtype=x.dtype)
-            dset[:, 0] = x
-            dset[:, 1] = y
-            dset.attrs['type'] = 'matplotlib.lines.Line2D'
+            xy = handle.get_xydata()
+            dset = data.create_dataset(key, xy.shape, dtype=xy.dtype)
+            dset[:, :] = xy
+            dset.attrs['artist'] = 'matplotlib.lines.Line2D'
             dset.attrs['color'] = handle.get_color()
+            dset.attrs['linestyle'] = handle.get_linestyle()
+            dset.attrs['marker'] = handle.get_marker()
 
         else:
 
-            raise IOError('Unknown handle')
+            raise IOError('Unknown handle. Please consider filing a bug-report.')
 
     if key == '/':
         raise IOError('Cannot write to root')
@@ -1449,18 +1450,17 @@ Restore plot from HDF5-file.
         Opened HDF5 file.
 
     **key** (``<str>``)
-        Name of the dataset to which to write. This name will be appended with an index
-        if more than one handles is input.
+        Name of the dataset from which to read.
 
 :options:
 
     **axis** ([``plt.gca()``] | ...)
-        Specify the axis to which to apply the limits.
+        Specify the axis on which to plot.
 
 :returns:
 
     **handle**
-        The handle of the created.
+        The handle of the created plot.
     '''
 
     if axis is None:
@@ -1468,7 +1468,7 @@ Restore plot from HDF5-file.
 
     dset = data[key]
 
-    if dset.attrs['type'] == 'matplotlib.lines.Line2D':
+    if dset.attrs['artist'] == 'matplotlib.lines.Line2D':
 
         d = dset[...]
         x = d[:, 0]
@@ -1476,9 +1476,10 @@ Restore plot from HDF5-file.
 
         opts = {}
 
-        if 'color' in dset.attrs:
-            opts['color'] = dset.attrs['color']
+        for key in ['color', 'linestyle', 'marker']:
+            if key in dset.attrs:
+                opts[key] = dset.attrs[key]
 
         return axis.plot(x, y, **opts)
 
-    raise IOError('Data-set not interpretable')
+    raise IOError('Data-set not interpretable. Please consider filing a bug-report.')

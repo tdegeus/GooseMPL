@@ -10,7 +10,7 @@ with h5py.File('write_data.hdf5', 'w') as data:
 
     fig, axes = plt.subplots(ncols=2)
 
-    h = axes[0].plot(x, y, c='r')
+    h = axes[0].plot(x, y, c='r', marker='o')
     gplt.write_data(data, '/plot', h)
 
     gplt.restore_data(data, '/plot', axis=axes[1])
