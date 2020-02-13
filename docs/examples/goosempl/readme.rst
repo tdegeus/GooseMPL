@@ -42,4 +42,10 @@ Probability density
 .. literalinclude:: histogram_powerlaw.py
    :language: python
 
+Store plot to HDF5 file
+=======================
 
+[:download:`source: write_data.py <write_data.py>`]
+
+.. literalinclude:: write_data.py
+   :language: python

@@ -14,10 +14,10 @@ This module provides some extensions to matplotlib.
 '''
 
 import matplotlib.pyplot as plt
-import matplotlib as mpl
+import matplotlib
 import numpy as np
 
-__version__ = '1.0.0'
+__version__ = '0.3.0'
 
 
 def system_has_latex():
@@ -70,7 +70,6 @@ Write all goose-styles to the relevant matplotlib configuration directory.
     '''
 
     import os
-    import matplotlib
 
     # style definitions
     # -----------------
@@ -418,7 +417,7 @@ Run ``matplotlib.pyplot.subplots`` with ``figsize`` set to the correct multiple 
     if 'figsize' in kwargs:
         return plt.subplots(**kwargs)
 
-    width, height = mpl.rcParams['figure.figsize']
+    width, height = matplotlib.rcParams['figure.figsize']
 
     if scale is not None:
         width *= scale
@@ -1372,3 +1371,112 @@ Add patches to plot. The color of the patches is indexed according to a specifie
         axis.set_ylim([ylim[0] - .1 * (ylim[1] - ylim[0]), ylim[1] + .1 * (ylim[1] - ylim[0])])
 
     return p
+
+
+def write_data(data, key, *handle):
+    r'''
+Save plot data to HDF5-file.
+
+:arguments:
+
+    **data** (``h5py.File``)
+        Opened HDF5 file.
+
+    **key** (``<str>``)
+        Name of the dataset to which to write. This name will be appended with an index
+        if more than one handle is input.
+
+    **handles**
+        One or more handles.
+    '''
+
+
+    def join(*handle, root=False):
+
+        import posixpath
+
+        lst = []
+
+        for i, arg in enumerate(handle):
+            if i == 0:
+                lst += [arg]
+            else:
+                lst += [arg.strip('/')]
+
+        if root:
+            return posixpath.join('/', *lst)
+
+        return posixpath.join(*lst)
+
+
+    def write(data, key, handle):
+
+        if isinstance(handle, matplotlib.lines.Line2D):
+
+            xy = handle.get_xydata()
+            dset = data.create_dataset(key, xy.shape, dtype=xy.dtype)
+            dset[:, :] = xy
+            dset.attrs['artist'] = 'matplotlib.lines.Line2D'
+            dset.attrs['color'] = handle.get_color()
+            dset.attrs['linestyle'] = handle.get_linestyle()
+            dset.attrs['marker'] = handle.get_marker()
+
+        else:
+
+            raise IOError('Unknown handle. Please consider filing a bug-report.')
+
+    if key == '/':
+        raise IOError('Cannot write to root')
+
+    handles = []
+    for arg in handle:
+        for h in arg:
+            handles += [h]
+
+    if len(handles) == 1:
+        write(data, key, handles[0])
+    else:
+        for i, h in enumerate(handles):
+            write(data, join(key, str(i)), h)
+
+
+def restore_data(data, key, axis=None):
+    r'''
+Restore plot from HDF5-file.
+
+:arguments:
+
+    **data** (``h5py.File``)
+        Opened HDF5 file.
+
+    **key** (``<str>``)
+        Name of the dataset from which to read.
+
+:options:
+
+    **axis** ([``plt.gca()``] | ...)
+        Specify the axis on which to plot.
+
+:returns:
+
+    **handle**
+        The handle of the created plot.
+    '''
+
+    if axis is None:
+        plt.gca()
+
+    dset = data[key]
+
+    if dset.attrs['artist'] == 'matplotlib.lines.Line2D':
+
+        xy = dset[...]
+        opts = {}
+
+        for key in ['color', 'linestyle', 'marker']:
+            if key in dset.attrs:
+                opts[key] = dset.attrs[key]
+
+        return axis.plot(xy, **opts)
+
+    raise IOError('Data-set not interpretable. Please consider filing a bug-report.')
