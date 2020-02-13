@@ -1373,7 +1373,7 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     return p
 
 
-def write_data(data, key, *args):
+def write_data(data, key, *handle):
     r'''
 Save plot data to HDF5-file.
 
@@ -1391,13 +1391,13 @@ Save plot data to HDF5-file.
     '''
 
 
-    def join(*args, root=False):
+    def join(*handle, root=False):
 
         import posixpath
 
         lst = []
 
-        for i, arg in enumerate(args):
+        for i, arg in enumerate(handle):
             if i == 0:
                 lst += [arg]
             else:
@@ -1429,7 +1429,7 @@ Save plot data to HDF5-file.
         raise IOError('Cannot write to root')
 
     handles = []
-    for arg in args:
+    for arg in handle:
         for h in arg:
             handles += [h]
 
@@ -1470,16 +1470,13 @@ Restore plot from HDF5-file.
 
     if dset.attrs['artist'] == 'matplotlib.lines.Line2D':
 
-        d = dset[...]
-        x = d[:, 0]
-        y = d[:, 1]
-
+        xy = dset[...]
         opts = {}
 
         for key in ['color', 'linestyle', 'marker']:
             if key in dset.attrs:
                 opts[key] = dset.attrs[key]
 
-        return axis.plot(x, y, **opts)
+        return axis.plot(xy, **opts)
 
     raise IOError('Data-set not interpretable. Please consider filing a bug-report.')

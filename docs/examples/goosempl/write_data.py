@@ -15,6 +15,6 @@ with h5py.File('write_data.hdf5', 'w') as data:
 
     gplt.restore_data(data, '/plot', axis=axes[1])
 
-    plt.show()
+    plt.savefig('write_data.svg')
     plt.close()
 
