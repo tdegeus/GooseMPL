@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 
 def system_has_latex():
@@ -1373,7 +1373,7 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     return p
 
 
-def write_data(data, key, *handle):
+def write_data(data, key, handle):
     r'''
 Save plot data to HDF5-file.
 
@@ -1383,61 +1383,42 @@ Save plot data to HDF5-file.
         Opened HDF5 file.
 
     **key** (``<str>``)
-        Name of the dataset to which to write. This name will be appended with an index
-        if more than one handle is input.
+        Name of the dataset to which to write.
 
-    **handles**
-        One or more handles.
+    **handle**
+        The handle to write.
     '''
 
-
-    def join(*handle, root=False):
-
-        import posixpath
-
-        lst = []
-
-        for i, arg in enumerate(handle):
-            if i == 0:
-                lst += [arg]
-            else:
-                lst += [arg.strip('/')]
-
-        if root:
-            return posixpath.join('/', *lst)
-
-        return posixpath.join(*lst)
-
-
-    def write(data, key, handle):
-
-        if isinstance(handle, matplotlib.lines.Line2D):
-
-            xy = handle.get_xydata()
-            dset = data.create_dataset(key, xy.shape, dtype=xy.dtype)
-            dset[:, :] = xy
-            dset.attrs['artist'] = 'matplotlib.lines.Line2D'
-            dset.attrs['color'] = handle.get_color()
-            dset.attrs['linestyle'] = handle.get_linestyle()
-            dset.attrs['marker'] = handle.get_marker()
-
-        else:
-
-            raise IOError('Unknown handle. Please consider filing a bug-report.')
+    import warnings
 
     if key == '/':
         raise IOError('Cannot write to root')
 
-    handles = []
-    for arg in handle:
-        for h in arg:
-            handles += [h]
+    if len(handle) == 1:
+        handle = handle[0]
 
-    if len(handles) == 1:
-        write(data, key, handles[0])
-    else:
-        for i, h in enumerate(handles):
-            write(data, join(key, str(i)), h)
+    if isinstance(handle, matplotlib.lines.Line2D):
+        xy = handle.get_xydata()
+        dset = data.create_dataset(key, xy.shape, dtype=xy.dtype)
+        dset[:, :] = xy
+        dset.attrs['artist'] = 'matplotlib.lines.Line2D'
+        dset.attrs['color'] = handle.get_color()
+        dset.attrs['linestyle'] = handle.get_linestyle()
+        dset.attrs['marker'] = handle.get_marker()
+        return
+
+    if isinstance(handle, matplotlib.container.ErrorbarContainer):
+        xy = handle[0].get_xydata()
+        dset = data.create_dataset(key, xy.shape, dtype=xy.dtype)
+        dset[:, :] = xy
+        dset.attrs['artist'] = 'matplotlib.lines.Line2D'
+        dset.attrs['color'] = handle[0].get_color()
+        dset.attrs['linestyle'] = handle[0].get_linestyle()
+        dset.attrs['marker'] = handle[0].get_marker()
+        warnings.warn('Error-bars not saved, help wanted.', Warning)
+        return
+
+    raise IOError('Unknown handle. Please consider filing a bug-report.')
 
 
 def restore_data(data, key, axis=None):
