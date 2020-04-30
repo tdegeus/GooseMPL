@@ -42,6 +42,18 @@ Probability density
 .. literalinclude:: histogram_powerlaw.py
    :language: python
 
+Random number of discrete CDF
+-----------------------------
+
+.. image:: random_from_cdf.svg
+  :width: 800px
+  :align: center
+
+[:download:`source: random_from_cdf.py <random_from_cdf.py>`]
+
+.. literalinclude:: random_from_cdf.py
+   :language: python
+
 Store plot to HDF5 file
 =======================
 
