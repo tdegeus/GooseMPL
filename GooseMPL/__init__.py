@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 
-__version__ = '0.3.1'
+__version__ = '0.4.0'
 
 
 def system_has_latex():
@@ -924,6 +924,43 @@ the positions of the ticks.
     return lines
 
 
+def random_from_cdf(shape, P, x, linspace=False, shuffle=True):
+    r'''
+Generate a random number based on a discrete cumulative probability density function.
+
+:arguments:
+
+    **shape** (```<array_like>``)
+        Shape of the output array.
+
+    **P, x** (```<array_like>``)
+        Cumulative probability of each data point ``x``.
+
+:options:
+
+    **linspace** ([``False``] | ``True``)
+        If ``True`` the cumulative probabilities of the output array are drawn from an equally
+        spaced array. Otherwise they are drawn randomly.
+
+    **shuffle** ([``True``] | ``False``)
+        If ``True`` the output is shuffled (before reshaping), otherwise the output it sorted.
+    '''
+
+    N = np.prod(shape)
+
+    if linspace:
+        Py = np.linspace(0, 1, N)
+    else:
+        Py = np.sort(np.random.rand(N))
+
+    y = np.interp(Py, P, x)
+
+    if shuffle:
+        np.random.shuffle(y)
+
+    return y.reshape(shape)
+
+
 def histogram_bin_edges_minwidth(min_width, bins):
     r'''
 Merge bins with right-neighbour until each bin has a minimum width.
@@ -1127,7 +1164,7 @@ Determine bin-edges.
 def histogram(data, return_edges=True, **kwargs):
     r'''
 Compute histogram.
-See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`_
+See `numpy.histrogram <https://numpy.org/doc/stable/reference/generated/numpy.histogram.html?highlight=histogram#numpy.histogram>`_
 
 :extra options:
 
