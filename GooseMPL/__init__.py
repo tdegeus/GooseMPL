@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 
-__version__ = '0.3.1'
+__version__ = '0.4.0'
 
 
 def system_has_latex():
@@ -161,6 +161,31 @@ Until that time 'goose-latex' will be an empty style."""
     # write all styles
     for fname, style in styles.items():
         open(os.path.join(dirname, fname), 'w').write(style)
+
+
+def latex_float(number):
+    r'''
+Convert a number to a LaTeX notation.
+See `this answer <https://stackoverflow.com/a/13490601/2646505>`__
+
+:argument:
+
+    **number** (``<float>``)
+        A number.
+
+:returns:
+
+    **string** (``<str>``)
+        The number in LaTeX notation.
+    '''
+
+    float_str = "{0:.2g}".format(number)
+
+    if "e" in float_str:
+        base, exponent = float_str.split("e")
+        return r"{0} \times 10^{{{1}}}".format(base, int(exponent))
+
+    return float_str
 
 
 def set_decade_lims(axis=None, direction=None):
