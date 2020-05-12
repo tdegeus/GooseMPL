@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 
-__version__ = '0.4.0'
+__version__ = '0.4.1'
 
 
 def system_has_latex():
@@ -163,7 +163,7 @@ Until that time 'goose-latex' will be an empty style."""
         open(os.path.join(dirname, fname), 'w').write(style)
 
 
-def latex_float(number):
+def latex_float(number, fmt='{0:.2g}'):
     r'''
 Convert a number to a LaTeX notation.
 See `this answer <https://stackoverflow.com/a/13490601/2646505>`__
@@ -173,17 +173,25 @@ See `this answer <https://stackoverflow.com/a/13490601/2646505>`__
     **number** (``<float>``)
         A number.
 
+:options:
+
+    **fmt** (``<str>`` | [``'{0:.2g}'``])
+        Format used to to initially convert the number to a string.
+
 :returns:
 
     **string** (``<str>``)
         The number in LaTeX notation.
     '''
 
-    float_str = "{0:.2g}".format(number)
+    float_str = fmt.format(number)
 
     if "e" in float_str:
         base, exponent = float_str.split("e")
-        return r"{0} \times 10^{{{1}}}".format(base, int(exponent))
+        if base == '1':
+            return r"10^{{{0}}}".format(int(exponent))
+        else:
+            return r"{0} \times 10^{{{1}}}".format(base, int(exponent))
 
     return float_str
 
