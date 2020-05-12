@@ -12,7 +12,7 @@ Store plot to HDF5 file
 .. autosummary::
 
     GooseMPL.write_data
-    GooseMPL.restore_data
+    GooseMPL.
 
 Set axes limits
 ---------------
@@ -63,6 +63,16 @@ Plot mesh
     GooseMPL.histogram_cumulative
     GooseMPL.cdf
     GooseMPL.hist
+    GooseMPL.random_from_cdf
+
+LaTeX
+-----
+
+.. autosummary::
+
+    GooseMPL.latex_float
+    GooseMPL.system_has_latex
+    GooseMPL.find_latex_font_serif
 
 Styles
 ------
@@ -70,8 +80,9 @@ Styles
 .. autosummary::
 
     GooseMPL.subplots
+    GooseMPL.savefig
+    GooseMPL.close
     GooseMPL.copy_style
-    GooseMPL.find_latex_font_serif
 
 Documentation
 =============
