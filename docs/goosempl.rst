@@ -12,7 +12,7 @@ Store plot to HDF5 file
 .. autosummary::
 
     GooseMPL.write_data
-    GooseMPL.
+    GooseMPL.restore_data
 
 Set axes limits
 ---------------
