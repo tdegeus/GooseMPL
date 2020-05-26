@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 
-__version__ = '0.4.1'
+__version__ = '0.4.2'
 
 
 def system_has_latex():
@@ -708,6 +708,10 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
         raise IOError(
             'This function only works on a log-log scale, where the power-law is a straight line')
 
+    # fix axis limits
+    axis.set_xlim(axis.get_xlim())
+    axis.set_ylim(axis.get_ylim())
+
     # apply width/height
     if width is not None:
 
@@ -772,6 +776,10 @@ Plot a power-law.
     **axis** ([``plt.gca()``] | ...)
         Specify the axis to which to apply the limits.
 
+    **return_parameters** ([``False``] | ``True``)
+        If ``True`` the output is a tuple: the handle of the plot, and the parameters that
+        define the powerlaw: the constant and the exponent.
+
     ...
         Any ``plt.plot(...)`` option.
 
@@ -780,6 +788,7 @@ Plot a power-law.
     The handle of the ``plt.plot(...)`` command.
     '''
 
+    return_parameters = kwargs.pop('return_parameters', False)
     endx = kwargs.pop('endx', None)
     endy = kwargs.pop('endy', None)
     height = kwargs.pop('height', None)
@@ -789,6 +798,10 @@ Plot a power-law.
     if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
         raise IOError(
             'This function only works on a log-log scale, where the power-law is a straight line')
+
+    # fix axis limits
+    axis.set_xlim(axis.get_xlim())
+    axis.set_ylim(axis.get_ylim())
 
     # apply width/height
     if width is not None:
@@ -821,7 +834,12 @@ Plot a power-law.
     else:
         endx = (endy / const) ** (1 / exp)
 
-    return axis.plot([startx, endx], [starty, endy], **kwargs)
+    h = axis.plot([startx, endx], [starty, endy], **kwargs)
+
+    if return_parameters:
+        return (h, (const, exp))
+
+    return h
 
 
 def grid_powerlaw(exp, insert=0, skip=0, end=-1, step=0, axis=None, **kwargs):
