@@ -1124,11 +1124,11 @@ Determine bin-edges.
     **min_width** (``<float>``)
         The minimum width of each bin.
 
-    **integer** ([``False``] | [``True``])
+    **integer** ([``False``] | ``True``)
         If ``True``, bins not encompassing an integer are removed
         (e.g. a bin with edges ``[1.1, 1.9]`` is removed, but ``[0.9, 1.1]`` is not removed).
 
-    **remove_empty_edges** ([``True``] | [``False``])
+    **remove_empty_edges** ([``True``] | ``False``)
         Remove empty bins at the beginning or the end.
 
 :returns:
