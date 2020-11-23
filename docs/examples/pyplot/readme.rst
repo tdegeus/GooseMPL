@@ -66,6 +66,9 @@ Move legend outside the plot
 Line-color from colormap
 ------------------------
 
+With colorbar
+^^^^^^^^^^^^^
+
 :download:`source: plot-cmap.py <plot-cmap.py>`
 
 .. note:: References
@@ -78,7 +81,7 @@ Line-color from colormap
 
   .. code-block:: python
 
-    sm   = plt.cm.ScalarMappable(cmap=cmap, norm=mpl.colors.Normalize(vmin=0,vmax=2))
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=mpl.colors.Normalize(vmin=0,vmax=2))
     sm.set_array([])
 
     cbar = fig.colorbar(sm)
@@ -89,6 +92,31 @@ Line-color from colormap
    :language: python
 
 .. image:: plot-cmap.svg
+  :width: 600px
+  :align: center
+
+Using cycler
+^^^^^^^^^^^^
+
+:download:`source: plot-cycler.py <plot-cycler.py>`
+
+.. note:: References
+
+  `matplotlib - "Styling with cycler" <https://matplotlib.org/3.2.1/tutorials/intermediate/color_cycle.html>`_
+
+.. note::
+
+  The cycler can also be used to cycle through line-styles. E.g.
+
+  .. code-block:: python
+
+    custom_cycler = (cycler(color=['r', 'g', 'b', 'y']) +
+                     cycler(linestyle=['-', '--', ':', '-.']))
+
+.. literalinclude:: plot-cycler.py
+   :language: python
+
+.. image:: plot-cycler.svg
   :width: 600px
   :align: center
 
