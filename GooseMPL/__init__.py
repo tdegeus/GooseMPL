@@ -196,6 +196,13 @@ See `this answer <https://stackoverflow.com/a/13490601/2646505>`__
     return float_str
 
 
+def minmax(a):
+    r'''
+Return [np.min(a), np.max(a)]
+    '''
+    return np.array([np.min(a), np.max(a)])
+
+
 def set_decade_lims(axis=None, direction=None):
     r'''
 Set limits the the floor/ceil values in terms of decades.

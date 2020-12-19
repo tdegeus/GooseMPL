@@ -19,6 +19,7 @@ Set axes limits
 
 .. autosummary::
 
+    GooseMPL.minmax
     GooseMPL.scale_lim
     GooseMPL.set_decade_lims
 
