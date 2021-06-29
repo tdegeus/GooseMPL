@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 
-__version__ = '0.5.0'
+from ._version import *
 
 
 def system_has_latex():
