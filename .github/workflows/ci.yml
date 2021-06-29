@@ -55,20 +55,20 @@ jobs:
     - name: Run examples - pyplot
       working-directory: docs/examples/pyplot
       run: |
-        colorbar.py
-        colormap-part.py
-        colormap.py
-        image.py
-        image_subplots.py
-        image_subplots_bottom.py
-        legend_background.py
-        legend_external.py
-        plot-cmap.py
-        plot.py
-        subplot.py
-        tick-formatter.py
-        tick-log.py
-        tick-log_1.py
-        tick-log_2.py
-        tick-position.py
-        tick-rotation-log.py
+        python colorbar.py
+        python colormap-part.py
+        python colormap.py
+        python image.py
+        python image_subplots.py
+        python image_subplots_bottom.py
+        python legend_background.py
+        python legend_external.py
+        python plot-cmap.py
+        python plot.py
+        python subplot.py
+        python tick-formatter.py
+        python tick-log.py
+        python tick-log_1.py
+        python tick-log_2.py
+        python tick-position.py
+        python tick-rotation-log.py
