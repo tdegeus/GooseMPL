@@ -982,6 +982,46 @@ the positions of the ticks.
     return lines
 
 
+def fit_powerlaw(xdata, ydata, prefactor=None, exponent=None):
+    r'''
+Fit a powerlaw by converting the data to their logarithm and fitting a straight line.
+This function does not support more customised operation like fitting an offset,
+but custom code can be easily written by copy/pasting from here.
+
+:param array_like xdata: Data points along the x-axis.
+:param array_like ydata: Data points along the y-axis.
+:param float prefactor: Specify a prefactor (fitted if not specified).
+:param float exponent: Specify a exponent (fitted if not specified).
+:return: prefactor, exponent
+    '''
+
+    i = np.logical_or(xdata > 0, ydata > 0)
+    logx = np.log(xdata[i])
+    logy = np.log(ydata[i])
+    i = np.logical_or(np.isnan(logx), np.isnan(logy))
+    logy = logy[~i]
+    logx = logx[~i]
+
+    # fit prefactor and exponent
+    if prefactor is None and exponent is None:
+        param = np.polyfit(logx, logy, 1)
+        return np.exp(param[1]), param[0]
+
+    import scipy.optimize
+
+    # fit exponent only
+    if exponent is None:
+        log_prefactor = np.log(prefactor)
+        f = lambda logx, exponent: log_prefactor + exponent * logx
+        param, _ = scipy.optimize.curve_fit(f, logx, logy)
+        return prefactor, param[0]
+
+    # fit prefactor only
+    f = lambda logx, log_prefactor: log_prefactor + exponent * logx
+    param, _ = scipy.optimize.curve_fit(f, logx, logy)
+    return np.exp(param[0]), exponent
+
+
 def random_from_cdf(shape, P, x, linspace=False, shuffle=True):
     r'''
 Generate a random number based on a discrete cumulative probability density function.
