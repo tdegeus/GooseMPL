@@ -995,7 +995,7 @@ but custom code can be easily written by copy/pasting from here.
 :return: prefactor, exponent
     '''
 
-    i = np.logical_or(xdata > 0, ydata > 0)
+    i = np.logical_and(xdata > 0, ydata > 0)
     logx = np.log(xdata[i])
     logy = np.log(ydata[i])
     i = np.logical_or(np.isnan(logx), np.isnan(logy))
