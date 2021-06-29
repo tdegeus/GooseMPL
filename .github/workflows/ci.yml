@@ -40,3 +40,35 @@ jobs:
     - name: Run tests
       working-directory: test
       run: python main.py
+
+    - name: Install style
+      run: python -c "import GooseMPL; GooseMPL.copy_style()"
+
+    - name: Run examples - GooseMPL
+      working-directory: docs/examples/goosempl
+      run: |
+        python histogram.py
+        python histogram_powerlaw.py
+        python patch.py
+        python write_data.py
+
+    - name: Run examples - pyplot
+      working-directory: docs/examples/pyplot
+      run: |
+        colorbar.py
+        colormap-part.py
+        colormap.py
+        image.py
+        image_subplots.py
+        image_subplots_bottom.py
+        legend_background.py
+        legend_external.py
+        plot-cmap.py
+        plot.py
+        subplot.py
+        tick-formatter.py
+        tick-log.py
+        tick-log_1.py
+        tick-log_2.py
+        tick-position.py
+        tick-rotation-log.py
