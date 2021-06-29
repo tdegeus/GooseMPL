@@ -1,6 +1,4 @@
-[![Travis](https://travis-ci.com/tdegeus/GooseMPL.svg?branch=master)](https://travis-ci.com/tdegeus/GooseMPL)
-
-[![Build status](https://ci.appveyor.com/api/projects/status/q6ty6h7sb9mu9jqx/branch/master?svg=true)](https://ci.appveyor.com/project/tdegeus/goosempl/branch/master)
+[![CI](https://github.com/tdegeus/shelephant/workflows/CI/badge.svg)](https://github.com/tdegeus/shelephant/actions)
 
 [![Documentation Status](https://readthedocs.org/projects/goosempl/badge/?version=latest)](http://goosempl.readthedocs.io/en/latest/?badge=latest)
 
