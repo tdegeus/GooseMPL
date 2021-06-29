@@ -1138,6 +1138,30 @@ Merge bins with right-neighbour until each bin has a minimum number of data-poin
             bins = np.hstack((bins[:(idx + 1)], bins[(idx + 2):]))
 
 
+def histogram_bin_edges_integer(bin_edges):
+    r'''
+Merge bins not encompassing an integer with the preceding bin.
+For example: a bin with edges ``[1.1, 1.9]`` is removed, but ``[0.9, 1.1]`` is not removed.
+
+:param array_like bin_edges: Bin-edges.
+:return: Bin-edges.
+    '''
+
+    if type(bin_edges) == list:
+        bin_edges = np.array(bin_edges)
+
+    assert bin_edges.size > 1
+
+    i = np.where(np.diff(np.floor(bin_edges)) >= 1)[0]
+
+    if i[0] > 0:
+        i[0] = 0
+
+    i = list(i) + [bin_edges.size - 1]
+
+    return bin_edges[i]
+
+
 def histogram_bin_edges(
         data,
         bins=10,
@@ -1248,11 +1272,7 @@ Determine bin-edges.
     # select only bins that encompass an integer (and retain the original bounds)
 
     if integer:
-
-        idx = np.where(np.diff(np.floor(bin_edges)) >= 1)[0]
-        idx = np.unique(np.hstack((0, idx, len(bin_edges) - 1)))
-
-        bin_edges = bin_edges[idx]
+        bin_edges = histogram_bin_edges_integer(bin_edges)
 
     # return
 
