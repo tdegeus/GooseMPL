@@ -40,6 +40,7 @@ Annotate power-law
 
 .. autosummary::
 
+    GooseMPL.fit_powerlaw
     GooseMPL.grid_powerlaw
     GooseMPL.plot_powerlaw
     GooseMPL.annotate_powerlaw
@@ -61,6 +62,7 @@ Plot mesh
     GooseMPL.histogram_bin_edges
     GooseMPL.histogram_bin_edges_minwidth
     GooseMPL.histogram_bin_edges_mincount
+    GooseMPL.histogram_bin_edges_integer
     GooseMPL.histogram_cumulative
     GooseMPL.cdf
     GooseMPL.hist
