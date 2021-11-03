@@ -12,10 +12,14 @@ This module provides some extensions to matplotlib.
     | tom@geus.me
     | http://www.geus.me
 '''
+from __future__ import annotations
 
-import matplotlib.pyplot as plt
+import deprecation
 import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
+from numpy.typing import ArrayLike
+from scipy.optimize import curve_fit
 
 from ._version import *
 
@@ -982,44 +986,65 @@ the positions of the ticks.
     return lines
 
 
-def fit_powerlaw(xdata, ydata, prefactor=None, exponent=None):
+def fit_powerlaw(x: ArrayLike, y: ArrayLike, prefactor: float=None, exponent: float=None, axis: plt.Axes=None, fmt: str=None, **kwargs):
     r'''
 Fit a powerlaw by converting the data to their logarithm and fitting a straight line.
 This function does not support more customised operation like fitting an offset,
 but custom code can be easily written by copy/pasting from here.
 
-:param array_like xdata: Data points along the x-axis.
-:param array_like ydata: Data points along the y-axis.
-:param float prefactor: Specify a prefactor (fitted if not specified).
-:param float exponent: Specify a exponent (fitted if not specified).
-:return: prefactor, exponent
+:param x: Data points along the x-axis.
+:param y: Data points along the y-axis.
+:param prefactor: Prefactor (fitted if not specified).
+:param exponent: Exponent (fitted if not specified).
+:param axis: Axis to plot along (not plotted if not specified).
+:param fmt: Format for the label (if plotting). E.g. ``r"${{{0:.3f}}} x^{{{1:.2f}}}$"``
+:param kwargs: Other plot options
+
+:return:
+    ``prefactor, exponent[, h]``
+    The (fitted) prefector and exponent, and optionally the handle (if plotting)
     '''
 
-    i = np.logical_and(xdata > 0, ydata > 0)
-    logx = np.log(xdata[i])
-    logy = np.log(ydata[i])
-    i = np.logical_or(np.isnan(logx), np.isnan(logy))
-    logy = logy[~i]
-    logx = logx[~i]
-
-    # fit prefactor and exponent
     if prefactor is None and exponent is None:
-        param = np.polyfit(logx, logy, 1)
-        return np.exp(param[1]), param[0]
 
-    import scipy.optimize
+        def f(logx, log_prefactor, exponent):
+            return log_prefactor + exponent * logx
 
-    # fit exponent only
-    if exponent is None:
+        param, _ = curve_fit(f, np.log(x), np.log(y))
+        prefactor = np.exp(param[0])
+        exponent = param[1]
+
+    elif prefactor is None:
+
+        def f(logx, log_prefactor):
+            return log_prefactor + exponent * logx
+
+        param, _ = curve_fit(f, np.log(x), np.log(y))
+        prefactor = np.exp(param[0])
+
+    elif exponent is None:
+
         log_prefactor = np.log(prefactor)
-        f = lambda logx, exponent: log_prefactor + exponent * logx
-        param, _ = scipy.optimize.curve_fit(f, logx, logy)
-        return prefactor, param[0]
 
-    # fit prefactor only
-    f = lambda logx, log_prefactor: log_prefactor + exponent * logx
-    param, _ = scipy.optimize.curve_fit(f, logx, logy)
-    return np.exp(param[0]), exponent
+        def f(logx, exponent):
+            return log_prefactor + exponent * logx
+
+        param, _ = curve_fit(f, np.log(x), np.log(y))
+        exponent = param[1]
+
+    if axis is None:
+        return (prefactor, exponent)
+
+    xp = np.logspace(np.log10(np.min(x)), np.log10(np.max(x)), 1000)
+    yp = prefactor * xp ** exponent
+
+    if fmt:
+        assert "label" not in kwargs
+        kwargs["label"] = fmt.format(prefactor, exponent)
+
+    h = axis.plot(xp, yp, **kwargs)
+
+    return (prefactor, exponent, h)
 
 
 def random_from_cdf(shape, P, x, linspace=False, shuffle=True):
@@ -1282,7 +1307,7 @@ Determine bin-edges.
 def histogram(data, return_edges=True, **kwargs):
     r'''
 Compute histogram.
-See `numpy.histrogram <https://numpy.org/doc/stable/reference/generated/numpy.histogram.html?highlight=histogram#numpy.histogram>`_
+See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`__
 
 :extra options:
 
@@ -1307,7 +1332,7 @@ See `numpy.histrogram <https://numpy.org/doc/stable/reference/generated/numpy.hi
 def histogram_cumulative(data, **kwargs):
     r'''
 Compute cumulative histogram.
-See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`_
+See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`__
 
 :extra options:
 
