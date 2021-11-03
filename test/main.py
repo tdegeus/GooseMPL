@@ -1,11 +1,11 @@
 import unittest
-import matplotlib.pyplot as plt
-import GooseMPL as gplt
+
 import numpy as np
+
+import GooseMPL as gplt
 
 
 class Test_fit_powerlaw(unittest.TestCase):
-
     def test_prefactor_exponent(self):
 
         x = np.linspace(0, 1, 1000)
@@ -32,7 +32,6 @@ class Test_fit_powerlaw(unittest.TestCase):
 
 
 class Test_histogram_bin_edges_integer(unittest.TestCase):
-
     def test_front(self):
 
         a = [0, 0.5, 1.5, 2.5]
@@ -52,6 +51,6 @@ class Test_histogram_bin_edges_integer(unittest.TestCase):
         self.assertTrue(np.allclose(gplt.histogram_bin_edges_integer(a), b))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     unittest.main()

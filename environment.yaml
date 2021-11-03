@@ -1,13 +1,9 @@
 channels:
-  - conda-forge
+- conda-forge
 dependencies:
-  # dependencies
-  - python
-  - numpy
-  - matplotlib
-
-  # optional dependencies
-  - scipy
-
-  # examples
-  - h5py
+- deprecation
+- h5py
+- matplotlib
+- numpy
+- python
+- scipy

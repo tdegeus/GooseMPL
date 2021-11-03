@@ -1,4 +1,4 @@
-'''
+"""
 This module provides some extensions to matplotlib.
 
 :dependencies:
@@ -11,7 +11,7 @@ This module provides some extensions to matplotlib.
     | Tom de Geus
     | tom@geus.me
     | http://www.geus.me
-'''
+"""
 from __future__ import annotations
 
 import deprecation
@@ -21,43 +21,43 @@ import numpy as np
 from numpy.typing import ArrayLike
 from scipy.optimize import curve_fit
 
-from ._version import *
+from ._version import version
 
 
 def system_has_latex():
-    r'''
-Return ``True`` if the system has LaTeX installed.
-    '''
+    r"""
+    Return ``True`` if the system has LaTeX installed.
+    """
 
     from distutils.spawn import find_executable
 
-    if find_executable('latex'):
+    if find_executable("latex"):
         return True
 
     return False
 
 
 def find_latex_font_serif():
-    r'''
-Find an available font to mimic LaTeX, and return its name.
-    '''
+    r"""
+    Find an available font to mimic LaTeX, and return its name.
+    """
 
     import os
     import re
     import matplotlib.font_manager
 
     def name(font):
-        return os.path.splitext(os.path.split(font)[-1])[0].split(' - ')[0]
+        return os.path.splitext(os.path.split(font)[-1])[0].split(" - ")[0]
 
-    fonts = matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext='ttf')
+    fonts = matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext="ttf")
 
     matches = [
-        r'.*Computer\ Modern\ Roman.*',
-        r'.*CMU\ Serif.*',
-        r'.*CMU.*',
-        r'.*Times.*',
-        r'.*DejaVu.*',
-        r'.*Serif.*',
+        r".*Computer\ Modern\ Roman.*",
+        r".*CMU\ Serif.*",
+        r".*CMU.*",
+        r".*Times.*",
+        r".*DejaVu.*",
+        r".*Serif.*",
     ]
 
     for match in matches:
@@ -69,9 +69,9 @@ Find an available font to mimic LaTeX, and return its name.
 
 
 def copy_style():
-    r'''
-Write all goose-styles to the relevant matplotlib configuration directory.
-    '''
+    r"""
+    Write all goose-styles to the relevant matplotlib configuration directory.
+    """
 
     import os
 
@@ -80,7 +80,9 @@ Write all goose-styles to the relevant matplotlib configuration directory.
 
     styles = {}
 
-    styles['goose.mplstyle'] = '''
+    styles[
+        "goose.mplstyle"
+    ] = """
 figure.figsize       : 8,6
 font.weight          : normal
 font.size            : 16
@@ -103,40 +105,50 @@ image.origin         : lower
 savefig.facecolor    : none
 figure.autolayout    : True
 errorbar.capsize     : 2
-'''
+"""
 
-    styles['goose-tick-in.mplstyle'] = '''
+    styles[
+        "goose-tick-in.mplstyle"
+    ] = """
 xtick.direction      : in
 ytick.direction      : in
-'''
+"""
 
-    styles['goose-tick-lower.mplstyle'] = '''
+    styles[
+        "goose-tick-lower.mplstyle"
+    ] = """
 xtick.top            : False
 ytick.right          : False
 axes.spines.top      : False
 axes.spines.right    : False
-'''
+"""
 
     if system_has_latex() and find_latex_font_serif() is not None:
 
-        styles['goose-latex.mplstyle'] = r'''
+        styles[
+            "goose-latex.mplstyle"
+        ] = r"""
 font.family          : serif
 font.serif           : {serif:s}
 font.weight          : bold
 font.size            : 18
 text.usetex          : true
 text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
-'''.format(serif=find_latex_font_serif())
+""".format(
+            serif=find_latex_font_serif()
+        )
 
     elif system_has_latex():
 
-        styles['goose-latex.mplstyle'] = r'''
+        styles[
+            "goose-latex.mplstyle"
+        ] = r"""
 font.family          : serif
 font.weight          : bold
 font.size            : 18
 text.usetex          : true
 text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
-'''
+"""
 
     else:
 
@@ -150,13 +162,13 @@ Until that time 'goose-latex' will be an empty style."""
 
         warnings.warn(message, Warning)
 
-        styles['goose-latex.mplstyle'] = ''
+        styles["goose-latex.mplstyle"] = ""
 
     # write style definitions
     # -----------------------
 
     # directory name where the styles are stored
-    dirname = os.path.abspath(os.path.join(matplotlib.get_configdir(), 'stylelib'))
+    dirname = os.path.abspath(os.path.join(matplotlib.get_configdir(), "stylelib"))
 
     # make directory if it does not yet exist
     if not os.path.isdir(dirname):
@@ -164,68 +176,68 @@ Until that time 'goose-latex' will be an empty style."""
 
     # write all styles
     for fname, style in styles.items():
-        open(os.path.join(dirname, fname), 'w').write(style)
+        open(os.path.join(dirname, fname), "w").write(style)
 
 
-def latex_float(number, fmt='{0:.2g}'):
-    r'''
-Convert a number to a LaTeX notation.
-See `this answer <https://stackoverflow.com/a/13490601/2646505>`__
+def latex_float(number, fmt="{0:.2g}"):
+    r"""
+    Convert a number to a LaTeX notation.
+    See `this answer <https://stackoverflow.com/a/13490601/2646505>`__
 
-:argument:
+    :argument:
 
-    **number** (``<float>``)
-        A number.
+        **number** (``<float>``)
+            A number.
 
-:options:
+    :options:
 
-    **fmt** (``<str>`` | [``'{0:.2g}'``])
-        Format used to to initially convert the number to a string.
+        **fmt** (``<str>`` | [``'{0:.2g}'``])
+            Format used to to initially convert the number to a string.
 
-:returns:
+    :returns:
 
-    **string** (``<str>``)
-        The number in LaTeX notation.
-    '''
+        **string** (``<str>``)
+            The number in LaTeX notation.
+    """
 
     float_str = fmt.format(number)
 
     if "e" in float_str:
         base, exponent = float_str.split("e")
-        if base == '1':
-            return r"10^{{{0}}}".format(int(exponent))
+        if base == "1":
+            return fr"10^{{{int(exponent)}}}"
         else:
-            return r"{0} \times 10^{{{1}}}".format(base, int(exponent))
+            return fr"{base} \times 10^{{{int(exponent)}}}"
 
     return float_str
 
 
 def minmax(a):
-    r'''
-Return [np.min(a), np.max(a)]
-    '''
+    r"""
+    Return [np.min(a), np.max(a)]
+    """
     return np.array([np.min(a), np.max(a)])
 
 
 def set_decade_lims(axis=None, direction=None):
-    r'''
-Set limits the the floor/ceil values in terms of decades.
+    r"""
+    Set limits the the floor/ceil values in terms of decades.
 
-:options:
+    :options:
 
-    **axis** ([``plt.gca()``] | ...)
-        Specify the axis to which to apply the limits.
+        **axis** ([``plt.gca()``] | ...)
+            Specify the axis to which to apply the limits.
 
-    **direction** ([``None``] | ``'x'`` | ``'y'``)
-        Limit the application to a certain direction (default: both).
-    '''
+        **direction** ([``None``] | ``'x'`` | ``'y'``)
+            Limit the application to a certain direction (default: both).
+    """
 
     # get current axis
     if axis is None:
         axis = plt.gca()
 
     # x-axis
-    if direction is None or direction == 'x':
+    if direction is None or direction == "x":
         # - get current limits
         MIN, MAX = axis.get_xlim()
         # - floor/ceil to full decades
@@ -235,7 +247,7 @@ Set limits the the floor/ceil values in terms of decades.
         axis.set_xlim([MIN, MAX])
 
     # y-axis
-    if direction is None or direction == 'y':
+    if direction is None or direction == "y":
         # - get current limits
         MIN, MAX = axis.get_ylim()
         # - floor/ceil to full decades
@@ -246,19 +258,19 @@ Set limits the the floor/ceil values in terms of decades.
 
 
 def scale_lim(lim, factor=1.05):
-    r'''
-Scale limits to be 5% wider, to have a nice plot.
+    r"""
+    Scale limits to be 5% wider, to have a nice plot.
 
-:arguments:
+    :arguments:
 
-    **lim** (``<list>`` | ``<str>``)
-        The limits. May be a string "[...,...]", which is converted to a list.
+        **lim** (``<list>`` | ``<str>``)
+            The limits. May be a string "[...,...]", which is converted to a list.
 
-:options:
+    :options:
 
-    **factor** ([``1.05``] | ``<float>``)
-        Scale factor.
-    '''
+        **factor** ([``1.05``] | ``<float>``)
+            Scale factor.
+    """
 
     # convert string "[...,...]"
     if isinstance(lim, str):
@@ -273,25 +285,25 @@ Scale limits to be 5% wider, to have a nice plot.
 
 
 def abs2rel_x(x, axis=None):
-    r'''
-Transform absolute x-coordinates to relative x-coordinates. Relative coordinates correspond to a
-fraction of the relevant axis. Be sure to set the limits and scale before calling this function!
+    r"""
+    Transform absolute x-coordinates to relative x-coordinates. Relative coordinates correspond to a
+    fraction of the relevant axis. Be sure to set the limits and scale before calling this function!
 
-:arguments:
+    :arguments:
 
-    **x** (``float``, ``list``)
-        Absolute coordinates.
+        **x** (``float``, ``list``)
+            Absolute coordinates.
 
-:options:
+    :options:
 
-    **axis** ([``plt.gca()``] | ...)
-        Specify the axis to which to apply the limits.
+        **axis** ([``plt.gca()``] | ...)
+            Specify the axis to which to apply the limits.
 
-:returns:
+    :returns:
 
-    **x** (``float``, ``list``)
-        Relative coordinates.
-    '''
+        **x** (``float``, ``list``)
+            Relative coordinates.
+    """
 
     # get current axis
     if axis is None:
@@ -302,10 +314,14 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
 
     # transform
     # - log scale
-    if axis.get_xscale() == 'log':
+    if axis.get_xscale() == "log":
         try:
-            return [(np.log10(i) - np.log10(xmin)) / (np.log10(xmax) - np.log10(xmin))
-                    if i is not None else i for i in x]
+            return [
+                (np.log10(i) - np.log10(xmin)) / (np.log10(xmax) - np.log10(xmin))
+                if i is not None
+                else i
+                for i in x
+            ]
         except:
             return (np.log10(x) - np.log10(xmin)) / (np.log10(xmax) - np.log10(xmin))
     # - normal scale
@@ -317,25 +333,25 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
 
 
 def abs2rel_y(y, axis=None):
-    r'''
-Transform absolute y-coordinates to relative y-coordinates. Relative coordinates correspond to a
-fraction of the relevant axis. Be sure to set the limits and scale before calling this function!
+    r"""
+    Transform absolute y-coordinates to relative y-coordinates. Relative coordinates correspond to a
+    fraction of the relevant axis. Be sure to set the limits and scale before calling this function!
 
-:arguments:
+    :arguments:
 
-    **y** (``float``, ``list``)
-        Absolute coordinates.
+        **y** (``float``, ``list``)
+            Absolute coordinates.
 
-:options:
+    :options:
 
-    **axis** ([``plt.gca()``] | ...)
-        Specify the axis to which to apply the limits.
+        **axis** ([``plt.gca()``] | ...)
+            Specify the axis to which to apply the limits.
 
-:returns:
+    :returns:
 
-    **y** (``float``, ``list``)
-        Relative coordinates.
-    '''
+        **y** (``float``, ``list``)
+            Relative coordinates.
+    """
 
     # get current axis
     if axis is None:
@@ -346,10 +362,14 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
 
     # transform
     # - log scale
-    if axis.get_xscale() == 'log':
+    if axis.get_xscale() == "log":
         try:
-            return [(np.log10(i) - np.log10(ymin)) / (np.log10(ymax) - np.log10(ymin))
-                    if i is not None else i for i in y]
+            return [
+                (np.log10(i) - np.log10(ymin)) / (np.log10(ymax) - np.log10(ymin))
+                if i is not None
+                else i
+                for i in y
+            ]
         except:
             return (np.log10(y) - np.log10(ymin)) / (np.log10(ymax) - np.log10(ymin))
     # - normal scale
@@ -361,25 +381,25 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
 
 
 def rel2abs_x(x, axis=None):
-    r'''
-Transform relative x-coordinates to absolute x-coordinates. Relative coordinates correspond to a
-fraction of the relevant axis. Be sure to set the limits and scale before calling this function!
+    r"""
+    Transform relative x-coordinates to absolute x-coordinates. Relative coordinates correspond to a
+    fraction of the relevant axis. Be sure to set the limits and scale before calling this function!
 
-:arguments:
+    :arguments:
 
-    **x** (``float``, ``list``)
-        Relative coordinates.
+        **x** (``float``, ``list``)
+            Relative coordinates.
 
-:options:
+    :options:
 
-    **axis** ([``plt.gca()``] | ...)
-        Specify the axis to which to apply the limits.
+        **axis** ([``plt.gca()``] | ...)
+            Specify the axis to which to apply the limits.
 
-:returns:
+    :returns:
 
-    **x** (``float``, ``list``)
-        Absolute coordinates.
-    '''
+        **x** (``float``, ``list``)
+            Absolute coordinates.
+    """
 
     # get current axis
     if axis is None:
@@ -390,10 +410,14 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
 
     # transform
     # - log scale
-    if axis.get_xscale() == 'log':
+    if axis.get_xscale() == "log":
         try:
-            return [10.0 ** (np.log10(xmin) + i * (np.log10(xmax) - np.log10(xmin)))
-                    if i is not None else i for i in x]
+            return [
+                10.0 ** (np.log10(xmin) + i * (np.log10(xmax) - np.log10(xmin)))
+                if i is not None
+                else i
+                for i in x
+            ]
         except:
             return 10.0 ** (np.log10(xmin) + x * (np.log10(xmax) - np.log10(xmin)))
     # - normal scale
@@ -405,25 +429,25 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
 
 
 def rel2abs_y(y, axis=None):
-    r'''
-Transform relative y-coordinates to absolute y-coordinates. Relative coordinates correspond to a
-fraction of the relevant axis. Be sure to set the limits and scale before calling this function!
+    r"""
+    Transform relative y-coordinates to absolute y-coordinates. Relative coordinates correspond to a
+    fraction of the relevant axis. Be sure to set the limits and scale before calling this function!
 
-:arguments:
+    :arguments:
 
-    **y** (``float``, ``list``)
-        Relative coordinates.
+        **y** (``float``, ``list``)
+            Relative coordinates.
 
-:options:
+    :options:
 
-    **axis** ([``plt.gca()``] | ...)
-        Specify the axis to which to apply the limits.
+        **axis** ([``plt.gca()``] | ...)
+            Specify the axis to which to apply the limits.
 
-:returns:
+    :returns:
 
-    **y** (``float``, ``list``)
-        Absolute coordinates.
-    '''
+        **y** (``float``, ``list``)
+            Absolute coordinates.
+    """
 
     # get current axis
     if axis is None:
@@ -434,10 +458,14 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
 
     # transform
     # - log scale
-    if axis.get_xscale() == 'log':
+    if axis.get_xscale() == "log":
         try:
-            return [10.0 ** (np.log10(ymin) + i * (np.log10(ymax) - np.log10(ymin)))
-                    if i is not None else i for i in y]
+            return [
+                10.0 ** (np.log10(ymin) + i * (np.log10(ymax) - np.log10(ymin)))
+                if i is not None
+                else i
+                for i in y
+            ]
         except:
             return 10.0 ** (np.log10(ymin) + y * (np.log10(ymax) - np.log10(ymin)))
     # - normal scale
@@ -449,19 +477,19 @@ fraction of the relevant axis. Be sure to set the limits and scale before callin
 
 
 def subplots(scale_x=None, scale_y=None, scale=None, **kwargs):
-    r'''
-Run ``matplotlib.pyplot.subplots`` with ``figsize`` set to the correct multiple of the default.
+    r"""
+    Run ``matplotlib.pyplot.subplots`` with ``figsize`` set to the correct multiple of the default.
 
-:additional options:
+    :additional options:
 
-    **scale, scale_x, scale_y** (``<float>``)
-        Scale the figure-size (along one of the dimensions).
-  '''
+        **scale, scale_x, scale_y** (``<float>``)
+            Scale the figure-size (along one of the dimensions).
+    """
 
-    if 'figsize' in kwargs:
+    if "figsize" in kwargs:
         return plt.subplots(**kwargs)
 
-    width, height = matplotlib.rcParams['figure.figsize']
+    width, height = matplotlib.rcParams["figure.figsize"]
 
     if scale is not None:
         width *= scale
@@ -473,8 +501,8 @@ Run ``matplotlib.pyplot.subplots`` with ``figsize`` set to the correct multiple 
     if scale_y is not None:
         height *= scale_y
 
-    nrows = kwargs.pop('nrows', 1)
-    ncols = kwargs.pop('ncols', 1)
+    nrows = kwargs.pop("nrows", 1)
+    ncols = kwargs.pop("ncols", 1)
 
     width = ncols * width
     height = nrows * height
@@ -483,9 +511,9 @@ Run ``matplotlib.pyplot.subplots`` with ``figsize`` set to the correct multiple 
 
 
 def savefig(*args, **kwargs):
-    r'''
-Run ``matplotlib.pyplot.savefig`` while making sure that the directory exists.
-    '''
+    r"""
+    Run ``matplotlib.pyplot.savefig`` while making sure that the directory exists.
+    """
 
     import os
 
@@ -499,43 +527,43 @@ Run ``matplotlib.pyplot.savefig`` while making sure that the directory exists.
 
 
 def close(*args, **kwargs):
-    r'''
-Run ``matplotlib.pyplot.close``.
-    '''
+    r"""
+    Run ``matplotlib.pyplot.close``.
+    """
 
     return plt.close(*args, **kwargs)
 
 
-def plot(x, y, units='absolute', axis=None, **kwargs):
-    r'''
-Plot.
+def plot(x, y, units="absolute", axis=None, **kwargs):
+    r"""
+    Plot.
 
-:arguments:
+    :arguments:
 
-    **x, y** (``list``)
-        Coordinates.
+        **x, y** (``list``)
+            Coordinates.
 
-:options:
+    :options:
 
-    **units** ([``'absolute'``] | ``'relative'``)
-        The type of units in which the coordinates are specified. Relative coordinates correspond
-        to a fraction of the relevant axis. If you use relative coordinates, be sure to set the
-        limits and scale before calling this function!
+        **units** ([``'absolute'``] | ``'relative'``)
+            The type of units in which the coordinates are specified. Relative coordinates correspond
+            to a fraction of the relevant axis. If you use relative coordinates, be sure to set the
+            limits and scale before calling this function!
 
-    ...
-        Any ``plt.plot(...)`` option.
+        ...
+            Any ``plt.plot(...)`` option.
 
-:returns:
+    :returns:
 
-    The handle of the ``plt.plot(...)`` command.
-    '''
+        The handle of the ``plt.plot(...)`` command.
+    """
 
     # get current axis
     if axis is None:
         axis = plt.gca()
 
     # transform
-    if units.lower() == 'relative':
+    if units.lower() == "relative":
         x = rel2abs_x(x, axis)
         y = rel2abs_y(y, axis)
 
@@ -543,39 +571,39 @@ Plot.
     return axis.plot(x, y, **kwargs)
 
 
-def text(x, y, text, units='absolute', axis=None, **kwargs):
-    r'''
-Plot a text.
+def text(x, y, text, units="absolute", axis=None, **kwargs):
+    r"""
+    Plot a text.
 
-:arguments:
+    :arguments:
 
-    **x, y** (``float``)
-        Coordinates.
+        **x, y** (``float``)
+            Coordinates.
 
-    **text** (``str``)
-        Text to plot.
+        **text** (``str``)
+            Text to plot.
 
-:options:
+    :options:
 
-    **units** ([``'absolute'``] | ``'relative'``)
-        The type of units in which the coordinates are specified. Relative coordinates correspond
-        to a fraction of the relevant axis. If you use relative coordinates, be sure to set the
-        limits and scale before calling this function!
+        **units** ([``'absolute'``] | ``'relative'``)
+            The type of units in which the coordinates are specified. Relative coordinates correspond
+            to a fraction of the relevant axis. If you use relative coordinates, be sure to set the
+            limits and scale before calling this function!
 
-    ...
-        Any ``plt.text(...)`` option.
+        ...
+            Any ``plt.text(...)`` option.
 
-:returns:
+    :returns:
 
-    The handle of the ``plt.text(...)`` command.
-    '''
+        The handle of the ``plt.text(...)`` command.
+    """
 
     # get current axis
     if axis is None:
         axis = plt.gca()
 
     # transform
-    if units.lower() == 'relative':
+    if units.lower() == "relative":
         x = rel2abs_x(x, axis)
         y = rel2abs_y(y, axis)
 
@@ -584,53 +612,46 @@ Plot a text.
 
 
 def diagonal_powerlaw(
-        exp,
-        ll=None,
-        lr=None,
-        tl=None,
-        tr=None,
-        width=None,
-        height=None,
-        plot=False,
-        **kwargs):
-    r'''
-Set the limits such that a power-law with a certain exponent lies on the diagonal.
+    exp, ll=None, lr=None, tl=None, tr=None, width=None, height=None, plot=False, **kwargs
+):
+    r"""
+    Set the limits such that a power-law with a certain exponent lies on the diagonal.
 
-:arguments:
+    :arguments:
 
-    **exp** (``<float>``)
-        The power-law exponent.
+        **exp** (``<float>``)
+            The power-law exponent.
 
-    **ll, lr, tl, tr** (``<list>``)
-        Coordinates of the lower-left, or the lower-right, or the top-left, or the top-right corner.
+        **ll, lr, tl, tr** (``<list>``)
+            Coordinates of the lower-left, or the lower-right, or the top-left, or the top-right corner.
 
-    **width, height** (``<float>``)
-        Width or the height.
+        **width, height** (``<float>``)
+            Width or the height.
 
-:options:
+    :options:
 
-    **axis** ([``plt.gca()``] | ...)
-        Specify the axis to which to apply the limits.
+        **axis** ([``plt.gca()``] | ...)
+            Specify the axis to which to apply the limits.
 
-    **plot** ([``False``] | ``True``)
-        Plot the diagonal.
+        **plot** ([``False``] | ``True``)
+            Plot the diagonal.
 
-    ...
-        Any ``plt.plot(...)`` option.
+        ...
+            Any ``plt.plot(...)`` option.
 
-:returns:
+    :returns:
 
-    The handle of the ``plt.plot(...)`` command (if any).
-    '''
+        The handle of the ``plt.plot(...)`` command (if any).
+    """
 
-    axis = kwargs.pop('axis', plt.gca())
+    axis = kwargs.pop("axis", plt.gca())
 
     if width and not height:
         width = np.log(width)
     elif height and not width:
         height = np.log(height)
     else:
-        raise IOError('Specify "width" or "height"')
+        raise OSError('Specify "width" or "height"')
 
     if ll and not lr and not tl and not tr:
         ll = [np.log(ll[0]), np.log(ll[1])]
@@ -641,10 +662,10 @@ Set the limits such that a power-law with a certain exponent lies on the diagona
     elif tr and not lr and not tl and not ll:
         tr = [np.log(tr[0]), np.log(tr[1])]
     else:
-        raise IOError('Specify "ll" or "lr" or "tl" or "tr"')
+        raise OSError('Specify "ll" or "lr" or "tl" or "tr"')
 
-    axis.set_xscale('log')
-    axis.set_yscale('log')
+    axis.set_xscale("log")
+    axis.set_yscale("log")
 
     if width:
         height = width * np.abs(exp)
@@ -666,58 +687,59 @@ Set the limits such that a power-law with a certain exponent lies on the diagona
 
     if plot:
         if exp > 0:
-            return plot_powerlaw(exp, 0., 0., 1., **kwargs)
+            return plot_powerlaw(exp, 0.0, 0.0, 1.0, **kwargs)
         else:
-            return plot_powerlaw(exp, 0., 1., 1., **kwargs)
+            return plot_powerlaw(exp, 0.0, 1.0, 1.0, **kwargs)
 
 
 def annotate_powerlaw(text, exp, startx, starty, width=None, rx=0.5, ry=0.5, **kwargs):
-    r'''
-Added a label to the middle of a power-law annotation (see ``goosempl.plot_powerlaw``).
+    r"""
+    Added a label to the middle of a power-law annotation (see ``goosempl.plot_powerlaw``).
 
-:arguments:
+    :arguments:
 
-    **exp** (``float``)
-        The power-law exponent.
+        **exp** (``float``)
+            The power-law exponent.
 
-    **startx, starty** (``float``)
-        Start coordinates.
+        **startx, starty** (``float``)
+            Start coordinates.
 
-:options:
+    :options:
 
-    **width, height, endx, endy** (``float``)
-        Definition of the end coordinate (only on of these options is needed).
+        **width, height, endx, endy** (``float``)
+            Definition of the end coordinate (only on of these options is needed).
 
-    **rx, ry** ([``0.5``] | ``float``)
-        x- and y-position of the label relative to the width and the height of the power-law
-        annotation line (as can be plotted by ``goosempl.plot_powerlaw``).
-        E.g. ``rx = 0.5, ry = 0.5`` corresponds to the middle of the line.
+        **rx, ry** ([``0.5``] | ``float``)
+            x- and y-position of the label relative to the width and the height of the power-law
+            annotation line (as can be plotted by ``goosempl.plot_powerlaw``).
+            E.g. ``rx = 0.5, ry = 0.5`` corresponds to the middle of the line.
 
-    **units** ([``'relative'``] | ``'absolute'``)
-        The type of units in which the coordinates are specified. Relative coordinates correspond
-        to a fraction of the relevant axis. If you use relative coordinates, be sure to set the
-        limits and scale before calling this function!
+        **units** ([``'relative'``] | ``'absolute'``)
+            The type of units in which the coordinates are specified. Relative coordinates correspond
+            to a fraction of the relevant axis. If you use relative coordinates, be sure to set the
+            limits and scale before calling this function!
 
-    **axis** ([``plt.gca()``] | ...)
-        Specify the axis to which to apply the limits.
+        **axis** ([``plt.gca()``] | ...)
+            Specify the axis to which to apply the limits.
 
-    ...
-        Any ``plt.text(...)`` option.
+        ...
+            Any ``plt.text(...)`` option.
 
-:returns:
+    :returns:
 
-    The handle of the ``plt.text(...)`` command.
-    '''
+        The handle of the ``plt.text(...)`` command.
+    """
 
-    endx = kwargs.pop('endx', None)
-    endy = kwargs.pop('endy', None)
-    height = kwargs.pop('height', None)
-    units = kwargs.pop('units', 'relative')
-    axis = kwargs.pop('axis', plt.gca())
+    endx = kwargs.pop("endx", None)
+    endy = kwargs.pop("endy", None)
+    height = kwargs.pop("height", None)
+    units = kwargs.pop("units", "relative")
+    axis = kwargs.pop("axis", plt.gca())
 
-    if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
-        raise IOError(
-            'This function only works on a log-log scale, where the power-law is a straight line')
+    if axis.get_xscale() != "log" or axis.get_yscale() != "log":
+        raise OSError(
+            "This function only works on a log-log scale, where the power-law is a straight line"
+        )
 
     # fix axis limits
     axis.set_xlim(axis.get_xlim())
@@ -741,7 +763,7 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
         endx = None
 
     # transform
-    if units.lower() == 'relative':
+    if units.lower() == "relative":
         [startx, endx] = rel2abs_x([startx, endx], axis)
         [starty, endy] = rel2abs_y([starty, endy], axis)
 
@@ -763,52 +785,53 @@ Added a label to the middle of a power-law annotation (see ``goosempl.plot_power
 
 
 def plot_powerlaw(exp, startx, starty, width=None, **kwargs):
-    r'''
-Plot a power-law.
+    r"""
+    Plot a power-law.
 
-:arguments:
+    :arguments:
 
-    **exp** (``float``)
-        The power-law exponent.
+        **exp** (``float``)
+            The power-law exponent.
 
-    **startx, starty** (``float``)
-        Start coordinates.
+        **startx, starty** (``float``)
+            Start coordinates.
 
-:options:
+    :options:
 
-    **width, height, endx, endy** (``float``)
-        Definition of the end coordinate (only on of these options is needed).
+        **width, height, endx, endy** (``float``)
+            Definition of the end coordinate (only on of these options is needed).
 
-    **units** ([``'relative'``] | ``'absolute'``)
-        The type of units in which the coordinates are specified. Relative coordinates correspond
-        to a fraction of the relevant axis. If you use relative coordinates, be sure to set the
-        limits and scale before calling this function!
+        **units** ([``'relative'``] | ``'absolute'``)
+            The type of units in which the coordinates are specified. Relative coordinates correspond
+            to a fraction of the relevant axis. If you use relative coordinates, be sure to set the
+            limits and scale before calling this function!
 
-    **axis** ([``plt.gca()``] | ...)
-        Specify the axis to which to apply the limits.
+        **axis** ([``plt.gca()``] | ...)
+            Specify the axis to which to apply the limits.
 
-    **return_parameters** ([``False``] | ``True``)
-        If ``True`` the output is a tuple: the handle of the plot, and the parameters that
-        define the powerlaw: the constant and the exponent.
+        **return_parameters** ([``False``] | ``True``)
+            If ``True`` the output is a tuple: the handle of the plot, and the parameters that
+            define the powerlaw: the constant and the exponent.
 
-    ...
-        Any ``plt.plot(...)`` option.
+        ...
+            Any ``plt.plot(...)`` option.
 
-:returns:
+    :returns:
 
-    The handle of the ``plt.plot(...)`` command.
-    '''
+        The handle of the ``plt.plot(...)`` command.
+    """
 
-    return_parameters = kwargs.pop('return_parameters', False)
-    endx = kwargs.pop('endx', None)
-    endy = kwargs.pop('endy', None)
-    height = kwargs.pop('height', None)
-    units = kwargs.pop('units', 'relative')
-    axis = kwargs.pop('axis', plt.gca())
+    return_parameters = kwargs.pop("return_parameters", False)
+    endx = kwargs.pop("endx", None)
+    endy = kwargs.pop("endy", None)
+    height = kwargs.pop("height", None)
+    units = kwargs.pop("units", "relative")
+    axis = kwargs.pop("axis", plt.gca())
 
-    if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
-        raise IOError(
-            'This function only works on a log-log scale, where the power-law is a straight line')
+    if axis.get_xscale() != "log" or axis.get_yscale() != "log":
+        raise OSError(
+            "This function only works on a log-log scale, where the power-law is a straight line"
+        )
 
     # fix axis limits
     axis.set_xlim(axis.get_xlim())
@@ -832,7 +855,7 @@ Plot a power-law.
         endx = None
 
     # transform
-    if units.lower() == 'relative':
+    if units.lower() == "relative":
         [startx, endx] = rel2abs_x([startx, endx], axis)
         [starty, endy] = rel2abs_y([starty, endy], axis)
 
@@ -854,44 +877,45 @@ Plot a power-law.
 
 
 def grid_powerlaw(exp, insert=0, skip=0, end=-1, step=0, axis=None, **kwargs):
-    r'''
-Draw a power-law grid: a grid that respects a certain power-law exponent. The grid-lines start from
-the positions of the ticks.
+    r"""
+    Draw a power-law grid: a grid that respects a certain power-law exponent. The grid-lines start from
+    the positions of the ticks.
 
-:arguments:
+    :arguments:
 
-    **exp** (``float``)
-        The power-law exponent.
+        **exp** (``float``)
+            The power-law exponent.
 
-:options:
+    :options:
 
-    **insert** (``<int>``)
-        Insert extra lines in between the default lines set by the tick positions.
+        **insert** (``<int>``)
+            Insert extra lines in between the default lines set by the tick positions.
 
-    **skip, end, step** (``<int>``)
-        Select from the lines based on ``coor = coor[skip:end:step]``.
+        **skip, end, step** (``<int>``)
+            Select from the lines based on ``coor = coor[skip:end:step]``.
 
-    **axis** ([``plt.gca()``] | ...)
-        Specify the axis to which to apply the limits.
+        **axis** ([``plt.gca()``] | ...)
+            Specify the axis to which to apply the limits.
 
-    ...
-        Any ``plt.plot(...)`` option.
+        ...
+            Any ``plt.plot(...)`` option.
 
-:returns:
+    :returns:
 
-    The handle of the ``plt.plot(...)`` command.
-    '''
+        The handle of the ``plt.plot(...)`` command.
+    """
 
     if axis is None:
         axis = plt.gca()
 
-    kwargs.setdefault('color', 'k')
-    kwargs.setdefault('linestyle', '--')
-    kwargs.setdefault('linewidth', 1)
+    kwargs.setdefault("color", "k")
+    kwargs.setdefault("linestyle", "--")
+    kwargs.setdefault("linewidth", 1)
 
-    if axis.get_xscale() != 'log' or axis.get_yscale() != 'log':
-        raise IOError(
-            'This function only works on a log-log scale, where the power-law is a straight line')
+    if axis.get_xscale() != "log" or axis.get_yscale() != "log":
+        raise OSError(
+            "This function only works on a log-log scale, where the power-law is a straight line"
+        )
 
     # zero-exponent: draw horizontal lines
     if exp == 0:
@@ -909,12 +933,15 @@ the positions of the ticks.
             starty = np.interp(x, xp, starty)
 
         # skip coordinates
-        starty = starty[int(skip): int(end): int(1 + step)]
+        skip = int(skip)
+        end = int(end)
+        step = int(1 + step)
+        starty = starty[skip:end:step]
 
         # set remaining coordinates
         endy = starty
-        startx = np.zeros((len(starty)))
-        endx = np.ones((len(starty)))
+        startx = np.zeros(len(starty))
+        endx = np.ones(len(starty))
 
     # all other exponents
     else:
@@ -943,7 +970,7 @@ the positions of the ticks.
 
         # prepend
         if nneg > 0:
-            startx = np.hstack((startx[0] + np.cumsum(-Dx * np.ones((nneg)))[::-1], startx))
+            startx = np.hstack((startx[0] + np.cumsum(-Dx * np.ones(nneg))[::-1], startx))
 
         # insert extra coordinates
         if insert > 0:
@@ -956,19 +983,20 @@ the positions of the ticks.
 
         # skip coordinates
         if step > 0:
-
-            startx = startx[int(skip):: int(1 + step)]
+            skip = int(skip)
+            step = int(1 + step)
+            startx = startx[skip::step]
 
         # x-coordinate of the end of the lines
         endx = startx + 1 / b
 
         # y-coordinate of the start and the end of the lines
         if exp > 0:
-            starty = np.zeros((len(startx)))
-            endy = np.ones((len(startx)))
+            starty = np.zeros(len(startx))
+            endy = np.ones(len(startx))
         else:
-            starty = np.ones((len(startx)))
-            endy = np.zeros((len(startx)))
+            starty = np.ones(len(startx))
+            endy = np.zeros(len(startx))
 
     # convert to real coordinates
     startx = rel2abs_x(startx, axis)
@@ -1063,26 +1091,26 @@ def fit_powerlaw(
 
 
 def random_from_cdf(shape, P, x, linspace=False, shuffle=True):
-    r'''
-Generate a random number based on a discrete cumulative probability density function.
+    r"""
+    Generate a random number based on a discrete cumulative probability density function.
 
-:arguments:
+    :arguments:
 
-    **shape** (```<array_like>``)
-        Shape of the output array.
+        **shape** (```<array_like>``)
+            Shape of the output array.
 
-    **P, x** (```<array_like>``)
-        Cumulative probability of each data point ``x``.
+        **P, x** (```<array_like>``)
+            Cumulative probability of each data point ``x``.
 
-:options:
+    :options:
 
-    **linspace** ([``False``] | ``True``)
-        If ``True`` the cumulative probabilities of the output array are drawn from an equally
-        spaced array. Otherwise they are drawn randomly.
+        **linspace** ([``False``] | ``True``)
+            If ``True`` the cumulative probabilities of the output array are drawn from an equally
+            spaced array. Otherwise they are drawn randomly.
 
-    **shuffle** ([``True``] | ``False``)
-        If ``True`` the output is shuffled (before reshaping), otherwise the output it sorted.
-    '''
+        **shuffle** ([``True``] | ``False``)
+            If ``True`` the output is shuffled (before reshaping), otherwise the output it sorted.
+    """
 
     N = np.prod(shape)
 
@@ -1100,17 +1128,17 @@ Generate a random number based on a discrete cumulative probability density func
 
 
 def histogram_bin_edges_minwidth(min_width, bins):
-    r'''
-Merge bins with right-neighbour until each bin has a minimum width.
+    r"""
+    Merge bins with right-neighbour until each bin has a minimum width.
 
-:arguments:
+    :arguments:
 
-    **bins** (``<array_like>``)
-        The bin-edges.
+        **bins** (``<array_like>``)
+            The bin-edges.
 
-    **min_width** (``<float>``)
-        The minimum bin width.
-    '''
+        **min_width** (``<float>``)
+            The minimum bin width.
+    """
 
     # escape
     if min_width is None:
@@ -1129,26 +1157,28 @@ Merge bins with right-neighbour until each bin has a minimum width.
         idx = idx[0]
 
         if idx + 1 == len(bins) - 1:
-            bins = np.hstack((bins[:(idx)], bins[-1]))
+            bins = np.hstack((bins[:idx], bins[-1]))
         else:
-            bins = np.hstack((bins[:(idx + 1)], bins[(idx + 2):]))
+            j = idx + 1
+            k = idx + 2
+            bins = np.hstack((bins[:j], bins[k:]))
 
 
 def histogram_bin_edges_mincount(data, min_count, bins):
-    r'''
-Merge bins with right-neighbour until each bin has a minimum number of data-points.
+    r"""
+    Merge bins with right-neighbour until each bin has a minimum number of data-points.
 
-:arguments:
+    :arguments:
 
-    **data** (``<array_like>``)
-        Input data. The histogram is computed over the flattened array.
+        **data** (``<array_like>``)
+            Input data. The histogram is computed over the flattened array.
 
-    **bins** (``<array_like>`` | ``<int>``)
-        The bin-edges (or the number of bins, automatically converted to equal-sized bins).
+        **bins** (``<array_like>`` | ``<int>``)
+            The bin-edges (or the number of bins, automatically converted to equal-sized bins).
 
-    **min_count** (``<int>``)
-        The minimum number of data-points per bin.
-    '''
+        **min_count** (``<int>``)
+            The minimum number of data-points per bin.
+    """
 
     # escape
     if min_count is None:
@@ -1158,7 +1188,7 @@ Merge bins with right-neighbour until each bin has a minimum number of data-poin
 
     # check
     if not isinstance(min_count, int):
-        raise IOError('"min_count" must be an integer number')
+        raise OSError('"min_count" must be an integer number')
 
     # keep removing where needed
     while True:
@@ -1173,19 +1203,21 @@ Merge bins with right-neighbour until each bin has a minimum number of data-poin
         idx = idx[0]
 
         if idx + 1 == len(P):
-            bins = np.hstack((bins[:(idx)], bins[-1]))
+            bins = np.hstack((bins[:idx], bins[-1]))
         else:
-            bins = np.hstack((bins[:(idx + 1)], bins[(idx + 2):]))
+            j = idx + 1
+            k = idx + 2
+            bins = np.hstack((bins[:j], bins[k:]))
 
 
 def histogram_bin_edges_integer(bin_edges):
-    r'''
-Merge bins not encompassing an integer with the preceding bin.
-For example: a bin with edges ``[1.1, 1.9]`` is removed, but ``[0.9, 1.1]`` is not removed.
+    r"""
+    Merge bins not encompassing an integer with the preceding bin.
+    For example: a bin with edges ``[1.1, 1.9]`` is removed, but ``[0.9, 1.1]`` is not removed.
 
-:param array_like bin_edges: Bin-edges.
-:return: Bin-edges.
-    '''
+    :param array_like bin_edges: Bin-edges.
+    :return: Bin-edges.
+    """
 
     if type(bin_edges) == list:
         bin_edges = np.array(bin_edges)
@@ -1203,82 +1235,83 @@ For example: a bin with edges ``[1.1, 1.9]`` is removed, but ``[0.9, 1.1]`` is n
 
 
 def histogram_bin_edges(
-        data,
-        bins=10,
-        mode='equal',
-        min_count=None,
-        integer=False,
-        remove_empty_edges=True,
-        min_width=None):
-    r'''
-Determine bin-edges.
+    data,
+    bins=10,
+    mode="equal",
+    min_count=None,
+    integer=False,
+    remove_empty_edges=True,
+    min_width=None,
+):
+    r"""
+    Determine bin-edges.
 
-:arguments:
+    :arguments:
 
-    **data** (``<array_like>``)
-        Input data. The histogram is computed over the flattened array.
+        **data** (``<array_like>``)
+            Input data. The histogram is computed over the flattened array.
 
-:options:
+    :options:
 
-    **bins** ([``10``] | ``<int>``)
-        The number of bins.
+        **bins** ([``10``] | ``<int>``)
+            The number of bins.
 
-    **mode** ([``'equal'`` | ``<str>``)
-        Mode with which to compute the bin-edges:
-        * ``'equal'``: each bin has equal width.
-        * ``'log'``: logarithmic spacing.
-        * ``'uniform'``: uniform number of data-points per bin.
+        **mode** ([``'equal'`` | ``<str>``)
+            Mode with which to compute the bin-edges:
+            * ``'equal'``: each bin has equal width.
+            * ``'log'``: logarithmic spacing.
+            * ``'uniform'``: uniform number of data-points per bin.
 
-    **min_count** (``<int>``)
-        The minimum number of data-points per bin.
+        **min_count** (``<int>``)
+            The minimum number of data-points per bin.
 
-    **min_width** (``<float>``)
-        The minimum width of each bin.
+        **min_width** (``<float>``)
+            The minimum width of each bin.
 
-    **integer** ([``False``] | ``True``)
-        If ``True``, bins not encompassing an integer are removed
-        (e.g. a bin with edges ``[1.1, 1.9]`` is removed, but ``[0.9, 1.1]`` is not removed).
+        **integer** ([``False``] | ``True``)
+            If ``True``, bins not encompassing an integer are removed
+            (e.g. a bin with edges ``[1.1, 1.9]`` is removed, but ``[0.9, 1.1]`` is not removed).
 
-    **remove_empty_edges** ([``True``] | ``False``)
-        Remove empty bins at the beginning or the end.
+        **remove_empty_edges** ([``True``] | ``False``)
+            Remove empty bins at the beginning or the end.
 
-:returns:
+    :returns:
 
-    **bin_edges** (``<array of dtype float>``)
-        The edges to pass into histogram.
-    '''
+        **bin_edges** (``<array of dtype float>``)
+            The edges to pass into histogram.
+    """
 
     # determine the bin-edges
 
-    if mode == 'equal':
+    if mode == "equal":
 
         bin_edges = np.linspace(np.min(data), np.max(data), bins + 1)
 
-    elif mode == 'log':
+    elif mode == "log":
 
         bin_edges = np.logspace(np.log10(np.min(data)), np.log10(np.max(data)), bins + 1)
 
-    elif mode == 'uniform':
+    elif mode == "uniform":
 
         # - check
         if hasattr(bins, "__len__"):
-            raise IOError('Only the number of bins can be specified')
+            raise OSError("Only the number of bins can be specified")
 
         # - use the minimum count to estimate the number of bins
         if min_count is not None and min_count is not False:
             if not isinstance(min_count, int):
-                raise IOError('"min_count" must be an integer number')
+                raise OSError('"min_count" must be an integer number')
             bins = int(np.floor(float(len(data)) / float(min_count)))
 
         # - number of data-points in each bin (equal for each)
-        count = int(np.floor(float(len(data)) / float(bins))) * np.ones(bins, dtype='int')
+        count = int(np.floor(float(len(data)) / float(bins))) * np.ones(bins, dtype="int")
 
         # - increase the number of data-points by one is an many bins as needed,
         #   such that the total fits the total number of data-points
         count[np.linspace(0, bins - 1, len(data) - np.sum(count)).astype(np.int)] += 1
 
         # - split the data
-        idx = np.empty((bins + 1), dtype='int')
+        idx = np.empty((bins + 1), dtype="int")
         idx[0] = 0
         idx[1:] = np.cumsum(count)
         idx[-1] = len(data) - 1
@@ -1288,7 +1321,7 @@ Determine bin-edges.
 
     else:
 
-        raise IOError('Unknown option')
+        raise OSError("Unknown option")
 
     # remove empty starting and ending bin (related to an unfortunate choice of bin-edges)
 
@@ -1298,8 +1331,8 @@ Determine bin-edges.
 
         idx = np.min(np.where(N > 0)[0])
         jdx = np.max(np.where(N > 0)[0])
-
-        bin_edges = bin_edges[(idx):(jdx + 2)]
+        k = jdx + 2
+        bin_edges = bin_edges[idx:k]
 
     # merge bins with too few data-points (if needed)
 
@@ -1320,15 +1353,15 @@ Determine bin-edges.
 
 
 def histogram(data, return_edges=True, **kwargs):
-    r'''
-Compute histogram.
-See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`__
+    r"""
+    Compute histogram.
+    See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`__
 
-:extra options:
+    :extra options:
 
-    **return_edges** ([``True``] | [``False``])
-        Return the bin edges if set to ``True``, return their midpoints otherwise.
-    '''
+        **return_edges** ([``True``] | [``False``])
+            Return the bin edges if set to ``True``, return their midpoints otherwise.
+    """
 
     # use NumPy's default function to compute the histogram
     P, bin_edges = np.histogram(data, **kwargs)
@@ -1338,30 +1371,30 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
         return P, bin_edges
 
     # convert bin_edges -> mid-points of each bin
-    x = np.diff(bin_edges) / 2. + bin_edges[:-1]
+    x = np.diff(bin_edges) / 2.0 + bin_edges[:-1]
 
     # return with bin mid-points
     return P, x
 
 
 def histogram_cumulative(data, **kwargs):
-    r'''
-Compute cumulative histogram.
-See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`__
+    r"""
+    Compute cumulative histogram.
+    See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`__
 
-:extra options:
+    :extra options:
 
-    **return_edges** ([``True``] | [``False``])
-        Return the bin edges if set to ``True``, return their midpoints otherwise.
+        **return_edges** ([``True``] | [``False``])
+            Return the bin edges if set to ``True``, return their midpoints otherwise.
 
-    **normalize** ([``False``] | ``True``)
-        Normalize such that the final probability is one. In this case the function returns the
-        (binned) cumulative probability density.
-    '''
+        **normalize** ([``False``] | ``True``)
+            Normalize such that the final probability is one. In this case the function returns the
+            (binned) cumulative probability density.
+    """
 
-    return_edges = kwargs.pop('return_edges', True)
+    return_edges = kwargs.pop("return_edges", True)
 
-    norm = kwargs.pop('normalize', False)
+    norm = kwargs.pop("normalize", False)
 
     P, edges = np.histogram(data, **kwargs)
 
@@ -1371,42 +1404,44 @@ See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/nump
         P = P / P[-1]
 
     if not return_edges:
-        edges = np.diff(edges) / 2. + edges[:-1]
+        edges = np.diff(edges) / 2.0 + edges[:-1]
 
     return P, edges
 
 
 def hist(P, edges, **kwargs):
-    r'''
-Plot histogram.
-    '''
+    r"""
+    Plot histogram.
+    """
 
     from matplotlib.collections import PatchCollection
     from matplotlib.patches import Polygon
 
     # extract local options
-    axis = kwargs.pop('axis', plt.gca())
-    cindex = kwargs.pop('cindex', None)
-    autoscale = kwargs.pop('autoscale', True)
+    axis = kwargs.pop("axis", plt.gca())
+    cindex = kwargs.pop("cindex", None)
+    autoscale = kwargs.pop("autoscale", True)
 
     # set defaults
-    kwargs.setdefault('edgecolor', 'k')
+    kwargs.setdefault("edgecolor", "k")
 
     # no color-index -> set transparent
     if cindex is None:
-        kwargs.setdefault('facecolor', (0., 0., 0., 0.))
+        kwargs.setdefault("facecolor", (0.0, 0.0, 0.0, 0.0))
 
     # convert -> list of Polygons
     poly = []
     for p, xl, xu in zip(P, edges[:-1], edges[1:]):
-        coor = np.array([
-            [xl, 0.],
-            [xu, 0.],
-            [xu, p],
-            [xl, p],
-        ])
+        coor = np.array(
+            [
+                [xl, 0.0],
+                [xu, 0.0],
+                [xu, p],
+                [xl, p],
+            ]
+        )
         poly.append(Polygon(coor))
-    args = (poly)
+    args = poly
 
     # convert patches -> matplotlib-objects
     p = PatchCollection(args, **kwargs)
@@ -1422,124 +1457,124 @@ Plot histogram.
         xlim = [edges[0], edges[-1]]
         ylim = [0, np.max(P)]
         # - set limits +/- 10% extra margin
-        axis.set_xlim([xlim[0] - .1 * (xlim[1] - xlim[0]), xlim[1] + .1 * (xlim[1] - xlim[0])])
-        axis.set_ylim([ylim[0] - .1 * (ylim[1] - ylim[0]), ylim[1] + .1 * (ylim[1] - ylim[0])])
+        axis.set_xlim([xlim[0] - 0.1 * (xlim[1] - xlim[0]), xlim[1] + 0.1 * (xlim[1] - xlim[0])])
+        axis.set_ylim([ylim[0] - 0.1 * (ylim[1] - ylim[0]), ylim[1] + 0.1 * (ylim[1] - ylim[0])])
 
     return p
 
 
-def cdf(data, mode='continuous', **kwargs):
-    '''
-Return cumulative density.
+def cdf(data, mode="continuous", **kwargs):
+    """
+    Return cumulative density.
 
-:arguments:
+    :arguments:
 
-    **data** (``<numpy.ndarray>``)
-        Input data, to plot the distribution for.
+        **data** (``<numpy.ndarray>``)
+            Input data, to plot the distribution for.
 
-:returns:
+    :returns:
 
-    **P** (``<numpy.ndarray>``)
-        Cumulative probability.
+        **P** (``<numpy.ndarray>``)
+            Cumulative probability.
 
-    **x** (``<numpy.ndarray>``)
-        Data points.
-    '''
+        **x** (``<numpy.ndarray>``)
+            Data points.
+    """
 
     return (np.linspace(0.0, 1.0, len(data)), np.sort(data))
 
 
 def patch(*args, **kwargs):
-    '''
-Add patches to plot. The color of the patches is indexed according to a specified color-index.
+    """
+    Add patches to plot. The color of the patches is indexed according to a specified color-index.
 
-:example:
+    :example:
 
-    Plot a finite element mesh: the outline of the undeformed configuration, and the deformed
-    configuration for which the elements get a color e.g. based on stress::
+        Plot a finite element mesh: the outline of the undeformed configuration, and the deformed
+        configuration for which the elements get a color e.g. based on stress::
 
-        import matplotlib.pyplot as plt
-        import goosempl          as gplt
+            import matplotlib.pyplot as plt
+            import goosempl          as gplt
 
-        fig,ax = plt.subplots()
+            fig,ax = plt.subplots()
 
-        p = gplt.patch(coor=coor+disp,conn=conn,axis=ax,cindex=stress,cmap='YlOrRd',edgecolor=None)
-        _ = gplt.patch(coor=coor     ,conn=conn,axis=ax)
+            p = gplt.patch(coor=coor+disp,conn=conn,axis=ax,cindex=stress,cmap='YlOrRd',edgecolor=None)
+            _ = gplt.patch(coor=coor     ,conn=conn,axis=ax)
 
-        cbar = fig.colorbar(p,axis=ax,aspect=10)
+            cbar = fig.colorbar(p,axis=ax,aspect=10)
 
-        plt.show()
+            plt.show()
 
-:arguments - option 1/2:
+    :arguments - option 1/2:
 
-    **patches** (``<list>``)
-        List with patch objects. Can be replaced by specifying ``coor`` and ``conn``.
+        **patches** (``<list>``)
+            List with patch objects. Can be replaced by specifying ``coor`` and ``conn``.
 
-:arguments - option 2/2:
+    :arguments - option 2/2:
 
-    **coor** (``<numpy.ndarray>`` | ``<list>`` (nested))
-        Matrix with on each row the coordinates (positions) of each node.
+        **coor** (``<numpy.ndarray>`` | ``<list>`` (nested))
+            Matrix with on each row the coordinates (positions) of each node.
 
-    **conn** (``<numpy.ndarray>`` | ``<list>`` (nested))
-        Matrix with on each row the number numbers (rows in ``coor``) which form an element (patch).
+        **conn** (``<numpy.ndarray>`` | ``<list>`` (nested))
+            Matrix with on each row the number numbers (rows in ``coor``) which form an element (patch).
 
-:options:
+    :options:
 
-    **cindex** (``<numpy.ndarray>``)
-        Array with, for each patch, the value that should be indexed to a color.
+        **cindex** (``<numpy.ndarray>``)
+            Array with, for each patch, the value that should be indexed to a color.
 
-    **axis** (``<matplotlib>``)
-        Specify an axis to include to plot in. By default the current axis is used.
+        **axis** (``<matplotlib>``)
+            Specify an axis to include to plot in. By default the current axis is used.
 
-    **autoscale** ([``True``] | ``False``)
-        Automatically update the limits of the plot (currently automatic limits of Collections are
-        not supported by matplotlib).
+        **autoscale** ([``True``] | ``False``)
+            Automatically update the limits of the plot (currently automatic limits of Collections are
+            not supported by matplotlib).
 
-:recommended options:
+    :recommended options:
 
-    **cmap** (``<str>`` | ...)
-        Specify a colormap.
+        **cmap** (``<str>`` | ...)
+            Specify a colormap.
 
-    **linewidth** (``<float>``)
-        Width of the edges.
+        **linewidth** (``<float>``)
+            Width of the edges.
 
-    **edgecolor** (``<str>`` | ...)
-        Color of the edges.
+        **edgecolor** (``<str>`` | ...)
+            Color of the edges.
 
-    **clim** (``(<float>,<float>)``)
-        Lower and upper limit of the color-axis.
+        **clim** (``(<float>,<float>)``)
+            Lower and upper limit of the color-axis.
 
-:returns:
+    :returns:
 
-    **handle** (``<matplotlib>``)
-        Handle of the patch objects.
+        **handle** (``<matplotlib>``)
+            Handle of the patch objects.
 
-.. seealso::
+    .. seealso::
 
-    *   `matplotlib example
-        <http://matplotlib.org/examples/api/patch_collection.html>`_.
-    '''
+        *   `matplotlib example
+            <http://matplotlib.org/examples/api/patch_collection.html>`_.
+    """
 
     from matplotlib.collections import PatchCollection
     from matplotlib.patches import Polygon
 
     # check dependent options
-    if 'coor' not in kwargs or 'conn' not in kwargs:
-        raise IOError('Specify both "coor" and "conn"')
+    if "coor" not in kwargs or "conn" not in kwargs:
+        raise OSError('Specify both "coor" and "conn"')
 
     # extract local options
-    axis = kwargs.pop('axis', plt.gca())
-    cindex = kwargs.pop('cindex', None)
-    coor = kwargs.pop('coor', None)
-    conn = kwargs.pop('conn', None)
-    autoscale = kwargs.pop('autoscale', True)
+    axis = kwargs.pop("axis", plt.gca())
+    cindex = kwargs.pop("cindex", None)
+    coor = kwargs.pop("coor", None)
+    conn = kwargs.pop("conn", None)
+    autoscale = kwargs.pop("autoscale", True)
 
     # set defaults
-    kwargs.setdefault('edgecolor', 'k')
+    kwargs.setdefault("edgecolor", "k")
 
     # no color-index -> set transparent
     if cindex is None:
-        kwargs.setdefault('facecolor', (0.0, 0.0, 0.0, 0.0))
+        kwargs.setdefault("facecolor", (0.0, 0.0, 0.0, 0.0))
 
     # convert mesh -> list of Polygons
     if coor is not None and conn is not None:
@@ -1562,34 +1597,35 @@ Add patches to plot. The color of the patches is indexed according to a specifie
         xlim = [np.min(coor[:, 0]), np.max(coor[:, 0])]
         ylim = [np.min(coor[:, 1]), np.max(coor[:, 1])]
         # - set limits +/- 10% extra margin
-        axis.set_xlim([xlim[0] - .1 * (xlim[1] - xlim[0]), xlim[1] + .1 * (xlim[1] - xlim[0])])
-        axis.set_ylim([ylim[0] - .1 * (ylim[1] - ylim[0]), ylim[1] + .1 * (ylim[1] - ylim[0])])
+        axis.set_xlim([xlim[0] - 0.1 * (xlim[1] - xlim[0]), xlim[1] + 0.1 * (xlim[1] - xlim[0])])
+        axis.set_ylim([ylim[0] - 0.1 * (ylim[1] - ylim[0]), ylim[1] + 0.1 * (ylim[1] - ylim[0])])
 
     return p
 
 
-
-@deprecation.deprecated(deprecated_in="0.6.0", current_version=version, details="Use openscienceplot_matplotlib")
+@deprecation.deprecated(
+    deprecated_in="0.6.0", current_version=version, details="Use openscienceplot_matplotlib"
+)
 def write_data(data, key, handle):
-    r'''
-Save plot data to HDF5-file.
+    r"""
+    Save plot data to HDF5-file.
 
-:arguments:
+    :arguments:
 
-    **data** (``h5py.File``)
-        Opened HDF5 file.
+        **data** (``h5py.File``)
+            Opened HDF5 file.
 
-    **key** (``<str>``)
-        Name of the dataset to which to write.
+        **key** (``<str>``)
+            Name of the dataset to which to write.
 
-    **handle**
-        The handle to write.
-    '''
+        **handle**
+            The handle to write.
+    """
 
     import warnings
 
-    if key == '/':
-        raise IOError('Cannot write to root')
+    if key == "/":
+        raise OSError("Cannot write to root")
 
     if len(handle) == 1:
         handle = handle[0]
@@ -1598,64 +1634,66 @@ Save plot data to HDF5-file.
         xy = handle.get_xydata()
         dset = data.create_dataset(key, xy.shape, dtype=xy.dtype)
         dset[:, :] = xy
-        dset.attrs['artist'] = 'matplotlib.lines.Line2D'
-        dset.attrs['color'] = handle.get_color()
-        dset.attrs['linestyle'] = handle.get_linestyle()
-        dset.attrs['marker'] = handle.get_marker()
+        dset.attrs["artist"] = "matplotlib.lines.Line2D"
+        dset.attrs["color"] = handle.get_color()
+        dset.attrs["linestyle"] = handle.get_linestyle()
+        dset.attrs["marker"] = handle.get_marker()
         return
 
     if isinstance(handle, matplotlib.container.ErrorbarContainer):
         xy = handle[0].get_xydata()
         dset = data.create_dataset(key, xy.shape, dtype=xy.dtype)
         dset[:, :] = xy
-        dset.attrs['artist'] = 'matplotlib.lines.Line2D'
-        dset.attrs['color'] = handle[0].get_color()
-        dset.attrs['linestyle'] = handle[0].get_linestyle()
-        dset.attrs['marker'] = handle[0].get_marker()
-        warnings.warn('Error-bars not saved, help wanted.', Warning)
+        dset.attrs["artist"] = "matplotlib.lines.Line2D"
+        dset.attrs["color"] = handle[0].get_color()
+        dset.attrs["linestyle"] = handle[0].get_linestyle()
+        dset.attrs["marker"] = handle[0].get_marker()
+        warnings.warn("Error-bars not saved, help wanted.", Warning)
         return
 
-    raise IOError('Unknown handle. Please consider filing a bug-report.')
+    raise OSError("Unknown handle. Please consider filing a bug-report.")
 
 
-@deprecation.deprecated(deprecated_in="0.6.0", current_version=version, details="Use openscienceplot_matplotlib")
+@deprecation.deprecated(
+    deprecated_in="0.6.0", current_version=version, details="Use openscienceplot_matplotlib"
+)
 def restore_data(data, key, axis=None):
-    r'''
-Restore plot from HDF5-file.
+    r"""
+    Restore plot from HDF5-file.
 
-:arguments:
+    :arguments:
 
-    **data** (``h5py.File``)
-        Opened HDF5 file.
+        **data** (``h5py.File``)
+            Opened HDF5 file.
 
-    **key** (``<str>``)
-        Name of the dataset from which to read.
+        **key** (``<str>``)
+            Name of the dataset from which to read.
 
-:options:
+    :options:
 
-    **axis** ([``plt.gca()``] | ...)
-        Specify the axis on which to plot.
+        **axis** ([``plt.gca()``] | ...)
+            Specify the axis on which to plot.
 
-:returns:
+    :returns:
 
-    **handle**
-        The handle of the created plot.
-    '''
+        **handle**
+            The handle of the created plot.
+    """
 
     if axis is None:
         plt.gca()
 
     dset = data[key]
 
-    if dset.attrs['artist'] == 'matplotlib.lines.Line2D':
+    if dset.attrs["artist"] == "matplotlib.lines.Line2D":
 
         xy = dset[...]
         opts = {}
 
-        for key in ['color', 'linestyle', 'marker']:
+        for key in ["color", "linestyle", "marker"]:
             if key in dset.attrs:
                 opts[key] = dset.attrs[key]
 
         return axis.plot(xy, **opts)
 
-    raise IOError('Data-set not interpretable. Please consider filing a bug-report.')
+    raise OSError("Data-set not interpretable. Please consider filing a bug-report.")
