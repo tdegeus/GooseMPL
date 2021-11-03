@@ -1528,6 +1528,8 @@ Add patches to plot. The color of the patches is indexed according to a specifie
     return p
 
 
+
+@deprecation.deprecated(deprecated_in="0.6.0", current_version=version, details="Use openscienceplot_matplotlib")
 def write_data(data, key, handle):
     r'''
 Save plot data to HDF5-file.
@@ -1576,6 +1578,7 @@ Save plot data to HDF5-file.
     raise IOError('Unknown handle. Please consider filing a bug-report.')
 
 
+@deprecation.deprecated(deprecated_in="0.6.0", current_version=version, details="Use openscienceplot_matplotlib")
 def restore_data(data, key, axis=None):
     r'''
 Restore plot from HDF5-file.
