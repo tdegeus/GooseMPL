@@ -986,31 +986,46 @@ the positions of the ticks.
     return lines
 
 
-def fit_powerlaw(x: ArrayLike, y: ArrayLike, prefactor: float=None, exponent: float=None, axis: plt.Axes=None, fmt: str=None, **kwargs):
-    r'''
-Fit a powerlaw by converting the data to their logarithm and fitting a straight line.
-This function does not support more customised operation like fitting an offset,
-but custom code can be easily written by copy/pasting from here.
+def fit_powerlaw(
+    xdata: ArrayLike,
+    ydata: ArrayLike,
+    prefactor: float = None,
+    exponent: float = None,
+    axis: plt.Axes = None,
+    fmt: str = None,
+    **kwargs,
+):
+    r"""
+    Fit a powerlaw by converting the data to their logarithm and fitting a straight line.
+    This function does not support more customised operation like fitting an offset,
+    but custom code can be easily written by copy/pasting from here.
 
-:param x: Data points along the x-axis.
-:param y: Data points along the y-axis.
-:param prefactor: Prefactor (fitted if not specified).
-:param exponent: Exponent (fitted if not specified).
-:param axis: Axis to plot along (not plotted if not specified).
-:param fmt: Format for the label (if plotting). E.g. ``r"${{{0:.3f}}} x^{{{1:.2f}}}$"``
-:param kwargs: Other plot options
+    :param xdata: Data points along the x-axis.
+    :param ydata: Data points along the y-axis.
+    :param prefactor: Prefactor (fitted if not specified).
+    :param exponent: Exponent (fitted if not specified).
+    :param axis: Axis to plot along (not plotted if not specified).
+    :param fmt: Format for the label (if plotting). E.g. ``r"${{{0:.3f}}} x^{{{1:.2f}}}$"``
+    :param kwargs: Other plot options
 
-:return:
-    ``prefactor, exponent[, h]``
-    The (fitted) prefector and exponent, and optionally the handle (if plotting)
-    '''
+    :return:
+        ``prefactor, exponent[, h]``
+        The (fitted) prefector and exponent, and optionally the handle (if plotting)
+    """
+
+    i = np.logical_and(xdata > 0, ydata > 0)
+    logx = np.log(xdata[i])
+    logy = np.log(ydata[i])
+    i = np.logical_or(np.isnan(logx), np.isnan(logy))
+    logy = logy[~i]
+    logx = logx[~i]
 
     if prefactor is None and exponent is None:
 
         def f(logx, log_prefactor, exponent):
             return log_prefactor + exponent * logx
 
-        param, _ = curve_fit(f, np.log(x), np.log(y))
+        param, _ = curve_fit(f, logx, logy)
         prefactor = np.exp(param[0])
         exponent = param[1]
 
@@ -1019,7 +1034,7 @@ but custom code can be easily written by copy/pasting from here.
         def f(logx, log_prefactor):
             return log_prefactor + exponent * logx
 
-        param, _ = curve_fit(f, np.log(x), np.log(y))
+        param, _ = curve_fit(f, logx, logy)
         prefactor = np.exp(param[0])
 
     elif exponent is None:
@@ -1029,13 +1044,13 @@ but custom code can be easily written by copy/pasting from here.
         def f(logx, exponent):
             return log_prefactor + exponent * logx
 
-        param, _ = curve_fit(f, np.log(x), np.log(y))
-        exponent = param[1]
+        param, _ = curve_fit(f, logx, logy)
+        exponent = param[0]
 
     if axis is None:
         return (prefactor, exponent)
 
-    xp = np.logspace(np.log10(np.min(x)), np.log10(np.max(x)), 1000)
+    xp = np.logspace(np.log10(np.min(np.exp(logx))), np.log10(np.max(np.exp(logx))), 1000)
     yp = prefactor * xp ** exponent
 
     if fmt:
