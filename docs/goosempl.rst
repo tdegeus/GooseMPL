@@ -6,14 +6,6 @@ Custom plot functions
 Overview
 ========
 
-Store plot to HDF5 file
------------------------
-
-.. autosummary::
-
-    GooseMPL.write_data
-    GooseMPL.restore_data
-
 Set axes limits
 ---------------
 
