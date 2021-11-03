@@ -102,5 +102,3 @@ To get the available fields do the following:
     import matplotlib as mpl
 
     print(mpl.rcParams)
-
-
