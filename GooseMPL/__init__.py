@@ -1028,6 +1028,10 @@ def fit_powerlaw(
     This function does not support more customised operation like fitting an offset,
     but custom code can be easily written by copy/pasting from here.
 
+    Warning: If this function is used to plot the fit, beware that the fit is plotted using just
+    two data-points if the axis is set to log-log scale
+    (as the fit will be a straight line on that scale).
+
     :param xdata: Data points along the x-axis.
     :param ydata: Data points along the y-axis.
     :param prefactor: Prefactor (fitted if not specified).
@@ -1078,7 +1082,11 @@ def fit_powerlaw(
     if axis is None:
         return (prefactor, exponent)
 
-    xp = np.logspace(np.log10(np.min(np.exp(logx))), np.log10(np.max(np.exp(logx))), 1000)
+    xp = np.array([np.min(np.exp(logx)), np.max(np.exp(logx))])
+
+    if axis.get_xscale() != "log" or axis.get_yscale() != "log":
+        xp = np.logspace(np.log10(xp[0]), np.log10(xp[-1]), 1000)
+
     yp = prefactor * xp ** exponent
 
     if fmt:
