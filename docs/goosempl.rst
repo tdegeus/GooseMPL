@@ -15,6 +15,18 @@ Set axes limits
     GooseMPL.scale_lim
     GooseMPL.set_decade_lims
 
+Ticks
+-----
+
+.. autosummary::
+
+    GooseMPL.log_ticks
+    GooseMPL.log_xticks
+    GooseMPL.log_yticks
+    GooseMPL.log_minorticks
+    GooseMPL.log_minorxticks
+    GooseMPL.log_minoryticks
+
 Plot in relative coordinates
 ----------------------------
 
