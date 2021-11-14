@@ -201,6 +201,200 @@ def latex_float(number, fmt="{0:.2g}"):
     return float_str
 
 
+def log_ticks(
+    lim: tuple(int, int) = None,
+    keep: list = None,
+    base: int | float = int(10),
+    axis: plt.Axes = None,
+    direction: str = "x",
+    minor: bool = False,
+) -> (list, list):
+    """
+    Get ticks and tick-labels between two bounds. For example::
+
+        >>> ticks, labels = log_ticks((0, 3))
+        >>> print(ticks)
+        [1, 10, 100, 1000]
+        >>> print(labels)
+        ['$10^{0}$', '$10^{1}$', '$10^{2}$', '$10^{3}$']
+
+    :param lim: Lower- and upper-bound exponent. Default: read from ``axis`` or ``plt.gca()``,
+    :param keep: Convert labels to empty strings.
+    :param base: The base of the exponents.
+    :param axis: Apply ticks/labels to an axis.
+    :param direction: "x" or "y".
+    :param minor: Use minor ticks: minor ticks are placed without labels.
+    :return: ticks, labels
+    """
+
+    direction = direction.lower()
+    output_only = axis is None
+    axis = axis if axis else plt.gca()
+
+    if direction == "x":
+        xdir = True
+    elif direction == "y":
+        xdir = False
+    else:
+        raise OSError("Unknown direction")
+
+    if lim is None:
+        if xdir:
+            lim = axis.get_xlim()
+        else:
+            lim = axis.get_ylim()
+        lim = [np.floor(np.log(lim[0]) / np.log(base)), np.ceil(np.log(lim[1]) / np.log(base))]
+        lim = [int(i) for i in lim]
+
+    exp_lower, exp_upper = lim
+    ticks = np.logspace(exp_lower, exp_upper, exp_upper - exp_lower + 1, base=base)
+    labels = [fr"${base}^{{{np.log10(i):.0f}}}$" for i in ticks]
+
+    if keep is not None:
+        keep = np.array(keep)
+        keep[keep < 0] = len(labels) + keep[keep < 0]
+        for i in np.setdiff1d(np.arange(len(labels)), keep):
+            labels[i] = ""
+
+    if output_only:
+        return ticks, labels
+
+    if xdir:
+        axis.set_xticks(ticks)
+        axis.set_xticklabels(labels)
+        if not minor:
+            axis.set_xticks([], minor=True)
+    else:
+        axis.set_yticks(ticks)
+        axis.set_yticklabels(labels)
+        if not minor:
+            axis.set_yticks([], minor=True)
+
+    if minor:
+        assert base == 10
+        log_minorticks(
+            10 ** (exp_lower - 1),
+            10 ** (exp_upper + 1),
+            keep=[],
+            axis=axis,
+            direction=direction,
+        )
+
+    return ticks, labels
+
+
+def log_xticks(*args, **kwargs):
+    """
+    See :py:func:`log_ticks`.
+    """
+    kwargs.setdefault("direction", "x")
+    return log_ticks(*args, **kwargs)
+
+
+def log_yticks(*args, **kwargs):
+    """
+    See :py:func:`log_ticks`.
+    """
+    kwargs.setdefault("direction", "y")
+    return log_ticks(*args, **kwargs)
+
+
+def log_minorticks(
+    lim: tuple(float, float) = None,
+    keep: list = None,
+    axis: plt.Axes = None,
+    direction: str = "x",
+    integer: bool = False,
+) -> (list, list):
+    """
+    Get minor ticks and tick-labels between two bounds.
+
+    :param lim: Lower- and upper-bound. Default: read from ``axis`` or ``plt.gca()``,
+    :param keep: Convert labels to empty strings, except at given indices.
+    :param axis: Apply ticks/labels to an axis.
+    :param direction: "x" or "y".
+    :param integer: Show numbers as integer (if possible).
+    :return: ticks, labels
+    """
+
+    direction = direction.lower()
+    output_only = axis is None
+    axis = axis if axis else plt.gca()
+
+    if direction == "x":
+        xdir = True
+    elif direction == "y":
+        xdir = False
+    else:
+        raise OSError("Unknown direction")
+
+    if lim is None:
+        if xdir:
+            lim = axis.get_xlim()
+        else:
+            lim = axis.get_ylim()
+
+    exp_lower = int(np.floor(np.log10(lim[0])))
+    exp_upper = int(np.ceil(np.log10(lim[1])))
+
+    ticks = []
+    labels = []
+
+    for i in range(exp_lower, exp_upper):
+
+        t = list((10 ** i) * np.arange(2, 10, dtype=float))
+
+        if i < 0:
+            fmt = "{0:.0%df}" % np.abs(i)
+        elif integer:
+            fmt = "{0:.0f}"
+        else:
+            fmt = "{0:.01f}"
+
+        ticks += t
+        labels += [fmt.format(i) for i in t]
+
+    ticks = np.array(ticks)
+    labels = np.array(labels)
+    i = np.logical_and(ticks >= lim[0], ticks <= lim[1])
+    ticks = list(ticks[i])
+    labels = [str(i) for i in labels[i]]
+
+    if keep is not None:
+        keep = np.array(keep)
+        keep[keep < 0] = len(labels) + keep[keep < 0]
+        for i in np.setdiff1d(np.arange(len(labels)), keep):
+            labels[i] = ""
+
+    if output_only:
+        return ticks, labels
+
+    if xdir:
+        axis.set_xticks(ticks, minor=True)
+        axis.set_xticklabels(labels, minor=True)
+    else:
+        axis.set_yticks(ticks, minor=True)
+        axis.set_yticklabels(labels, minor=True)
+
+    return ticks, labels
+
+
+def log_minorxticks(*args, **kwargs):
+    """
+    See :py:func:`log_minorticks`.
+    """
+    kwargs.setdefault("direction", "x")
+    return log_minorticks(*args, **kwargs)
+
+
+def log_minoryticks(*args, **kwargs):
+    """
+    See :py:func:`log_minorticks`.
+    """
+    kwargs.setdefault("direction", "y")
+    return log_minorticks(*args, **kwargs)
+
+
 def minmax(a):
     r"""
     Return [np.min(a), np.max(a)]
