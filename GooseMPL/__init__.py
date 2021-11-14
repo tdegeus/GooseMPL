@@ -243,8 +243,9 @@ def log_ticks(
             lim = axis.get_xlim()
         else:
             lim = axis.get_ylim()
-        lim = [np.floor(np.log(lim[0]) / np.log(base)), np.ceil(np.log(lim[1]) / np.log(base))]
-        lim = [int(i) for i in lim]
+        lim = [np.log(i) / np.log(base) for i in lim]
+        lim[0] = int(np.ceil(lim[0] - 0.1))
+        lim[1] = int(np.floor(lim[1] + 0.1))
 
     exp_lower, exp_upper = lim
     ticks = np.logspace(exp_lower, exp_upper, exp_upper - exp_lower + 1, base=base)
@@ -273,8 +274,7 @@ def log_ticks(
     if minor:
         assert base == 10
         log_minorticks(
-            10 ** (exp_lower - 1),
-            10 ** (exp_upper + 1),
+            lim=None,
             keep=[],
             axis=axis,
             direction=direction,
