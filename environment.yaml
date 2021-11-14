@@ -5,6 +5,7 @@ dependencies:
 - h5py
 - matplotlib
 - numpy
+- pip
 - python
 - pyyaml
 - scipy
