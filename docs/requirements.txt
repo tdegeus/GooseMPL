@@ -1,2 +1,5 @@
 matplotlib>=2.2
 numpy>=1.15
+deprecation>=1.0.0
+pyyaml>=1.0
+scipy>=1.0.0
