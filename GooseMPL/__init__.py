@@ -14,10 +14,13 @@ This module provides some extensions to matplotlib.
 """
 from __future__ import annotations
 
+import textwrap
+
 import deprecation
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import yaml
 from numpy.typing import ArrayLike
 from scipy.optimize import curve_fit
 
@@ -80,85 +83,70 @@ def copy_style():
 
     styles = {}
 
-    styles[
-        "goose.mplstyle"
-    ] = """
-figure.figsize       : 8,6
-font.weight          : normal
-font.size            : 16
-axes.labelsize       : medium
-axes.titlesize       : medium
-xtick.labelsize      : small
-ytick.labelsize      : small
-xtick.top            : True
-ytick.right          : True
-axes.facecolor       : none
-axes.prop_cycle      : cycler('color',['k', 'r', 'g', 'b', 'y', 'c', 'm'])
-legend.fontsize      : medium
-legend.fancybox      : true
-legend.columnspacing : 1.0
-legend.handletextpad : 0.2
-lines.linewidth      : 2
-image.cmap           : afmhot
-image.interpolation  : nearest
-image.origin         : lower
-savefig.facecolor    : none
-figure.autolayout    : True
-errorbar.capsize     : 2
-"""
+    styles["goose.mplstyle"] = {
+        "figure.figsize": "8, 6",
+        "font.weight": "normal",
+        "font.size": 16,
+        "axes.labelsize": "medium",
+        "axes.titlesize": "medium",
+        "xtick.labelsize": "small",
+        "ytick.labelsize": "small",
+        "xtick.top": True,
+        "ytick.right": True,
+        "axes.facecolor": "none",
+        "axes.prop_cycle": 'cycler("color",["k", "r", "g", "b", "y", "c", "m"])',
+        "legend.fontsize": "medium",
+        "legend.fancybox": True,
+        "legend.columnspacing": 1.0,
+        "legend.handletextpad": 0.2,
+        "lines.linewidth": 2,
+        "image.cmap": "afmhot",
+        "image.interpolation": "nearest",
+        "image.origin": "lower",
+        "savefig.facecolor": "none",
+        "errorbar.capsize": 2,
+    }
 
-    styles[
-        "goose-tick-in.mplstyle"
-    ] = """
-xtick.direction      : in
-ytick.direction      : in
-"""
+    styles["goose-autolayout.mplstyle"] = {
+        "figure.autolayout": True,
+    }
 
-    styles[
-        "goose-tick-lower.mplstyle"
-    ] = """
-xtick.top            : False
-ytick.right          : False
-axes.spines.top      : False
-axes.spines.right    : False
-"""
+    styles["goose-huge.mplstyle"] = {
+        "font.size": 20,
+    }
 
-    if system_has_latex() and find_latex_font_serif() is not None:
+    styles["goose-tick-in.mplstyle"] = {
+        "xtick.direction": "in",
+        "ytick.direction": "in",
+    }
 
-        styles[
-            "goose-latex.mplstyle"
-        ] = r"""
-font.family          : serif
-font.serif           : {serif:s}
-font.weight          : bold
-font.size            : 18
-text.usetex          : true
-text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
-""".format(
-            serif=find_latex_font_serif()
-        )
+    styles["goose-tick-lower.mplstyle"] = {
+        "xtick.top": False,
+        "ytick.right": False,
+        "axes.spines.top": False,
+        "axes.spines.right": False,
+    }
 
-    elif system_has_latex():
+    styles["goose-latex.mplstyle"] = {
+        "font.family": "serif",
+        "font.serif": find_latex_font_serif(),
+        "font.weight": "bold",
+        "font.size": 18,
+        "text.usetex": True,
+        "text.latex.preamble": r"\usepackage{{amsmath, amsfonts, amssymb, bm}}",
+    }
 
-        styles[
-            "goose-latex.mplstyle"
-        ] = r"""
-font.family          : serif
-font.weight          : bold
-font.size            : 18
-text.usetex          : true
-text.latex.preamble  : \usepackage{{amsmath, amsfonts, amssymb, bm}}
-"""
-
-    else:
+    if not system_has_latex():
 
         import warnings
 
-        message = """LaTeX is not installed.
-To use LaTeX with 'goose-latex':
-1) Install LaTeX.
-2) Rerun 'GooseMPL.copy_style()'
-Until that time 'goose-latex' will be an empty style."""
+        message = textwrap.dedent(
+            """LaTeX is not installed.
+            To use LaTeX with "goose-latex":
+            1) Install LaTeX.
+            2) Rerun "GooseMPL.copy_style()"
+            Until that time "goose-latex" will be an empty style."""
+        )
 
         warnings.warn(message, Warning)
 
@@ -176,7 +164,8 @@ Until that time 'goose-latex' will be an empty style."""
 
     # write all styles
     for fname, style in styles.items():
-        open(os.path.join(dirname, fname), "w").write(style)
+        with open(os.path.join(dirname, fname), "w") as file:
+            yaml.dump(style, file)
 
 
 def latex_float(number, fmt="{0:.2g}"):

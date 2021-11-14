@@ -13,5 +13,5 @@ setup(
     packages=find_packages(),
     use_scm_version={"write_to": "GooseMPL/_version.py"},
     setup_requires=["setuptools_scm"],
-    install_requires=["matplotlib", "numpy", "deprecation", "scipy"],
+    install_requires=["deprecation", "matplotlib", "numpy", "pyyaml", "scipy"],
 )
