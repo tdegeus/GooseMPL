@@ -120,6 +120,24 @@ Using cycler
   :width: 600px
   :align: center
 
+
+Multi-colour line
+^^^^^^^^^^^^^^^^^
+
+:download:`source: multicolor.py <multicolor.py>`
+
+.. note:: References
+
+  `StackOverflow <https://stackoverflow.com/a/59131436/2646505>`__
+
+.. literalinclude:: multicolor.py
+   :language: python
+
+.. image:: multicolor.svg
+  :width: 600px
+  :align: center
+
+
 Ticks
 -----
 
