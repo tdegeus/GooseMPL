@@ -21,6 +21,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import yaml
+from matplotlib.collections import LineCollection
+from matplotlib.colors import BoundaryNorm
+from matplotlib.colors import ListedColormap
 from numpy.typing import ArrayLike
 from scipy.optimize import curve_fit
 
@@ -199,6 +202,55 @@ def latex_float(number, fmt="{0:.2g}"):
             return fr"{base} \times 10^{{{int(exponent)}}}"
 
     return float_str
+
+
+def plotmulticolor(x: ArrayLike, y: ArrayLike, cmap, axis: plt.Axes = None, dashes=100, **kwargs):
+    """
+    Plot with a line in which multiple colors.
+
+    .. tip::
+
+        Set the x- and y-limits before calling this function to get a proper calculation of
+        the size of the dashes.
+
+    :param x: x-coordinates.
+    :param y: y-coordinates.
+    :param cmap: Colormap.
+    :param axis: Apply ticks/labels to an axis.
+    :param dashes: Number of dashes to use on a diagonal line.
+    """
+
+    ax = axis if axis else plt.gca()
+    x = np.array(x)
+    y = np.array(y)
+
+    if isinstance(cmap, list):
+        cmap = ListedColormap(cmap)
+    if isinstance(cmap, np.ndarray):
+        cmap = ListedColormap(cmap)
+
+    norm = BoundaryNorm(np.arange(cmap.N + 1) - 0.5, cmap.N)
+
+    xp = []
+    yp = []
+    cp = []
+
+    for i in range(len(x) - 1):
+        xi = [x[i], x[i + 1]]
+        yi = [y[i], y[i + 1]]
+        d = np.sqrt(
+            np.diff(ax.transLimits.transform(xi)) ** 2 + np.diff(ax.transLimits.transform(yi)) ** 2
+        )
+        n = int(d / np.sqrt(2) * dashes)
+        xp += np.linspace(xi[0], xi[1], n).tolist()
+        yp += np.linspace(yi[0], yi[1], n).tolist()
+        cp += np.tile(np.arange(cmap.N), int(np.ceil(n / cmap.N)))[: n - 1].tolist()
+
+    points = np.array([xp, yp]).T.reshape(-1, 1, 2)
+    segments = np.concatenate([points[:-1], points[1:]], axis=1)
+    lc = LineCollection(segments, cmap=cmap, norm=norm)
+    lc.set_array(np.array(cp))
+    return ax.add_collection(lc)
 
 
 def log_ticks(
