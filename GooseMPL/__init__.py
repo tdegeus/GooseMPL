@@ -1200,6 +1200,7 @@ def grid_powerlaw(exp, insert=0, skip=0, end=-1, step=0, axis=None, **kwargs):
 def fit_powerlaw(
     xdata: ArrayLike,
     ydata: ArrayLike,
+    yerr: ArrayLike = None,
     prefactor: float = None,
     exponent: float = None,
     axis: plt.Axes = None,
@@ -1217,11 +1218,12 @@ def fit_powerlaw(
 
     :param xdata: Data points along the x-axis.
     :param ydata: Data points along the y-axis.
+    :param yerr: Error-bar for ``ydata``.
     :param prefactor: Prefactor (fitted if not specified).
     :param exponent: Exponent (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
-    :param fmt: Format for the label (if plotting). E.g. ``r"${{{0:.3f}}} x^{{{1:.2f}}}$"``
-    :param kwargs: Other plot options
+    :param fmt: Format for the label (if plotting). E.g. ``r"${{{0:.3f}}} x^{{{1:.2f}}}$"``.
+    :param kwargs: Other plot options.
 
     :return:
         ``prefactor, exponent[, h]``
@@ -1231,16 +1233,25 @@ def fit_powerlaw(
     i = np.logical_and(xdata > 0, ydata > 0)
     logx = np.log(xdata[i])
     logy = np.log(ydata[i])
-    i = np.logical_or(np.isnan(logx), np.isnan(logy))
-    logy = logy[~i]
-    logx = logx[~i]
+
+    j = np.logical_or(np.isnan(logx), np.isnan(logy))
+    logy = logy[~j]
+    logx = logx[~j]
+
+    fit_opts = {}
+
+    if yerr is not None:
+        logyerr = np.log(yerr[i])
+        logyerr = logyerr[~j]
+        fit_opts["sigma"] = logyerr
+        fit_opts["absolute_sigma"] = True
 
     if prefactor is None and exponent is None:
 
         def f(logx, log_prefactor, exponent):
             return log_prefactor + exponent * logx
 
-        param, _ = curve_fit(f, logx, logy)
+        param, _ = curve_fit(f, logx, logy, **fit_opts)
         prefactor = np.exp(param[0])
         exponent = param[1]
 
@@ -1249,7 +1260,7 @@ def fit_powerlaw(
         def f(logx, log_prefactor):
             return log_prefactor + exponent * logx
 
-        param, _ = curve_fit(f, logx, logy)
+        param, _ = curve_fit(f, logx, logy, **fit_opts)
         prefactor = np.exp(param[0])
 
     elif exponent is None:
@@ -1259,7 +1270,7 @@ def fit_powerlaw(
         def f(logx, exponent):
             return log_prefactor + exponent * logx
 
-        param, _ = curve_fit(f, logx, logy)
+        param, _ = curve_fit(f, logx, logy, **fit_opts)
         exponent = param[0]
 
     if axis is None:
