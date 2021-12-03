@@ -150,7 +150,7 @@ def copy_style():
 
         warnings.warn(message, Warning)
 
-        styles["goose-latex.mplstyle"] = ""
+        styles["goose-latex.mplstyle"] = {}
 
     # write style definitions
     # -----------------------
