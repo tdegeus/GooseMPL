@@ -105,6 +105,10 @@ class Test_ticks(unittest.TestCase):
 
 
 class Test_fit_powerlaw(unittest.TestCase):
+    """
+    Fit a powerlaw.
+    """
+
     def test_prefactor_exponent(self):
 
         x = np.linspace(0, 1, 1000)
@@ -126,6 +130,44 @@ class Test_fit_powerlaw(unittest.TestCase):
         x = np.linspace(0, 1, 1000)
         y = 1.2 * x ** 3.4
         prefactor, exponent = gplt.fit_powerlaw(x, y, prefactor=1.2)
+        self.assertTrue(np.isclose(prefactor, 1.2))
+        self.assertTrue(np.isclose(exponent, 3.4))
+
+
+class Test_fit_exp(unittest.TestCase):
+    """
+    Fit an exponential.
+    """
+
+    def test_prefactor_exponent(self):
+
+        x = np.linspace(0, 1, 1000)
+        y = 1.2 * np.exp(x * 3.4)
+        prefactor, exponent = gplt.fit_exp(x, y)
+        self.assertTrue(np.isclose(prefactor, 1.2))
+        self.assertTrue(np.isclose(exponent, 3.4))
+
+    def test_prefactor_negative_exponent(self):
+
+        x = np.linspace(0, 1, 1000)
+        y = 1.2 * np.exp(x * -3.4)
+        prefactor, exponent = gplt.fit_exp(x, y)
+        self.assertTrue(np.isclose(prefactor, 1.2))
+        self.assertTrue(np.isclose(exponent, -3.4))
+
+    def test_prefactor(self):
+
+        x = np.linspace(0, 1, 1000)
+        y = 1.2 * np.exp(x * 3.4)
+        prefactor, exponent = gplt.fit_exp(x, y, exponent=3.4)
+        self.assertTrue(np.isclose(prefactor, 1.2))
+        self.assertTrue(np.isclose(exponent, 3.4))
+
+    def test_exponent(self):
+
+        x = np.linspace(0, 1, 1000)
+        y = 1.2 * np.exp(x * 3.4)
+        prefactor, exponent = gplt.fit_exp(x, y, prefactor=1.2)
         self.assertTrue(np.isclose(prefactor, 1.2))
         self.assertTrue(np.isclose(exponent, 3.4))
 
