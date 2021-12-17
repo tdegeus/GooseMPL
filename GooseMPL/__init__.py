@@ -1197,54 +1197,13 @@ def grid_powerlaw(exp, insert=0, skip=0, end=-1, step=0, axis=None, **kwargs):
     return lines
 
 
-def fit_powerlaw(
-    xdata: ArrayLike,
-    ydata: ArrayLike,
-    yerr: ArrayLike = None,
-    prefactor: float = None,
-    exponent: float = None,
-    axis: plt.Axes = None,
-    fmt: str = None,
-    **kwargs,
-):
-    r"""
-    Fit a powerlaw by converting the data to their logarithm and fitting a straight line.
-    This function does not support more customised operation like fitting an offset,
-    but custom code can be easily written by copy/pasting from here.
-
-    Warning: If this function is used to plot the fit, beware that the fit is plotted using just
-    two data-points if the axis is set to log-log scale
-    (as the fit will be a straight line on that scale).
-
-    :param xdata: Data points along the x-axis.
-    :param ydata: Data points along the y-axis.
-    :param yerr: Error-bar for ``ydata``.
-    :param prefactor: Prefactor (fitted if not specified).
-    :param exponent: Exponent (fitted if not specified).
-    :param axis: Axis to plot along (not plotted if not specified).
-    :param fmt: Format for the label (if plotting). E.g. ``r"${{{0:.3f}}} x^{{{1:.2f}}}$"``.
-    :param kwargs: Other plot options.
-
-    :return:
-        ``prefactor, exponent[, h]``
-        The (fitted) prefector and exponent, and optionally the handle (if plotting)
-    """
-
-    i = np.logical_and(xdata > 0, ydata > 0)
-    logx = np.log(xdata[i])
-    logy = np.log(ydata[i])
-
-    j = np.logical_or(np.isnan(logx), np.isnan(logy))
-    logy = logy[~j]
-    logx = logx[~j]
-
-    fit_opts = {}
-
-    if yerr is not None:
-        logyerr = np.log(yerr[i])
-        logyerr = logyerr[~j]
-        fit_opts["sigma"] = logyerr
-        fit_opts["absolute_sigma"] = True
+def _fit_powerlaw(
+    logx: ArrayLike,
+    logy: ArrayLike,
+    prefactor: float,
+    exponent: float,
+    **fit_opts,
+) -> (float, float):
 
     if prefactor is None and exponent is None:
 
@@ -1273,6 +1232,61 @@ def fit_powerlaw(
         param, _ = curve_fit(f, logx, logy, **fit_opts)
         exponent = param[0]
 
+    return prefactor, exponent
+
+
+def fit_powerlaw(
+    xdata: ArrayLike,
+    ydata: ArrayLike,
+    yerr: ArrayLike = None,
+    prefactor: float = None,
+    exponent: float = None,
+    axis: plt.Axes = None,
+    fmt: str = None,
+    **kwargs,
+):
+    r"""
+    Fit a powerlaw :math:`y = c x^b` by converting
+    both :math:`x` and :math:`y` to their logarithm and fitting a straight line.
+    This function does not support more customised operation like fitting an offset,
+    but custom code can be easily written by copy/pasting from here.
+
+    Warning: If this function is used to plot the fit, beware that the fit is plotted using just
+    two data-points if the axis is set to log-log scale
+    (as the fit will be a straight line on that scale).
+
+    :param xdata: Data points along the x-axis.
+    :param ydata: Data points along the y-axis.
+    :param yerr: Error-bar for ``ydata``.
+    :param prefactor: Prefactor (fitted if not specified).
+    :param exponent: Exponent (fitted if not specified).
+    :param axis: Axis to plot along (not plotted if not specified).
+    :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} x^{{{1:.2f}}}$"``.
+    :param kwargs: Other plot options.
+
+    :return:
+        ``prefactor, exponent[, h]``
+        The (fitted) prefector and exponent, and optionally the handle (if plotting)
+    """
+
+    i = np.logical_and(xdata > 0, ydata > 0)
+    logx = np.log(xdata[i])
+    logy = np.log(ydata[i])
+
+    j = np.logical_or(np.isnan(logx), np.isnan(logy))
+    logx = logx[~j]
+    logy = logy[~j]
+
+    fit_opts = {}
+
+    if yerr is not None:
+        logyerr = np.log(yerr[i])
+        logyerr = logyerr[~j]
+        fit_opts["sigma"] = logyerr
+        fit_opts["absolute_sigma"] = True
+
+    prefactor, exponent = _fit_powerlaw(logx, logy, prefactor, exponent, **fit_opts)
+
     if axis is None:
         return (prefactor, exponent)
 
@@ -1282,6 +1296,77 @@ def fit_powerlaw(
         xp = np.logspace(np.log10(xp[0]), np.log10(xp[-1]), 1000)
 
     yp = prefactor * xp ** exponent
+
+    if fmt:
+        assert "label" not in kwargs
+        kwargs["label"] = fmt.format(prefactor, exponent)
+
+    h = axis.plot(xp, yp, **kwargs)
+
+    return (prefactor, exponent, h)
+
+
+def fit_exp(
+    xdata: ArrayLike,
+    ydata: ArrayLike,
+    yerr: ArrayLike = None,
+    prefactor: float = None,
+    exponent: float = None,
+    axis: plt.Axes = None,
+    fmt: str = None,
+    **kwargs,
+):
+    r"""
+    Fit an exponential :math:`y = c \exp(b x)` by converting
+    :math:`y` to its logarithm and fitting a straight line.
+    This function does not support more customised operation like fitting an offset,
+    but custom code can be easily written by copy/pasting from here.
+
+    Warning: If this function is used to plot the fit, beware that the fit is plotted using just
+    two data-points if the axis is set to semilogy-scale
+    (as the fit will be a straight line on that scale).
+
+    :param xdata: Data points along the x-axis.
+    :param ydata: Data points along the y-axis.
+    :param yerr: Error-bar for ``ydata``.
+    :param prefactor: Prefactor (fitted if not specified).
+    :param exponent: Exponent (fitted if not specified).
+    :param axis: Axis to plot along (not plotted if not specified).
+    :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} \exp ({1:.2f} x)$"``.
+    :param kwargs: Other plot options.
+
+    :return:
+        ``prefactor, exponent[, h]``
+        The (fitted) prefector and exponent, and optionally the handle (if plotting)
+    """
+
+    i = ydata > 0
+    x = xdata[i]
+    logy = np.log(ydata[i])
+
+    j = np.isnan(logy)
+    logy = logy[~j]
+    x = x[~j]
+
+    fit_opts = {}
+
+    if yerr is not None:
+        logyerr = np.log(yerr[i])
+        logyerr = logyerr[~j]
+        fit_opts["sigma"] = logyerr
+        fit_opts["absolute_sigma"] = True
+
+    prefactor, exponent = _fit_powerlaw(x, logy, prefactor, exponent, **fit_opts)
+
+    if axis is None:
+        return (prefactor, exponent)
+
+    xp = np.array([np.min(x), np.max(x)])
+
+    if axis.get_yscale() != "log":
+        xp = np.linspace(xp[0], xp[-1], 1000)
+
+    yp = prefactor * np.exp(exponent * xp)
 
     if fmt:
         assert "label" not in kwargs
