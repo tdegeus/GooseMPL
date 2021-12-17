@@ -1377,7 +1377,6 @@ def fit_exp(
     return (prefactor, exponent, h)
 
 
-
 def random_from_cdf(shape, P, x, linspace=False, shuffle=True):
     r"""
     Generate a random number based on a discrete cumulative probability density function.
