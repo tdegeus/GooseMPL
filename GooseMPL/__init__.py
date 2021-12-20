@@ -1447,7 +1447,7 @@ def fit_linear(
     if axis is None:
         return (offset, prefactor)
 
-    xp = np.array([np.min(xdata), np.max(ydata)])
+    xp = np.array([np.min(xdata), np.max(xdata)])
     yp = offset + prefactor * xp
 
     if fmt:
