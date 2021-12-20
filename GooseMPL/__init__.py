@@ -1197,7 +1197,7 @@ def grid_powerlaw(exp, insert=0, skip=0, end=-1, step=0, axis=None, **kwargs):
     return lines
 
 
-def _fit_powerlaw(
+def _fit_loglog(
     logx: ArrayLike,
     logy: ArrayLike,
     prefactor: float,
@@ -1258,8 +1258,8 @@ def fit_powerlaw(
     :param xdata: Data points along the x-axis.
     :param ydata: Data points along the y-axis.
     :param yerr: Error-bar for ``ydata``.
-    :param prefactor: Prefactor (fitted if not specified).
-    :param exponent: Exponent (fitted if not specified).
+    :param prefactor: Prefactor :math:`c` (fitted if not specified).
+    :param exponent: Exponent :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} x^{{{1:.2f}}}$"``.
     :param kwargs: Other plot options.
@@ -1268,6 +1268,9 @@ def fit_powerlaw(
         ``prefactor, exponent[, h]``
         The (fitted) prefector and exponent, and optionally the handle (if plotting)
     """
+
+    xdata = np.array(xdata)
+    ydata = np.array(ydata)
 
     i = np.logical_and(xdata > 0, ydata > 0)
     logx = np.log(xdata[i])
@@ -1285,7 +1288,7 @@ def fit_powerlaw(
         fit_opts["sigma"] = logyerr
         fit_opts["absolute_sigma"] = True
 
-    prefactor, exponent = _fit_powerlaw(logx, logy, prefactor, exponent, **fit_opts)
+    prefactor, exponent = _fit_loglog(logx, logy, prefactor, exponent, **fit_opts)
 
     if axis is None:
         return (prefactor, exponent)
@@ -1329,8 +1332,8 @@ def fit_exp(
     :param xdata: Data points along the x-axis.
     :param ydata: Data points along the y-axis.
     :param yerr: Error-bar for ``ydata``.
-    :param prefactor: Prefactor (fitted if not specified).
-    :param exponent: Exponent (fitted if not specified).
+    :param prefactor: Prefactor :math:`c` (fitted if not specified).
+    :param exponent: Exponent :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} \exp ({1:.2f} x)$"``.
     :param kwargs: Other plot options.
@@ -1339,6 +1342,9 @@ def fit_exp(
         ``prefactor, exponent[, h]``
         The (fitted) prefector and exponent, and optionally the handle (if plotting)
     """
+
+    xdata = np.array(xdata)
+    ydata = np.array(ydata)
 
     i = ydata > 0
     x = xdata[i]
@@ -1356,7 +1362,7 @@ def fit_exp(
         fit_opts["sigma"] = logyerr
         fit_opts["absolute_sigma"] = True
 
-    prefactor, exponent = _fit_powerlaw(x, logy, prefactor, exponent, **fit_opts)
+    prefactor, exponent = _fit_loglog(x, logy, prefactor, exponent, **fit_opts)
 
     if axis is None:
         return (prefactor, exponent)
@@ -1375,6 +1381,82 @@ def fit_exp(
     h = axis.plot(xp, yp, **kwargs)
 
     return (prefactor, exponent, h)
+
+
+def fit_linear(
+    xdata: ArrayLike,
+    ydata: ArrayLike,
+    yerr: ArrayLike = None,
+    offset: float = None,
+    prefactor: float = None,
+    axis: plt.Axes = None,
+    fmt: str = None,
+    **kwargs,
+):
+    r"""
+    Fit a linear function :math:`y = a + b x`.
+
+    :param xdata: Data points along the x-axis.
+    :param ydata: Data points along the y-axis.
+    :param yerr: Error-bar for ``ydata``.
+    :param offset: Offset :math:`a` (fitted if not specified).
+    :param prefactor: Prefactor :math:`b` (fitted if not specified).
+    :param axis: Axis to plot along (not plotted if not specified).
+    :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} + {1:.2f} x$"``.
+    :param kwargs: Other plot options.
+
+    :return:
+        ``offset, prefactor[, h]``
+        The (fitted) offset and prefactor, and optionally the handle (if plotting)
+    """
+
+    xdata = np.array(xdata)
+    ydata = np.array(ydata)
+
+    fit_opts = {}
+
+    if yerr is not None:
+        fit_opts["sigma"] = np.array(yerr)
+        fit_opts["absolute_sigma"] = True
+
+    if offset is None and prefactor is None:
+
+        def f(x, offset, prefactor):
+            return offset + prefactor * x
+
+        param, _ = curve_fit(f, xdata, ydata, **fit_opts)
+        offset = param[0]
+        prefactor = param[1]
+
+    elif offset is None:
+
+        def f(x, offset):
+            return offset + prefactor * x
+
+        param, _ = curve_fit(f, xdata, ydata, **fit_opts)
+        offset = param[0]
+
+    elif prefactor is None:
+
+        def f(x, prefactor):
+            return offset + prefactor * x
+
+        param, _ = curve_fit(f, xdata, ydata, **fit_opts)
+        prefactor = param[0]
+
+    if axis is None:
+        return (offset, prefactor)
+
+    xp = np.array([np.min(xdata), np.max(ydata)])
+    yp = offset + prefactor * xp
+
+    if fmt:
+        assert "label" not in kwargs
+        kwargs["label"] = fmt.format(offset, prefactor)
+
+    h = axis.plot(xp, yp, **kwargs)
+
+    return (offset, prefactor, h)
 
 
 def random_from_cdf(shape, P, x, linspace=False, shuffle=True):

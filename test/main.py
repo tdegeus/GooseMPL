@@ -172,7 +172,41 @@ class Test_fit_exp(unittest.TestCase):
         self.assertTrue(np.isclose(exponent, 3.4))
 
 
+class Test_fit_linear(unittest.TestCase):
+    """
+    Fit a linear.
+    """
+
+    def test_offset_prefactor(self):
+
+        x = np.linspace(0, 1, 1000)
+        y = 1.2 + 3.4 * x
+        offset, prefactor = gplt.fit_linear(x, y)
+        self.assertTrue(np.isclose(offset, 1.2))
+        self.assertTrue(np.isclose(prefactor, 3.4))
+
+    def test_prefactor(self):
+
+        x = np.linspace(0, 1, 1000)
+        y = 1.2 + 3.4 * x
+        offset, prefactor = gplt.fit_linear(x, y, prefactor=3.4)
+        self.assertTrue(np.isclose(offset, 1.2))
+        self.assertTrue(np.isclose(prefactor, 3.4))
+
+    def test_offset(self):
+
+        x = np.linspace(0, 1, 1000)
+        y = 1.2 + 3.4 * x
+        offset, prefactor = gplt.fit_linear(x, y, offset=1.2)
+        self.assertTrue(np.isclose(offset, 1.2))
+        self.assertTrue(np.isclose(prefactor, 3.4))
+
+
 class Test_histogram_bin_edges_integer(unittest.TestCase):
+    """
+    Bin edges.
+    """
+
     def test_front(self):
 
         a = [0, 0.5, 1.5, 2.5]
