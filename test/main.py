@@ -177,29 +177,29 @@ class Test_fit_linear(unittest.TestCase):
     Fit a linear.
     """
 
-    def test_offset_prefactor(self):
+    def test_offset_slope(self):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 + 3.4 * x
-        offset, prefactor = gplt.fit_linear(x, y)
+        offset, slope = gplt.fit_linear(x, y)
         self.assertTrue(np.isclose(offset, 1.2))
-        self.assertTrue(np.isclose(prefactor, 3.4))
+        self.assertTrue(np.isclose(slope, 3.4))
 
-    def test_prefactor(self):
+    def test_slope(self):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 + 3.4 * x
-        offset, prefactor = gplt.fit_linear(x, y, prefactor=3.4)
+        offset, slope = gplt.fit_linear(x, y, slope=3.4)
         self.assertTrue(np.isclose(offset, 1.2))
-        self.assertTrue(np.isclose(prefactor, 3.4))
+        self.assertTrue(np.isclose(slope, 3.4))
 
     def test_offset(self):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 + 3.4 * x
-        offset, prefactor = gplt.fit_linear(x, y, offset=1.2)
+        offset, slope = gplt.fit_linear(x, y, offset=1.2)
         self.assertTrue(np.isclose(offset, 1.2))
-        self.assertTrue(np.isclose(prefactor, 3.4))
+        self.assertTrue(np.isclose(slope, 3.4))
 
 
 class Test_histogram_bin_edges_integer(unittest.TestCase):

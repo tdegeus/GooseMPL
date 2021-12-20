@@ -1388,7 +1388,7 @@ def fit_linear(
     ydata: ArrayLike,
     yerr: ArrayLike = None,
     offset: float = None,
-    prefactor: float = None,
+    slope: float = None,
     axis: plt.Axes = None,
     fmt: str = None,
     **kwargs,
@@ -1400,14 +1400,14 @@ def fit_linear(
     :param ydata: Data points along the y-axis.
     :param yerr: Error-bar for ``ydata``.
     :param offset: Offset :math:`a` (fitted if not specified).
-    :param prefactor: Prefactor :math:`b` (fitted if not specified).
+    :param slope: Slope :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} + {1:.2f} x$"``.
     :param kwargs: Other plot options.
 
     :return:
-        ``offset, prefactor[, h]``
-        The (fitted) offset and prefactor, and optionally the handle (if plotting)
+        ``offset, slope[, h]``
+        The (fitted) offset and slope, and optionally the handle (if plotting)
     """
 
     xdata = np.array(xdata)
@@ -1419,44 +1419,44 @@ def fit_linear(
         fit_opts["sigma"] = np.array(yerr)
         fit_opts["absolute_sigma"] = True
 
-    if offset is None and prefactor is None:
+    if offset is None and slope is None:
 
-        def f(x, offset, prefactor):
-            return offset + prefactor * x
+        def f(x, offset, slope):
+            return offset + slope * x
 
         param, _ = curve_fit(f, xdata, ydata, **fit_opts)
         offset = param[0]
-        prefactor = param[1]
+        slope = param[1]
 
     elif offset is None:
 
         def f(x, offset):
-            return offset + prefactor * x
+            return offset + slope * x
 
         param, _ = curve_fit(f, xdata, ydata, **fit_opts)
         offset = param[0]
 
-    elif prefactor is None:
+    elif slope is None:
 
-        def f(x, prefactor):
-            return offset + prefactor * x
+        def f(x, slope):
+            return offset + slope * x
 
         param, _ = curve_fit(f, xdata, ydata, **fit_opts)
-        prefactor = param[0]
+        slope = param[0]
 
     if axis is None:
-        return (offset, prefactor)
+        return (offset, slope)
 
     xp = np.array([np.min(xdata), np.max(xdata)])
-    yp = offset + prefactor * xp
+    yp = offset + slope * xp
 
     if fmt:
         assert "label" not in kwargs
-        kwargs["label"] = fmt.format(offset, prefactor)
+        kwargs["label"] = fmt.format(offset, slope)
 
     h = axis.plot(xp, yp, **kwargs)
 
-    return (offset, prefactor, h)
+    return (offset, slope, h)
 
 
 def random_from_cdf(shape, P, x, linspace=False, shuffle=True):
