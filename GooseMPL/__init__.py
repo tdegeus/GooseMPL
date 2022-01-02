@@ -1721,29 +1721,45 @@ def histogram_bin_edges(
     return bin_edges
 
 
+def histogram_norm(count: ArrayLike, bin_edges: ArrayLike, norm: float = 1.0):
+    """
+    Renormalise a histogram.
+
+    :param count: Count.
+    :param bin_edges: Bin-edges.
+    :param norm: Area of the histogram.
+    """
+    assert len(bin_edges) == len(count) + 1
+    return count * norm / np.sum(np.diff(bin_edges) * count)
+
+
+def histogram_bin_edges2midpoint(bin_edges: ArrayLike):
+    """
+    Return the midpoints of every bin-edge.
+
+    :param bin_edges: Bin-edges.
+    :param count: Count per bin.
+    :param norm: Area of the histogram.
+    """
+    return 0.5 * np.diff(bin_edges) + bin_edges[:-1]
+
+
 def histogram(data, return_edges=True, **kwargs):
     r"""
     Compute histogram.
-    See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`__
+    This function passes all options to
+    `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`__
+    In addition you can use:
 
-    :extra options:
-
-        **return_edges** ([``True``] | [``False``])
-            Return the bin edges if set to ``True``, return their midpoints otherwise.
+    :param return_edges: Return the bin edges if set to ``True``, return their midpoints otherwise.
     """
 
-    # use NumPy's default function to compute the histogram
     P, bin_edges = np.histogram(data, **kwargs)
 
-    # return default output
     if return_edges:
         return P, bin_edges
 
-    # convert bin_edges -> mid-points of each bin
-    x = np.diff(bin_edges) / 2.0 + bin_edges[:-1]
-
-    # return with bin mid-points
-    return P, x
+    return P, histogram_bin_edges2midpoint(bin_edges)
 
 
 def histogram_cumulative(data, **kwargs):

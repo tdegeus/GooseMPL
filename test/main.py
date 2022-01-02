@@ -202,6 +202,33 @@ class Test_fit_linear(unittest.TestCase):
         self.assertTrue(np.isclose(slope, 3.4))
 
 
+class Test_histogram_norm(unittest.TestCase):
+    """
+    Histogram normalisation.
+    """
+
+    def test_density(self):
+
+        data = [0, 0, 0, 1, 1, 2]
+        bin_edges = [-0.5, 0.5, 1.5, 2.5]
+        p = gplt.histogram_norm(*np.histogram(data, bins=bin_edges))
+        q = gplt.histogram_norm(p, bin_edges)
+        r, _ = np.histogram(data, bins=bin_edges, density=True)
+        self.assertTrue(np.allclose(p, r))
+        self.assertTrue(np.allclose(q, r))
+
+
+class Test_histogram_bin_edges2midpoint(unittest.TestCase):
+    """
+    Midpoints of bins
+    """
+
+    def test_simple(self):
+        bin_edges = [-0.5, 0.5, 1.5, 2.5]
+        mid = [0, 1, 2]
+        self.assertTrue(np.allclose(gplt.histogram_bin_edges2midpoint(bin_edges), mid))
+
+
 class Test_histogram_bin_edges_integer(unittest.TestCase):
     """
     Bin edges.
