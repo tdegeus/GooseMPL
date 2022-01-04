@@ -40,7 +40,7 @@ class Test_ticks(unittest.TestCase):
 
     def test_log_minorticks(self):
 
-        ticks, labels = gplt.log_minorticks((1, 10), integer=True)
+        ticks, labels = gplt.log_minorticks((1, 10))
         self.assertEqual(list(ticks), [2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(labels, ["2", "3", "4", "5", "6", "7", "8", "9"])
 
@@ -48,12 +48,34 @@ class Test_ticks(unittest.TestCase):
 
         fig, ax = plt.subplots()
 
-        ax.set_xlim([1, 10])
-        ax.set_ylim([0.01, 1])
+        ax.set_xlim([0.1, 10])
+        ax.set_ylim([0.01, 0.7])
 
-        ticks, labels = gplt.log_minorxticks(integer=True)
-        self.assertEqual(list(ticks), [2, 3, 4, 5, 6, 7, 8, 9])
-        self.assertEqual(labels, ["2", "3", "4", "5", "6", "7", "8", "9"])
+        ticks, labels = gplt.log_minorxticks()
+        self.assertEqual(
+            list(ticks), [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 2, 3, 4, 5, 6, 7, 8, 9]
+        )
+        self.assertEqual(
+            labels,
+            [
+                "0.2",
+                "0.3",
+                "0.4",
+                "0.5",
+                "0.6",
+                "0.7",
+                "0.8",
+                "0.9",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+            ],
+        )
 
         ticks, labels = gplt.log_minoryticks()
         self.assertTrue(
@@ -74,8 +96,6 @@ class Test_ticks(unittest.TestCase):
                     0.5,
                     0.6,
                     0.7,
-                    0.8,
-                    0.9,
                 ],
             )
         )
@@ -96,8 +116,6 @@ class Test_ticks(unittest.TestCase):
                 "0.5",
                 "0.6",
                 "0.7",
-                "0.8",
-                "0.9",
             ],
         )
 
