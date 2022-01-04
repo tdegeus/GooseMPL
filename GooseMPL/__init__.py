@@ -1245,6 +1245,7 @@ def fit_powerlaw(
     exponent: float = None,
     axis: plt.Axes = None,
     fmt: str = None,
+    extrapolate: bool = False,
     **kwargs,
 ):
     r"""
@@ -1264,11 +1265,16 @@ def fit_powerlaw(
     :param exponent: Exponent :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} x^{{{1:.2f}}}$"``.
+    :param extrapolate: Plot the powerlaw on the full range of ``axis.get_xlim()``.
     :param kwargs: Other plot options.
 
     :return:
-        ``prefactor, exponent[, h]``
-        The (fitted) prefector and exponent, and optionally the handle (if plotting)
+        ``prefactor, exponent[, plot_details]``
+        The (fitted) prefector and exponent.
+        If plotting, the following details are return as dictionary::
+
+            handle: Handle of the plot.
+            label: Label (if ``fmt`` was specified).
     """
 
     xdata = np.array(xdata)
@@ -1296,6 +1302,10 @@ def fit_powerlaw(
         return (prefactor, exponent)
 
     xp = np.array([np.min(np.exp(logx)), np.max(np.exp(logx))])
+    details = {}
+
+    if extrapolate:
+        xp = np.array(axis.get_xlim())
 
     if axis.get_xscale() != "log" or axis.get_yscale() != "log":
         xp = np.logspace(np.log10(xp[0]), np.log10(xp[-1]), 1000)
@@ -1304,11 +1314,13 @@ def fit_powerlaw(
 
     if fmt:
         assert "label" not in kwargs
-        kwargs["label"] = fmt.format(prefactor, exponent)
+        label = fmt.format(prefactor, exponent)
+        kwargs["label"] = label
+        details["label"] = label
 
-    h = axis.plot(xp, yp, **kwargs)
+    details["handle"] = axis.plot(xp, yp, **kwargs)
 
-    return (prefactor, exponent, h)
+    return (prefactor, exponent, details)
 
 
 def fit_exp(
