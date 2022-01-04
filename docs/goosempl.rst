@@ -67,6 +67,8 @@ Plot mesh
     GooseMPL.histogram_bin_edges_minwidth
     GooseMPL.histogram_bin_edges_mincount
     GooseMPL.histogram_bin_edges_integer
+    GooseMPL.histogram_bin_edges2midpoint
+    GooseMPL.histogram_norm
     GooseMPL.histogram_cumulative
     GooseMPL.cdf
     GooseMPL.hist
