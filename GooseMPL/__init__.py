@@ -218,6 +218,10 @@ def log_ticks(
         >>> print(labels)
         ['$10^{0}$', '$10^{1}$', '$10^{2}$', '$10^{3}$']
 
+    This function can for example be used to select a fraction of the default ticks along an axis::
+
+        log_ticks(keep=[0, -1], axis=ax, minor=True)
+
     :param lim: Lower- and upper-bound exponent. Default: read from ``axis`` or ``plt.gca()``,
     :param keep: Convert labels to empty strings.
     :param base: The base of the exponents.
@@ -304,7 +308,6 @@ def log_minorticks(
     keep: list = None,
     axis: plt.Axes = None,
     direction: str = "x",
-    integer: bool = False,
 ) -> (list, list):
     """
     Get minor ticks and tick-labels between two bounds.
@@ -313,7 +316,6 @@ def log_minorticks(
     :param keep: Convert labels to empty strings, except at given indices.
     :param axis: Apply ticks/labels to an axis.
     :param direction: "x" or "y".
-    :param integer: Show numbers as integer (if possible).
     :return: ticks, labels
     """
 
@@ -342,16 +344,16 @@ def log_minorticks(
 
     for i in range(exp_lower, exp_upper):
 
-        t = list((10 ** i) * np.arange(2, 10, dtype=float))
+        t = (10 ** i) * np.arange(2, 10, dtype=float)
 
         if i < 0:
+            t = np.around(t, -i)
             fmt = "{0:.0%df}" % np.abs(i)
-        elif integer:
-            fmt = "{0:.0f}"
         else:
-            fmt = "{0:.01f}"
+            t = np.around(t, i)
+            fmt = "{0:.0f}"
 
-        ticks += t
+        ticks += t.tolist()
         labels += [fmt.format(i) for i in t]
 
     ticks = np.array(ticks)
