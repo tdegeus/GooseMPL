@@ -207,7 +207,7 @@ def log_ticks(
     base: int | float = int(10),
     axis: plt.Axes = None,
     direction: str = "x",
-    minor: bool = False,
+    minor: bool = True,
 ) -> (list, list):
     """
     Get ticks and tick-labels between two bounds. For example::
@@ -1245,7 +1245,7 @@ def fit_powerlaw(
     exponent: float = None,
     axis: plt.Axes = None,
     fmt: str = None,
-    extrapolate: bool = False,
+    extrapolate: bool | dict = False,
     **kwargs,
 ):
     r"""
@@ -1265,8 +1265,12 @@ def fit_powerlaw(
     :param exponent: Exponent :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} x^{{{1:.2f}}}$"``.
-    :param extrapolate: Plot the powerlaw on the full range of ``axis.get_xlim()``.
-    :param kwargs: Other plot options.
+    :param extrapolate:
+        Plot the powerlaw on the full range of ``axis.get_xlim()``.
+        Instead of true, one can specify plot options for the extrapolated line.
+
+    :param kwargs:
+        Other plot options.
 
     :return:
         ``prefactor, exponent[, plot_details]``
@@ -1291,7 +1295,7 @@ def fit_powerlaw(
     fit_opts = {}
 
     if yerr is not None:
-        logyerr = np.log(yerr[i])
+        logyerr = np.log(np.array(yerr)[i])
         logyerr = logyerr[~j]
         fit_opts["sigma"] = logyerr
         fit_opts["absolute_sigma"] = True
@@ -1302,15 +1306,21 @@ def fit_powerlaw(
         return (prefactor, exponent)
 
     xp = np.array([np.min(np.exp(logx)), np.max(np.exp(logx))])
+    xl = np.array([axis.get_xlim()[0], xp[0]])
+    xu = np.array([xp[1], axis.get_xlim()[1]])
     details = {}
 
-    if extrapolate:
+    if isinstance(extrapolate, bool) and extrapolate:
         xp = np.array(axis.get_xlim())
 
     if axis.get_xscale() != "log" or axis.get_yscale() != "log":
         xp = np.logspace(np.log10(xp[0]), np.log10(xp[-1]), 1000)
+        xl = np.logspace(np.log10(xl[0]), np.log10(xl[-1]), 1000)
+        xu = np.logspace(np.log10(xu[0]), np.log10(xu[-1]), 1000)
 
     yp = prefactor * xp ** exponent
+    yl = prefactor * xl ** exponent
+    yu = prefactor * xu ** exponent
 
     if fmt:
         assert "label" not in kwargs
@@ -1319,6 +1329,10 @@ def fit_powerlaw(
         details["label"] = label
 
     details["handle"] = axis.plot(xp, yp, **kwargs)
+
+    if isinstance(extrapolate, dict):
+        details["handle_lower"] = axis.plot(xl, yl, **extrapolate)
+        details["handle_upper"] = axis.plot(xu, yu, **extrapolate)
 
     return (prefactor, exponent, details)
 
@@ -1331,6 +1345,7 @@ def fit_exp(
     exponent: float = None,
     axis: plt.Axes = None,
     fmt: str = None,
+    extrapolate: bool | dict = False,
     **kwargs,
 ):
     r"""
@@ -1350,11 +1365,20 @@ def fit_exp(
     :param exponent: Exponent :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} \exp ({1:.2f} x)$"``.
-    :param kwargs: Other plot options.
+    :param extrapolate:
+        Plot the powerlaw on the full range of ``axis.get_xlim()``.
+        Instead of true, one can specify plot options for the extrapolated line.
+
+    :param kwargs:
+        Other plot options.
 
     :return:
-        ``prefactor, exponent[, h]``
-        The (fitted) prefector and exponent, and optionally the handle (if plotting)
+        ``prefactor, exponent[, plot_details]``
+        The (fitted) prefector and exponent.
+        If plotting, the following details are return as dictionary::
+
+            handle: Handle of the plot.
+            label: Label (if ``fmt`` was specified).
     """
 
     xdata = np.array(xdata)
@@ -1371,7 +1395,7 @@ def fit_exp(
     fit_opts = {}
 
     if yerr is not None:
-        logyerr = np.log(yerr[i])
+        logyerr = np.log(np.array(yerr)[i])
         logyerr = logyerr[~j]
         fit_opts["sigma"] = logyerr
         fit_opts["absolute_sigma"] = True
@@ -1382,19 +1406,35 @@ def fit_exp(
         return (prefactor, exponent)
 
     xp = np.array([np.min(x), np.max(x)])
+    xl = np.array([axis.get_xlim()[0], xp[0]])
+    xu = np.array([xp[1], axis.get_xlim()[1]])
+    details = {}
+
+    if isinstance(extrapolate, bool) and extrapolate:
+        xp = np.array(axis.get_xlim())
 
     if axis.get_yscale() != "log":
         xp = np.linspace(xp[0], xp[-1], 1000)
+        xl = np.linspace(xl[0], xl[-1], 1000)
+        xu = np.linspace(xu[0], xu[-1], 1000)
 
     yp = prefactor * np.exp(exponent * xp)
+    yl = prefactor * np.exp(exponent * xl)
+    yu = prefactor * np.exp(exponent * xu)
 
     if fmt:
         assert "label" not in kwargs
-        kwargs["label"] = fmt.format(prefactor, exponent)
+        label = fmt.format(prefactor, exponent)
+        kwargs["label"] = label
+        details["label"] = label
 
-    h = axis.plot(xp, yp, **kwargs)
+    details["handle"] = axis.plot(xp, yp, **kwargs)
 
-    return (prefactor, exponent, h)
+    if isinstance(extrapolate, dict):
+        details["handle_lower"] = axis.plot(xl, yl, **extrapolate)
+        details["handle_upper"] = axis.plot(xu, yu, **extrapolate)
+
+    return (prefactor, exponent, details)
 
 
 def fit_linear(
@@ -1405,6 +1445,7 @@ def fit_linear(
     slope: float = None,
     axis: plt.Axes = None,
     fmt: str = None,
+    extrapolate: bool | dict = False,
     **kwargs,
 ):
     r"""
@@ -1417,11 +1458,20 @@ def fit_linear(
     :param slope: Slope :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} + {1:.2f} x$"``.
-    :param kwargs: Other plot options.
+    :param extrapolate:
+        Plot the powerlaw on the full range of ``axis.get_xlim()``.
+        Instead of true, one can specify plot options for the extrapolated line.
+
+    :param kwargs:
+        Other plot options.
 
     :return:
-        ``offset, slope[, h]``
-        The (fitted) offset and slope, and optionally the handle (if plotting)
+        ``offset, slope[, plot_details]``
+        The (fitted) offset and slope.
+        If plotting, the following details are return as dictionary::
+
+            handle: Handle of the plot.
+            label: Label (if ``fmt`` was specified).
     """
 
     xdata = np.array(xdata)
@@ -1462,15 +1512,30 @@ def fit_linear(
         return (offset, slope)
 
     xp = np.array([np.min(xdata), np.max(xdata)])
+    xl = np.array([axis.get_xlim()[0], xp[0]])
+    xu = np.array([xp[1], axis.get_xlim()[1]])
+    details = {}
+
+    if isinstance(extrapolate, bool) and extrapolate:
+        xp = np.array(axis.get_xlim())
+
     yp = offset + slope * xp
+    yl = offset + slope * xl
+    yu = offset + slope * xu
 
     if fmt:
         assert "label" not in kwargs
-        kwargs["label"] = fmt.format(offset, slope)
+        label = fmt.format(offset, slope)
+        kwargs["label"] = label
+        details["label"] = label
 
-    h = axis.plot(xp, yp, **kwargs)
+    details["handle"] = axis.plot(xp, yp, **kwargs)
 
-    return (offset, slope, h)
+    if isinstance(extrapolate, dict):
+        details["handle_lower"] = axis.plot(xl, yl, **extrapolate)
+        details["handle_upper"] = axis.plot(xu, yu, **extrapolate)
+
+    return (offset, slope, details)
 
 
 def random_from_cdf(shape, P, x, linspace=False, shuffle=True):
