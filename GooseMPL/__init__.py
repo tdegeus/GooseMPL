@@ -210,7 +210,12 @@ def log_ticks(
     minor: bool = True,
 ) -> (list, list):
     """
-    Get ticks and tick-labels between two bounds. For example::
+    Get and/or apply major ticks and tick-labels between two bounds.
+    Example: select a fraction of the default major ticks along an axis::
+
+        log_ticks(keep=[0, -1], axis=ax)
+
+    Example: get ticks and labels (without applying them to a plot)::
 
         >>> ticks, labels = log_ticks((0, 3))
         >>> print(ticks)
@@ -218,16 +223,12 @@ def log_ticks(
         >>> print(labels)
         ['$10^{0}$', '$10^{1}$', '$10^{2}$', '$10^{3}$']
 
-    This function can for example be used to select a fraction of the default ticks along an axis::
-
-        log_ticks(keep=[0, -1], axis=ax, minor=True)
-
-    :param lim: Lower- and upper-bound exponent. Default: read from ``axis`` or ``plt.gca()``,
-    :param keep: Convert labels to empty strings.
+    :param lim: Lower- and upper-bound exponent. Default: read from ``axis`` or ``plt.gca()``.
+    :param keep: Keep only a selection of labels, convert the rest to empty strings.
     :param base: The base of the exponents.
-    :param axis: Apply ticks/labels to an axis.
+    :param axis: Apply ticks/labels to an axis. Ticks are only applied if the axis is specified.
     :param direction: "x" or "y".
-    :param minor: Use minor ticks: minor ticks are placed without labels.
+    :param minor: Use minor ticks: minor ticks are placed without labels, they are not returned.
     :return: ticks, labels
     """
 
@@ -310,11 +311,22 @@ def log_minorticks(
     direction: str = "x",
 ) -> (list, list):
     """
-    Get minor ticks and tick-labels between two bounds.
+    Get and/or apply minor ticks and tick-labels between two bounds.
+    Example: select a fraction of the default minor ticks along an axis::
+
+        log_minorticks(keep=[0, -1], axis=ax)
+
+    Example: get ticks and labels (without applying them to a plot)::
+
+        >>> ticks, labels = log_ticks((0, 1))
+        >>> print(ticks)
+        [2, 3, 4, 5, 6, 7, 8, 9]
+        >>> print(labels)
+        ["2", "3", "4", "5", "6", "7", "8", "9"]
 
     :param lim: Lower- and upper-bound. Default: read from ``axis`` or ``plt.gca()``,
-    :param keep: Convert labels to empty strings, except at given indices.
-    :param axis: Apply ticks/labels to an axis.
+    :param keep: Keep only a selection of labels, convert the rest to empty strings.
+    :param axis: Apply ticks/labels to an axis. Ticks are only applied if the axis is specified.
     :param direction: "x" or "y".
     :return: ticks, labels
     """
@@ -1267,7 +1279,8 @@ def fit_powerlaw(
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} x^{{{1:.2f}}}$"``.
     :param extrapolate:
         Plot the powerlaw on the full range of ``axis.get_xlim()``.
-        Instead of true, one can specify plot options for the extrapolated line.
+        Instead of ``True'', one can specify plot options for the extrapolated line, e.g.
+        ``..., extrapolate=dict(ls="--", c="r"), ...``.
 
     :param kwargs:
         Other plot options.
@@ -1367,7 +1380,8 @@ def fit_exp(
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} \exp ({1:.2f} x)$"``.
     :param extrapolate:
         Plot the powerlaw on the full range of ``axis.get_xlim()``.
-        Instead of true, one can specify plot options for the extrapolated line.
+        Instead of ``True'', one can specify plot options for the extrapolated line, e.g.
+        ``..., extrapolate=dict(ls="--", c="r"), ...``.
 
     :param kwargs:
         Other plot options.
@@ -1460,7 +1474,8 @@ def fit_linear(
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} + {1:.2f} x$"``.
     :param extrapolate:
         Plot the powerlaw on the full range of ``axis.get_xlim()``.
-        Instead of true, one can specify plot options for the extrapolated line.
+        Instead of ``True'', one can specify plot options for the extrapolated line, e.g.
+        ``..., extrapolate=dict(ls="--", c="r"), ...``.
 
     :param kwargs:
         Other plot options.

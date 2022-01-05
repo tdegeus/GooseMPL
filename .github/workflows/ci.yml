@@ -47,10 +47,12 @@ jobs:
     - name: Run examples - GooseMPL
       working-directory: docs/examples/goosempl
       run: |
+        python fit_powerlaw.py
         python histogram.py
         python histogram_powerlaw.py
         python patch.py
-        python write_data.py
+        python random_from_cdf.py
+        python ticks_log.py
 
     - name: Run examples - pyplot
       working-directory: docs/examples/pyplot
@@ -63,7 +65,9 @@ jobs:
         python image_subplots_bottom.py
         python legend_background.py
         python legend_external.py
+        python multicolor.py
         python plot-cmap.py
+        python plot-cycler.py
         python plot.py
         python subplot.py
         python tick-formatter.py

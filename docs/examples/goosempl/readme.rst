@@ -54,10 +54,32 @@ Random number of discrete CDF
 .. literalinclude:: random_from_cdf.py
    :language: python
 
-Store plot to HDF5 file
-=======================
+Log-scale
+=========
 
-[:download:`source: write_data.py <write_data.py>`]
+Ticks
+-----
 
-.. literalinclude:: write_data.py
+.. image:: ticks_log.svg
+  :width: 800px
+  :align: center
+
+[:download:`source: ticks_log.py <ticks_log.py>`]
+
+.. literalinclude:: ticks_log.py
+   :language: python
+
+Fitting
+=======
+
+Powerlaw
+--------
+
+.. image:: fit_powerlaw.svg
+  :width: 800px
+  :align: center
+
+[:download:`source: fit_powerlaw.py <fit_powerlaw.py>`]
+
+.. literalinclude:: fit_powerlaw.py
    :language: python
