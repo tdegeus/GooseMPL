@@ -1257,6 +1257,7 @@ def fit_powerlaw(
     exponent: float = None,
     axis: plt.Axes = None,
     fmt: str = None,
+    auto_fmt: str = None,
     extrapolate: bool | dict = False,
     **kwargs,
 ):
@@ -1277,6 +1278,10 @@ def fit_powerlaw(
     :param exponent: Exponent :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} x^{{{1:.2f}}}$"``.
+    :param auto_fmt:
+        Format label (if plotting) as ``r"${0:.3f} x^{{{1:.2f}}}$"``,
+        with ``x`` replaced with the specified string.
+
     :param extrapolate:
         Plot the powerlaw on the full range of ``axis.get_xlim()``.
         Instead of ``True'', one can specify plot options for the extrapolated line, e.g.
@@ -1335,6 +1340,10 @@ def fit_powerlaw(
     yl = prefactor * xl ** exponent
     yu = prefactor * xu ** exponent
 
+    if auto_fmt:
+        assert fmt is None
+        fmt = r"${0:.3f} " + auto_fmt + r"^{{{1:.2f}}}$"
+
     if fmt:
         assert "label" not in kwargs
         label = fmt.format(prefactor, exponent)
@@ -1358,6 +1367,7 @@ def fit_exp(
     exponent: float = None,
     axis: plt.Axes = None,
     fmt: str = None,
+    auto_fmt: str = None,
     extrapolate: bool | dict = False,
     **kwargs,
 ):
@@ -1378,6 +1388,10 @@ def fit_exp(
     :param exponent: Exponent :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} \exp ({1:.2f} x)$"``.
+    :param auto_fmt:
+        Format label (if plotting) as ``r"${0:.3f} \exp ({1:.2f} x)$"``,
+        with ``x`` replaced with the specified string.
+
     :param extrapolate:
         Plot the powerlaw on the full range of ``axis.get_xlim()``.
         Instead of ``True'', one can specify plot options for the extrapolated line, e.g.
@@ -1436,6 +1450,10 @@ def fit_exp(
     yl = prefactor * np.exp(exponent * xl)
     yu = prefactor * np.exp(exponent * xu)
 
+    if auto_fmt:
+        assert fmt is None
+        fmt = r"${0:.3f} \exp ({1:.2f} " + auto_fmt + r")$"
+
     if fmt:
         assert "label" not in kwargs
         label = fmt.format(prefactor, exponent)
@@ -1459,6 +1477,7 @@ def fit_linear(
     slope: float = None,
     axis: plt.Axes = None,
     fmt: str = None,
+    auto_fmt: str = None,
     extrapolate: bool | dict = False,
     **kwargs,
 ):
@@ -1472,6 +1491,10 @@ def fit_linear(
     :param slope: Slope :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
     :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} + {1:.2f} x$"``.
+    :param auto_fmt:
+        Format label (if plotting) as ``r"${0:.3f} + {1:.2f} x$"``,
+        with ``x`` replaced with the specified string.
+
     :param extrapolate:
         Plot the powerlaw on the full range of ``axis.get_xlim()``.
         Instead of ``True'', one can specify plot options for the extrapolated line, e.g.
@@ -1537,6 +1560,10 @@ def fit_linear(
     yp = offset + slope * xp
     yl = offset + slope * xl
     yu = offset + slope * xu
+
+    if auto_fmt:
+        assert fmt is None
+        fmt = r"${0:.3f} + {1:.2f} " + auto_fmt + r"$"
 
     if fmt:
         assert "label" not in kwargs
