@@ -2018,6 +2018,53 @@ def cdf(data, mode="continuous", **kwargs):
     return (np.linspace(0.0, 1.0, len(data)), np.sort(data))
 
 
+def bin(x: ArrayLike, y: ArrayLike, bin_edges: ArrayLike | int, use_median: bool = False):
+    """
+    Bin data.
+
+    :param x: x-data.
+    :param y: y-data.
+    :param bin_edges: Bin-edges along the x-axis, or the number of bins.
+    :param use_median: Use median instead of mean.
+    :return: Dictionary as follows::
+
+        x: mean(x) for each bin (or median(x) if use_median = True).
+        y: mean(y) for each bin (or median(y) if use_median = True).
+        xerr: std(x) for each bin.
+        yerr: std(y) for each bin.
+    """
+
+    j = np.digitize(x, bin_edges)
+
+    ret = {
+        "x": np.NaN * np.ones(bin_edges.size, dtype=float),
+        "y": np.NaN * np.ones(bin_edges.size, dtype=float),
+        "xerr": np.NaN * np.ones(bin_edges.size, dtype=float),
+        "yerr": np.NaN * np.ones(bin_edges.size, dtype=float),
+    }
+
+    assert np.max(j) < ret["x"].size
+
+    for i in range(np.max(j) + 1):
+
+        if i not in j:
+            continue
+
+        sel = j == i
+
+        if not use_median:
+            ret["x"][i] = np.mean(x[sel])
+            ret["y"][i] = np.mean(y[sel])
+        else:
+            ret["x"][i] = np.median(x[sel])
+            ret["y"][i] = np.median(y[sel])
+
+        ret["xerr"][i] = np.std(x[sel])
+        ret["yerr"][i] = np.std(y[sel])
+
+    return ret
+
+
 def patch(*args, **kwargs):
     """
     Add patches to plot. The color of the patches is indexed according to a specified color-index.
