@@ -1224,17 +1224,21 @@ def _fit_loglog(
         def f(logx, log_prefactor, exponent):
             return log_prefactor + exponent * logx
 
-        param, _ = curve_fit(f, logx, logy, **fit_opts)
+        param, pcov = curve_fit(f, logx, logy, **fit_opts)
         prefactor = np.exp(param[0])
         exponent = param[1]
+        perr = np.exp(np.sqrt(pcov[0, 0]))
+        eerr = np.sqrt(pcov[1, 1])
 
     elif prefactor is None:
 
         def f(logx, log_prefactor):
             return log_prefactor + exponent * logx
 
-        param, _ = curve_fit(f, logx, logy, **fit_opts)
+        param, pcov = curve_fit(f, logx, logy, **fit_opts)
         prefactor = np.exp(param[0])
+        perr = np.exp(np.sqrt(pcov[0, 0]))
+        eerr = 0
 
     elif exponent is None:
 
@@ -1243,10 +1247,12 @@ def _fit_loglog(
         def f(logx, exponent):
             return log_prefactor + exponent * logx
 
-        param, _ = curve_fit(f, logx, logy, **fit_opts)
+        param, pcov = curve_fit(f, logx, logy, **fit_opts)
         exponent = param[0]
+        perr = 0
+        eerr = np.sqrt(pcov[0, 0])
 
-    return prefactor, exponent
+    return prefactor, exponent, perr, eerr
 
 
 def fit_powerlaw(
@@ -1291,12 +1297,15 @@ def fit_powerlaw(
         Other plot options.
 
     :return:
-        ``prefactor, exponent[, plot_details]``
+        ``prefactor, exponent, details``
         The (fitted) prefector and exponent.
-        If plotting, the following details are return as dictionary::
+        The details are a dictionary as follows::
 
-            handle: Handle of the plot.
-            label: Label (if ``fmt`` was specified).
+            pcov: Covariance of fit.
+            prefactor_error: Estimated error of prefactor.
+            exponent_error: Estimated error of exponent.
+            handle: Handle of the plot (if ``axis`` was specified).
+            label: Label (if ``axis`` and ``fmt`` were specified).
     """
 
     xdata = np.array(xdata)
@@ -1311,22 +1320,30 @@ def fit_powerlaw(
     logy = logy[~j]
 
     fit_opts = {}
+    details = {}
 
     if yerr is not None:
-        logyerr = np.log(np.array(yerr)[i])
+        logyerr = np.array(yerr)[i]
         logyerr = logyerr[~j]
+        # avoid log(0) and zero division warnings
+        k = logyerr == 0
+        logyerr[k] = 1
+        logyerr = np.log(logyerr)
+        logyerr[k] = np.finfo(logyerr.dtype).max
+        # store for later use
         fit_opts["sigma"] = logyerr
         fit_opts["absolute_sigma"] = True
 
-    prefactor, exponent = _fit_loglog(logx, logy, prefactor, exponent, **fit_opts)
+    prefactor, exponent, details["prefactor_error"], details["exponent_error"] = _fit_loglog(
+        logx, logy, prefactor, exponent, **fit_opts
+    )
 
     if axis is None:
-        return (prefactor, exponent)
+        return (prefactor, exponent, details)
 
     xp = np.array([np.min(np.exp(logx)), np.max(np.exp(logx))])
     xl = np.array([axis.get_xlim()[0], xp[0]])
     xu = np.array([xp[1], axis.get_xlim()[1]])
-    details = {}
 
     if isinstance(extrapolate, bool) and extrapolate:
         xp = np.array(axis.get_xlim())
@@ -1401,12 +1418,15 @@ def fit_exp(
         Other plot options.
 
     :return:
-        ``prefactor, exponent[, plot_details]``
+        ``prefactor, exponent, details``
         The (fitted) prefector and exponent.
-        If plotting, the following details are return as dictionary::
+        The details are a dictionary as follows::
 
-            handle: Handle of the plot.
-            label: Label (if ``fmt`` was specified).
+            pcov: Covariance of fit.
+            prefactor_error: Estimated error of prefactor.
+            exponent_error: Estimated error of exponent.
+            handle: Handle of the plot (if ``axis`` was specified).
+            label: Label (if ``axis`` and ``fmt`` were specified).
     """
 
     xdata = np.array(xdata)
@@ -1421,6 +1441,7 @@ def fit_exp(
     x = x[~j]
 
     fit_opts = {}
+    details = {}
 
     if yerr is not None:
         logyerr = np.log(np.array(yerr)[i])
@@ -1428,15 +1449,16 @@ def fit_exp(
         fit_opts["sigma"] = logyerr
         fit_opts["absolute_sigma"] = True
 
-    prefactor, exponent = _fit_loglog(x, logy, prefactor, exponent, **fit_opts)
+    prefactor, exponent, details["prefactor_error"], details["exponent_error"] = _fit_loglog(
+        x, logy, prefactor, exponent, **fit_opts
+    )
 
     if axis is None:
-        return (prefactor, exponent)
+        return (prefactor, exponent, details)
 
     xp = np.array([np.min(x), np.max(x)])
     xl = np.array([axis.get_xlim()[0], xp[0]])
     xu = np.array([xp[1], axis.get_xlim()[1]])
-    details = {}
 
     if isinstance(extrapolate, bool) and extrapolate:
         xp = np.array(axis.get_xlim())
@@ -1516,6 +1538,7 @@ def fit_linear(
     ydata = np.array(ydata)
 
     fit_opts = {}
+    details = {}
 
     if yerr is not None:
         fit_opts["sigma"] = np.array(yerr)
@@ -1526,33 +1549,38 @@ def fit_linear(
         def f(x, offset, slope):
             return offset + slope * x
 
-        param, _ = curve_fit(f, xdata, ydata, **fit_opts)
+        param, pcov = curve_fit(f, xdata, ydata, **fit_opts)
         offset = param[0]
         slope = param[1]
+        details["offset_error"] = np.sqrt(pcov[0, 0])
+        details["slope_error"] = np.sqrt(pcov[1, 1])
 
     elif offset is None:
 
         def f(x, offset):
             return offset + slope * x
 
-        param, _ = curve_fit(f, xdata, ydata, **fit_opts)
+        param, pcov = curve_fit(f, xdata, ydata, **fit_opts)
         offset = param[0]
+        details["offset_error"] = np.sqrt(pcov[0, 0])
+        details["slope_error"] = 0
 
     elif slope is None:
 
         def f(x, slope):
             return offset + slope * x
 
-        param, _ = curve_fit(f, xdata, ydata, **fit_opts)
+        param, pcov = curve_fit(f, xdata, ydata, **fit_opts)
         slope = param[0]
+        details["offset_error"] = 0
+        details["slope_error"] = np.sqrt(pcov[0, 0])
 
     if axis is None:
-        return (offset, slope)
+        return (offset, slope, details)
 
     xp = np.array([np.min(xdata), np.max(xdata)])
     xl = np.array([axis.get_xlim()[0], xp[0]])
     xu = np.array([xp[1], axis.get_xlim()[1]])
-    details = {}
 
     if isinstance(extrapolate, bool) and extrapolate:
         xp = np.array(axis.get_xlim())
