@@ -131,7 +131,7 @@ class Test_fit_powerlaw(unittest.TestCase):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 * x ** 3.4
-        prefactor, exponent = gplt.fit_powerlaw(x, y)
+        prefactor, exponent, _ = gplt.fit_powerlaw(x, y)
         self.assertTrue(np.isclose(prefactor, 1.2))
         self.assertTrue(np.isclose(exponent, 3.4))
 
@@ -139,7 +139,7 @@ class Test_fit_powerlaw(unittest.TestCase):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 * x ** 3.4
-        prefactor, exponent = gplt.fit_powerlaw(x, y, exponent=3.4)
+        prefactor, exponent, _ = gplt.fit_powerlaw(x, y, exponent=3.4)
         self.assertTrue(np.isclose(prefactor, 1.2))
         self.assertTrue(np.isclose(exponent, 3.4))
 
@@ -147,7 +147,7 @@ class Test_fit_powerlaw(unittest.TestCase):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 * x ** 3.4
-        prefactor, exponent = gplt.fit_powerlaw(x, y, prefactor=1.2)
+        prefactor, exponent, _ = gplt.fit_powerlaw(x, y, prefactor=1.2)
         self.assertTrue(np.isclose(prefactor, 1.2))
         self.assertTrue(np.isclose(exponent, 3.4))
 
@@ -161,7 +161,7 @@ class Test_fit_exp(unittest.TestCase):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 * np.exp(x * 3.4)
-        prefactor, exponent = gplt.fit_exp(x, y)
+        prefactor, exponent, _ = gplt.fit_exp(x, y)
         self.assertTrue(np.isclose(prefactor, 1.2))
         self.assertTrue(np.isclose(exponent, 3.4))
 
@@ -169,7 +169,7 @@ class Test_fit_exp(unittest.TestCase):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 * np.exp(x * -3.4)
-        prefactor, exponent = gplt.fit_exp(x, y)
+        prefactor, exponent, _ = gplt.fit_exp(x, y)
         self.assertTrue(np.isclose(prefactor, 1.2))
         self.assertTrue(np.isclose(exponent, -3.4))
 
@@ -177,7 +177,7 @@ class Test_fit_exp(unittest.TestCase):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 * np.exp(x * 3.4)
-        prefactor, exponent = gplt.fit_exp(x, y, exponent=3.4)
+        prefactor, exponent, _ = gplt.fit_exp(x, y, exponent=3.4)
         self.assertTrue(np.isclose(prefactor, 1.2))
         self.assertTrue(np.isclose(exponent, 3.4))
 
@@ -185,7 +185,7 @@ class Test_fit_exp(unittest.TestCase):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 * np.exp(x * 3.4)
-        prefactor, exponent = gplt.fit_exp(x, y, prefactor=1.2)
+        prefactor, exponent, _ = gplt.fit_exp(x, y, prefactor=1.2)
         self.assertTrue(np.isclose(prefactor, 1.2))
         self.assertTrue(np.isclose(exponent, 3.4))
 
@@ -199,7 +199,7 @@ class Test_fit_linear(unittest.TestCase):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 + 3.4 * x
-        offset, slope = gplt.fit_linear(x, y)
+        offset, slope, _ = gplt.fit_linear(x, y)
         self.assertTrue(np.isclose(offset, 1.2))
         self.assertTrue(np.isclose(slope, 3.4))
 
@@ -207,7 +207,7 @@ class Test_fit_linear(unittest.TestCase):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 + 3.4 * x
-        offset, slope = gplt.fit_linear(x, y, slope=3.4)
+        offset, slope, _ = gplt.fit_linear(x, y, slope=3.4)
         self.assertTrue(np.isclose(offset, 1.2))
         self.assertTrue(np.isclose(slope, 3.4))
 
@@ -215,9 +215,65 @@ class Test_fit_linear(unittest.TestCase):
 
         x = np.linspace(0, 1, 1000)
         y = 1.2 + 3.4 * x
-        offset, slope = gplt.fit_linear(x, y, offset=1.2)
+        offset, slope, _ = gplt.fit_linear(x, y, offset=1.2)
         self.assertTrue(np.isclose(offset, 1.2))
         self.assertTrue(np.isclose(slope, 3.4))
+
+
+class Test_cdf(unittest.TestCase):
+    """
+    Cumulative probability density.
+    """
+
+    def test_simple(self):
+
+        data = np.array([0, 0, 1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5])
+        xr = np.array([0, 1, 2, 3, 4, 5])
+        pr = np.array([2, 1, 1, 2, 3, 4]) / data.size
+
+        p, x = gplt.cdf(data, less_equal=True)
+
+        self.assertTrue(np.allclose(x, xr))
+        self.assertTrue(np.allclose(p, np.cumsum(pr)))
+
+        p, x = gplt.cdf(data)
+
+        self.assertTrue(np.allclose(x, xr))
+        self.assertTrue(np.allclose(p, np.cumsum([0] + pr.tolist())[:-1]))
+
+        p, x = gplt.ccdf(data)
+
+        self.assertTrue(np.allclose(x, xr))
+        self.assertTrue(np.allclose(p, np.cumsum(pr[::-1])[::-1]))
+
+        p, x = gplt.ccdf(data, greater_equal=False)
+
+        self.assertTrue(np.allclose(x, xr))
+        self.assertTrue(np.allclose(p, np.cumsum([0] + pr[::-1].tolist())[1::-1]))
+
+        p, x = gplt.cdf(data)
+        pc, xc = gplt.ccdf(data)
+
+        self.assertTrue(np.allclose(x, xc))
+        self.assertTrue(np.allclose(1 - p, pc))
+
+    def test_random(self):
+
+        data = np.random.random(10000)
+
+        p, x = gplt.cdf(data)
+
+        xp = np.linspace(0, 1, 100)
+        pp = np.interp(xp, x, p)
+
+        self.assertTrue(np.allclose(xp, pp, rtol=1e-1, atol=1e-1))
+
+        p, x = gplt.ccdf(data)
+
+        xp = np.linspace(0, 1, 100)
+        pp = np.interp(xp, x, p)
+
+        self.assertTrue(np.allclose(1 - xp, pp, rtol=1e-1, atol=1e-1))
 
 
 class Test_histogram_norm(unittest.TestCase):

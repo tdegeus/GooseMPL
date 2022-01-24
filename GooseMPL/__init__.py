@@ -1997,25 +1997,43 @@ def hist(P, edges, **kwargs):
     return p
 
 
-def cdf(data, mode="continuous", **kwargs):
+def cdf(data: ArrayLike, less_equal: bool = False) -> (np.ndarray, np.ndarray):
     """
-    Return cumulative density.
+    Cumulative distribution function: ``P(x < X)``.
 
-    :arguments:
-
-        **data** (``<numpy.ndarray>``)
-            Input data, to plot the distribution for.
-
-    :returns:
-
-        **P** (``<numpy.ndarray>``)
-            Cumulative probability.
-
-        **x** (``<numpy.ndarray>``)
-            Data points.
+    :param data: Input data.
+    :param less_equal: If ``True`` return ``P(x <= X)``, if ``False return ``P(x < X)``.
+    :return: ``(P, X)``
     """
 
-    return (np.linspace(0.0, 1.0, len(data)), np.sort(data))
+    bin_edges = np.unique(data)
+    ibin = np.digitize(data, bin_edges, right=not less_equal)
+    _, count = np.unique(ibin, return_counts=True)
+
+    if less_equal:
+        return np.cumsum(count) / data.size, bin_edges
+    else:
+        return np.cumsum([0] + count.tolist())[:-1] / data.size, bin_edges
+
+
+def ccdf(data: ArrayLike, greater_equal: bool = True) -> (np.ndarray, np.ndarray):
+    """
+    Complementary cumulative distribution function: ``P(x >= X)``.
+    By definition: ``ccdf(data)[0] == 1 - cdf(data)[0])``.
+
+    :param data: Input data.
+    :param greater_equal: If ``True`` return ``P(x >= X)``, if ``False return ``P(x > X)``.
+    :return: ``(P, X)``
+    """
+
+    bin_edges = np.unique(data)
+    ibin = np.digitize(data, bin_edges[::-1], right=greater_equal)
+    _, count = np.unique(ibin, return_counts=True)
+
+    if greater_equal:
+        return np.cumsum(count)[::-1] / data.size, bin_edges
+    else:
+        return np.cumsum([0] + count.tolist())[1::-1] / data.size, bin_edges
 
 
 def bin(x: ArrayLike, y: ArrayLike, bin_edges: ArrayLike | int, use_median: bool = False):
