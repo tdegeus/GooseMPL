@@ -1259,6 +1259,7 @@ def fit_powerlaw(
     xdata: ArrayLike,
     ydata: ArrayLike,
     yerr: ArrayLike = None,
+    yerr_mode: str = "differentials",
     prefactor: float = None,
     exponent: float = None,
     axis: plt.Axes = None,
@@ -1266,31 +1267,48 @@ def fit_powerlaw(
     auto_fmt: str = None,
     extrapolate: bool | dict = False,
     **kwargs,
-):
+) -> (float, float, dict):
     r"""
-    Fit a powerlaw :math:`y = c x^b` by converting
-    both :math:`x` and :math:`y` to their logarithm and fitting a straight line.
-    This function does not support more customised operation like fitting an offset,
-    but custom code can be easily written by copy/pasting from here.
+    Fit a powerlaw :math:`y = c x^b` by a linear fitting of
+    :math:`\ln y = \ln c + b \ln x`.
 
-    Warning: If this function is used to plot the fit, beware that the fit is plotted using just
-    two data-points if the axis is set to log-log scale
-    (as the fit will be a straight line on that scale).
+    .. note::
+
+        This function does not support more customised operation like fitting an offset,
+        but custom code can be easily written by copy/pasting from here.
+
+    .. warning::
+
+        If this function is used to plot the fit, beware that the fit is plotted using just
+        two data-points if the axis is set to log-log scale
+        (as the fit will be a straight line on that scale).
+
+    Different modes are available to treat an error estimate (``yerr``) in ``ydata``:
+
+    *   ``"differentials"``: assume that ``yerr << ydata``, such that
+
+        .. math::
+
+            z &\equiv \ln y \\
+            \delta z &= \left| \frac{\partial z}{\partial y} \right| \delta y \\
+            \delta z &= \frac{\delta y}{y}
 
     :param xdata: Data points along the x-axis.
     :param ydata: Data points along the y-axis.
-    :param yerr: Error-bar for ``ydata``.
+    :param yerr: Error-bar for ``ydata`` (should be the standard deviation).
+    :param yerr_mode: How to treat the error in ``ydata``, see above.
     :param prefactor: Prefactor :math:`c` (fitted if not specified).
     :param exponent: Exponent :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
-    :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} x^{{{1:.2f}}}$"``.
+    :param fmt: Format for the label, e.g. ``r"${prefactor:.2f} x^{{{exponent:.2f}}}$"``.
     :param auto_fmt:
-        Format label (if plotting) as ``r"${0:.3f} x^{{{1:.2f}}}$"``,
+        Format label as ``r"$({prefactor:.2f} \pm {prefactor_error:.2f})
+        x^{{{exponent:.2f} \pm {exponent_error:.2f}}}$"``,
         with ``x`` replaced with the specified string.
 
     :param extrapolate:
         Plot the powerlaw on the full range of ``axis.get_xlim()``.
-        Instead of ``True'', one can specify plot options for the extrapolated line, e.g.
+        Instead of ``True``, one can specify plot options for the extrapolated line, e.g.
         ``..., extrapolate=dict(ls="--", c="r"), ...``.
 
     :param kwargs:
@@ -1301,11 +1319,15 @@ def fit_powerlaw(
         The (fitted) prefector and exponent.
         The details are a dictionary as follows::
 
-            pcov: Covariance of fit.
+            prefactor: (Fitted) prefactor.
+            exponent: (Fitted) exponent.
             prefactor_error: Estimated error of prefactor.
             exponent_error: Estimated error of exponent.
+            pcov: Covariance of fit.
+            label: Label.
             handle: Handle of the plot (if ``axis`` was specified).
-            label: Label (if ``axis`` and ``fmt`` were specified).
+            handle_lower: Handle of the plot of the lower extrapolation, if present.
+            handle_upper: Handle of the plot of the upper extrapolation, if present.
     """
 
     xdata = np.array(xdata)
@@ -1323,20 +1345,36 @@ def fit_powerlaw(
     details = {}
 
     if yerr is not None:
-        logyerr = np.array(yerr)[i]
-        logyerr = logyerr[~j]
-        # avoid log(0) and zero division warnings
-        k = logyerr == 0
-        logyerr[k] = 1
-        logyerr = np.log(logyerr)
-        logyerr[k] = np.finfo(logyerr.dtype).max
-        # store for later use
-        fit_opts["sigma"] = logyerr
-        fit_opts["absolute_sigma"] = True
+        if yerr_mode.lower() == "differentials":
+            sigma = yerr[i][~j] / ydata[i][~j]
+            sigma[yerr == 0] = np.finfo(sigma.dtype).eps  # avoid zero division
+            fit_opts["sigma"] = sigma
+            fit_opts["absolute_sigma"] = False
+        else:
+            raise OSError("yerr_mode: did you mean 'differentials'?")
 
     prefactor, exponent, details["prefactor_error"], details["exponent_error"] = _fit_loglog(
         logx, logy, prefactor, exponent, **fit_opts
     )
+
+    details["prefactor"] = prefactor
+    details["exponent"] = exponent
+
+    if auto_fmt:
+        assert fmt is None
+        fmt = "".join(
+            [
+                r"$({prefactor:.2f} \pm {prefactor_error:.2f})",
+                auto_fmt,
+                r"^{{{exponent:.2f} \pm {prefactor_error:.2f}}}$",
+            ]
+        )
+
+    if fmt:
+        assert "label" not in kwargs
+        label = fmt.format(**details)
+        kwargs["label"] = label
+        details["label"] = label
 
     if axis is None:
         return (prefactor, exponent, details)
@@ -1357,16 +1395,6 @@ def fit_powerlaw(
     yl = prefactor * xl ** exponent
     yu = prefactor * xu ** exponent
 
-    if auto_fmt:
-        assert fmt is None
-        fmt = r"${0:.3f} " + auto_fmt + r"^{{{1:.2f}}}$"
-
-    if fmt:
-        assert "label" not in kwargs
-        label = fmt.format(prefactor, exponent)
-        kwargs["label"] = label
-        details["label"] = label
-
     details["handle"] = axis.plot(xp, yp, **kwargs)
 
     if isinstance(extrapolate, dict):
@@ -1380,6 +1408,7 @@ def fit_exp(
     xdata: ArrayLike,
     ydata: ArrayLike,
     yerr: ArrayLike = None,
+    yerr_mode: str = "differentials",
     prefactor: float = None,
     exponent: float = None,
     axis: plt.Axes = None,
@@ -1387,20 +1416,32 @@ def fit_exp(
     auto_fmt: str = None,
     extrapolate: bool | dict = False,
     **kwargs,
-):
+) -> (float, float, dict):
     r"""
-    Fit an exponential :math:`y = c \exp(b x)` by converting
-    :math:`y` to its logarithm and fitting a straight line.
+    Fit an exponential :math:`y = c \exp(b x)` by linear fitting of
+    :math`ln y = ln c + b x`.
     This function does not support more customised operation like fitting an offset,
     but custom code can be easily written by copy/pasting from here.
 
-    Warning: If this function is used to plot the fit, beware that the fit is plotted using just
-    two data-points if the axis is set to semilogy-scale
-    (as the fit will be a straight line on that scale).
+    .. warning::
+        If this function is used to plot the fit, beware that the fit is plotted using just
+        two data-points if the axis is set to semilogy-scale
+        (as the fit will be a straight line on that scale).
+
+    Different modes are available to treat ``yerr``:
+
+    *   ``"differentials"``: assume that ``yerr << ydata``, such that
+
+        .. math::
+
+            z &\equiv \ln y \\
+            \delta z &= \left| \frac{\partial z}{\partial y} \right| \delta y \\
+            \delta z &= \frac{\delta y}{y}
 
     :param xdata: Data points along the x-axis.
     :param ydata: Data points along the y-axis.
     :param yerr: Error-bar for ``ydata``.
+    :param yerr_mode: How to treat the error in ``ydata``, see above.
     :param prefactor: Prefactor :math:`c` (fitted if not specified).
     :param exponent: Exponent :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
@@ -1422,11 +1463,15 @@ def fit_exp(
         The (fitted) prefector and exponent.
         The details are a dictionary as follows::
 
-            pcov: Covariance of fit.
+            prefactor: (Fitted) prefactor.
+            exponent: (Fitted) exponent.
             prefactor_error: Estimated error of prefactor.
             exponent_error: Estimated error of exponent.
+            pcov: Covariance of fit.
+            label: Label.
             handle: Handle of the plot (if ``axis`` was specified).
-            label: Label (if ``axis`` and ``fmt`` were specified).
+            handle_lower: Handle of the plot of the lower extrapolation, if present.
+            handle_upper: Handle of the plot of the upper extrapolation, if present.
     """
 
     xdata = np.array(xdata)
@@ -1436,7 +1481,7 @@ def fit_exp(
     x = xdata[i]
     logy = np.log(ydata[i])
 
-    j = np.isnan(logy)
+    j = np.logical_or(np.isnan(x), np.isnan(logy))
     logy = logy[~j]
     x = x[~j]
 
@@ -1444,14 +1489,37 @@ def fit_exp(
     details = {}
 
     if yerr is not None:
-        logyerr = np.log(np.array(yerr)[i])
-        logyerr = logyerr[~j]
-        fit_opts["sigma"] = logyerr
-        fit_opts["absolute_sigma"] = True
+        if yerr_mode.lower() == "differentials":
+            sigma = yerr[i][~j] / ydata[i][~j]
+            sigma[yerr == 0] = np.finfo(sigma.dtype).eps  # avoid zero division
+            fit_opts["sigma"] = sigma
+            fit_opts["absolute_sigma"] = False
+        else:
+            raise OSError("yerr_mode: did you mean 'differentials'?")
 
     prefactor, exponent, details["prefactor_error"], details["exponent_error"] = _fit_loglog(
         x, logy, prefactor, exponent, **fit_opts
     )
+
+    details["prefactor"] = prefactor
+    details["exponent"] = exponent
+
+    if auto_fmt:
+        assert fmt is None
+        fmt = "".join(
+            [
+                r"$({prefactor:.2f} \pm {prefactor_error:.2f})",
+                r"\exp( {exponent:.2f} \pm {prefactor_error:.2f}",
+                auto_fmt,
+                ")$",
+            ]
+        )
+
+    if fmt:
+        assert "label" not in kwargs
+        label = fmt.format(**details)
+        kwargs["label"] = label
+        details["label"] = label
 
     if axis is None:
         return (prefactor, exponent, details)
@@ -1471,16 +1539,6 @@ def fit_exp(
     yp = prefactor * np.exp(exponent * xp)
     yl = prefactor * np.exp(exponent * xl)
     yu = prefactor * np.exp(exponent * xu)
-
-    if auto_fmt:
-        assert fmt is None
-        fmt = r"${0:.3f} \exp ({1:.2f} " + auto_fmt + r")$"
-
-    if fmt:
-        assert "label" not in kwargs
-        label = fmt.format(prefactor, exponent)
-        kwargs["label"] = label
-        details["label"] = label
 
     details["handle"] = axis.plot(xp, yp, **kwargs)
 
@@ -1502,7 +1560,7 @@ def fit_linear(
     auto_fmt: str = None,
     extrapolate: bool | dict = False,
     **kwargs,
-):
+) -> (float, float, dict):
     r"""
     Fit a linear function :math:`y = a + b x`.
 
@@ -1512,26 +1570,34 @@ def fit_linear(
     :param offset: Offset :math:`a` (fitted if not specified).
     :param slope: Slope :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
-    :param fmt: Format for the label (if plotting). E.g. ``r"${0:.3f} + {1:.2f} x$"``.
+    :param fmt: Format for the label, e.g. ``r"${offset:.2f} + {slope:.2f} x$"``.
     :param auto_fmt:
-        Format label (if plotting) as ``r"${0:.3f} + {1:.2f} x$"``,
+        Format label as ``r"$({offset:.2f} \pm {offset_error:.2f}) +
+        ({slope:.2f} \pm {slope_error:.2f}) x$"``,
         with ``x`` replaced with the specified string.
 
     :param extrapolate:
         Plot the powerlaw on the full range of ``axis.get_xlim()``.
-        Instead of ``True'', one can specify plot options for the extrapolated line, e.g.
+        Instead of ``True``, one can specify plot options for the extrapolated line, e.g.
         ``..., extrapolate=dict(ls="--", c="r"), ...``.
 
     :param kwargs:
         Other plot options.
 
     :return:
-        ``offset, slope[, plot_details]``
+        ``offset, slope, details``
         The (fitted) offset and slope.
-        If plotting, the following details are return as dictionary::
+        The details are a dictionary as follows::
 
-            handle: Handle of the plot.
-            label: Label (if ``fmt`` was specified).
+            offset: (Fitted) offset.
+            slope: (Fitted) slope.
+            offset_error: Estimated error of offset.
+            slope_error: Estimated error of slope.
+            pcov: Covariance of fit.
+            label: Label.
+            handle: Handle of the plot (if ``axis`` was specified).
+            handle_lower: Handle of the plot of the lower extrapolation, if present.
+            handle_upper: Handle of the plot of the upper extrapolation, if present.
     """
 
     xdata = np.array(xdata)
@@ -1541,8 +1607,10 @@ def fit_linear(
     details = {}
 
     if yerr is not None:
-        fit_opts["sigma"] = np.array(yerr)
-        fit_opts["absolute_sigma"] = True
+        sigma = np.array(yerr).astype(float)
+        sigma[yerr == 0] = np.finfo(sigma.dtype).eps  # avoid zero division
+        fit_opts["sigma"] = sigma
+        fit_opts["absolute_sigma"] = False
 
     if offset is None and slope is None:
 
@@ -1575,6 +1643,25 @@ def fit_linear(
         details["offset_error"] = 0
         details["slope_error"] = np.sqrt(pcov[0, 0])
 
+    details["offset"] = offset
+    details["slope"] = slope
+
+    if auto_fmt:
+        assert fmt is None
+        fmt = "".join(
+            [
+                r"$({offset:.2f} \pm {offset_error:.2f}) + ({slope:.2f} + {slope_error:.2f}) ",
+                auto_fmt,
+                r"$",
+            ]
+        )
+
+    if fmt:
+        assert "label" not in kwargs
+        label = fmt.format(**details)
+        kwargs["label"] = label
+        details["label"] = label
+
     if axis is None:
         return (offset, slope, details)
 
@@ -1588,16 +1675,6 @@ def fit_linear(
     yp = offset + slope * xp
     yl = offset + slope * xl
     yu = offset + slope * xu
-
-    if auto_fmt:
-        assert fmt is None
-        fmt = r"${0:.3f} + {1:.2f} " + auto_fmt + r"$"
-
-    if fmt:
-        assert "label" not in kwargs
-        label = fmt.format(offset, slope)
-        kwargs["label"] = label
-        details["label"] = label
 
     details["handle"] = axis.plot(xp, yp, **kwargs)
 
@@ -2045,7 +2122,6 @@ def bin(x: ArrayLike, y: ArrayLike, bin_edges: ArrayLike | int, use_median: bool
     :param bin_edges: Bin-edges along the x-axis, or the number of bins.
     :param use_median: Use median instead of mean.
     :return: Dictionary as follows::
-
         x: mean(x) for each bin (or median(x) if use_median = True).
         y: mean(y) for each bin (or median(y) if use_median = True).
         xerr: std(x) for each bin.
