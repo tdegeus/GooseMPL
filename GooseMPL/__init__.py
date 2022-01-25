@@ -1346,8 +1346,9 @@ def fit_powerlaw(
 
     if yerr is not None:
         if yerr_mode.lower() == "differentials":
+            yerr = np.array(yerr)
             sigma = yerr[i][~j] / ydata[i][~j]
-            sigma[yerr == 0] = np.finfo(sigma.dtype).eps  # avoid zero division
+            sigma[yerr[i][~j] == 0] = np.finfo(sigma.dtype).eps  # avoid zero division
             fit_opts["sigma"] = sigma
             fit_opts["absolute_sigma"] = False
         else:
@@ -1490,8 +1491,9 @@ def fit_exp(
 
     if yerr is not None:
         if yerr_mode.lower() == "differentials":
+            yerr = np.array(yerr)
             sigma = yerr[i][~j] / ydata[i][~j]
-            sigma[yerr == 0] = np.finfo(sigma.dtype).eps  # avoid zero division
+            sigma[yerr[i][~j] == 0] = np.finfo(sigma.dtype).eps  # avoid zero division
             fit_opts["sigma"] = sigma
             fit_opts["absolute_sigma"] = False
         else:
