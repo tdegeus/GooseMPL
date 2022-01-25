@@ -39,12 +39,20 @@ Plot in relative coordinates
     GooseMPL.abs2rel_x
     GooseMPL.abs2rel_y
 
+Fit
+---
+
+.. autosummary::
+
+    GooseMPL.fit_powerlaw
+    GooseMPL.fit_exp
+    GooseMPL.fit_linear
+
 Annotate power-law
 ------------------
 
 .. autosummary::
 
-    GooseMPL.fit_powerlaw
     GooseMPL.grid_powerlaw
     GooseMPL.plot_powerlaw
     GooseMPL.annotate_powerlaw
