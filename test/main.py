@@ -276,6 +276,32 @@ class Test_cdf(unittest.TestCase):
         self.assertTrue(np.allclose(1 - xp, pp, rtol=1e-1, atol=1e-1))
 
 
+class Test_bin(unittest.TestCase):
+    """
+    Bin data
+    """
+
+    def test_simple(self):
+
+        xdata = np.array([1, 1, 3, 3, 3, 5, 5])
+        ydata = np.array([2, 4, 1, 2, 3, 2, 4])
+        bin_edges = np.array([0, 2, 4, 6])
+
+        data = gplt.bin(xdata, ydata, bin_edges)
+
+        self.assertTrue(np.allclose(data["x"], np.array([1, 3, 5])))
+        self.assertTrue(np.allclose(data["y"], np.array([3, 2, 3])))
+        self.assertTrue(np.allclose(data["xerr"], np.array([0, 0, 0])))
+        self.assertTrue(
+            np.allclose(data["yerr"], np.array([np.std([2, 4]), np.std([1, 2, 3]), np.std([2, 4])]))
+        )
+
+        median_data = gplt.bin(xdata, ydata, bin_edges, use_median=False)
+
+        for key in data:
+            self.assertTrue(np.allclose(data[key], median_data[key]))
+
+
 class Test_histogram_norm(unittest.TestCase):
     """
     Histogram normalisation.

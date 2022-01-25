@@ -2128,13 +2128,14 @@ def bin(x: ArrayLike, y: ArrayLike, bin_edges: ArrayLike | int, use_median: bool
         yerr: std(y) for each bin.
     """
 
-    j = np.digitize(x, bin_edges)
+    j = np.digitize(x, bin_edges) - 1
+    n = bin_edges.size - 1
 
     ret = {
-        "x": np.NaN * np.ones(bin_edges.size, dtype=float),
-        "y": np.NaN * np.ones(bin_edges.size, dtype=float),
-        "xerr": np.NaN * np.ones(bin_edges.size, dtype=float),
-        "yerr": np.NaN * np.ones(bin_edges.size, dtype=float),
+        "x": np.NaN * np.ones(n, dtype=float),
+        "y": np.NaN * np.ones(n, dtype=float),
+        "xerr": np.NaN * np.ones(n, dtype=float),
+        "yerr": np.NaN * np.ones(n, dtype=float),
     }
 
     assert np.max(j) < ret["x"].size
