@@ -47,7 +47,9 @@ jobs:
     - name: Run examples - GooseMPL
       working-directory: docs/examples/goosempl
       run: |
+        python fit_linear.py
         python fit_powerlaw.py
+        python fit_powerlaw_yerr.py
         python histogram.py
         python histogram_powerlaw.py
         python patch.py
