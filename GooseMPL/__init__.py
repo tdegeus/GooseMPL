@@ -1827,6 +1827,8 @@ def histogram_bin_edges_mincount(data, min_count, bins):
             k = idx + 2
             bins = np.hstack((bins[:j], bins[k:]))
 
+    return bins
+
 
 def histogram_bin_edges_integer(bin_edges):
     r"""
