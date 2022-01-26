@@ -1260,6 +1260,7 @@ def fit_powerlaw(
     ydata: ArrayLike,
     yerr: ArrayLike = None,
     yerr_mode: str = "differentials",
+    absolute_sigma: bool = True,
     prefactor: float = None,
     exponent: float = None,
     axis: plt.Axes = None,
@@ -1293,10 +1294,16 @@ def fit_powerlaw(
             \delta z &= \left| \frac{\partial z}{\partial y} \right| \delta y \\
             \delta z &= \frac{\delta y}{y}
 
+    .. seealso::
+
+        `scipy.optimize.curve_fit
+        <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html>`__
+
     :param xdata: Data points along the x-axis.
     :param ydata: Data points along the y-axis.
     :param yerr: Error-bar for ``ydata`` (should be the standard deviation).
     :param yerr_mode: How to treat the error in ``ydata``, see above.
+    :param absolute_sigma: Treat (the effective) ``yerr`` as absolute error.
     :param prefactor: Prefactor :math:`c` (fitted if not specified).
     :param exponent: Exponent :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
@@ -1350,7 +1357,7 @@ def fit_powerlaw(
             sigma = yerr[i][~j] / ydata[i][~j]
             sigma[yerr[i][~j] == 0] = np.finfo(sigma.dtype).eps  # avoid zero division
             fit_opts["sigma"] = sigma
-            fit_opts["absolute_sigma"] = False
+            fit_opts["absolute_sigma"] = absolute_sigma
         else:
             raise OSError("yerr_mode: did you mean 'differentials'?")
 
@@ -1410,6 +1417,7 @@ def fit_exp(
     ydata: ArrayLike,
     yerr: ArrayLike = None,
     yerr_mode: str = "differentials",
+    absolute_sigma: bool = True,
     prefactor: float = None,
     exponent: float = None,
     axis: plt.Axes = None,
@@ -1439,10 +1447,16 @@ def fit_exp(
             \delta z &= \left| \frac{\partial z}{\partial y} \right| \delta y \\
             \delta z &= \frac{\delta y}{y}
 
+    .. seealso::
+
+        `scipy.optimize.curve_fit
+        <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html>`__
+
     :param xdata: Data points along the x-axis.
     :param ydata: Data points along the y-axis.
     :param yerr: Error-bar for ``ydata``.
     :param yerr_mode: How to treat the error in ``ydata``, see above.
+    :param absolute_sigma: Treat (the effective) ``yerr`` as absolute error.
     :param prefactor: Prefactor :math:`c` (fitted if not specified).
     :param exponent: Exponent :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
@@ -1495,7 +1509,7 @@ def fit_exp(
             sigma = yerr[i][~j] / ydata[i][~j]
             sigma[yerr[i][~j] == 0] = np.finfo(sigma.dtype).eps  # avoid zero division
             fit_opts["sigma"] = sigma
-            fit_opts["absolute_sigma"] = False
+            fit_opts["absolute_sigma"] = absolute_sigma
         else:
             raise OSError("yerr_mode: did you mean 'differentials'?")
 
@@ -1555,6 +1569,7 @@ def fit_linear(
     xdata: ArrayLike,
     ydata: ArrayLike,
     yerr: ArrayLike = None,
+    absolute_sigma: bool = True,
     offset: float = None,
     slope: float = None,
     axis: plt.Axes = None,
@@ -1566,9 +1581,15 @@ def fit_linear(
     r"""
     Fit a linear function :math:`y = a + b x`.
 
+    .. seealso::
+
+        `scipy.optimize.curve_fit
+        <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html>`__
+
     :param xdata: Data points along the x-axis.
     :param ydata: Data points along the y-axis.
     :param yerr: Error-bar for ``ydata``.
+    :param absolute_sigma: Treat (the effective) ``yerr`` as absolute error.
     :param offset: Offset :math:`a` (fitted if not specified).
     :param slope: Slope :math:`b` (fitted if not specified).
     :param axis: Axis to plot along (not plotted if not specified).
@@ -1612,7 +1633,7 @@ def fit_linear(
         sigma = np.array(yerr).astype(float)
         sigma[yerr == 0] = np.finfo(sigma.dtype).eps  # avoid zero division
         fit_opts["sigma"] = sigma
-        fit_opts["absolute_sigma"] = False
+        fit_opts["absolute_sigma"] = absolute_sigma
 
     if offset is None and slope is None:
 
