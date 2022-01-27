@@ -1374,7 +1374,7 @@ def fit_powerlaw(
             [
                 r"$({prefactor:.2f} \pm {prefactor_error:.2f})",
                 auto_fmt,
-                r"^{{{exponent:.2f} \pm {prefactor_error:.2f}}}$",
+                r"^{{{exponent:.2f} \pm {exponent_error:.2f}}}$",
             ]
         )
 
@@ -1525,7 +1525,7 @@ def fit_exp(
         fmt = "".join(
             [
                 r"$({prefactor:.2f} \pm {prefactor_error:.2f})",
-                r"\exp( {exponent:.2f} \pm {prefactor_error:.2f}",
+                r"\exp( {exponent:.2f} \pm {exponent_error:.2f}",
                 auto_fmt,
                 ")$",
             ]
