@@ -150,7 +150,7 @@ def copy_style():
 
         warnings.warn(message, Warning)
 
-        styles["goose-latex.mplstyle"] = {}
+        styles["goose-latex.mplstyle"] = None
 
     # write style definitions
     # -----------------------
@@ -165,7 +165,8 @@ def copy_style():
     # write all styles
     for fname, style in styles.items():
         with open(os.path.join(dirname, fname), "w") as file:
-            yaml.dump(style, file)
+            if style is not None:
+                yaml.dump(style, file)
 
 
 def latex_float(number, fmt="{0:.2g}"):
