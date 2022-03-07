@@ -21,8 +21,8 @@ ax1.plot(x, np.sin(x - np.pi / 4.0), label=r"$\sin(x - \pi/4)$")
 
 ax1.set_title("First subplot")
 
-ax1.xaxis.set_ticklabels(["0", r"$\pi$", r"$2\pi$"])
 ax1.xaxis.set_ticks([0, np.pi, 2 * np.pi])
+ax1.xaxis.set_ticklabels(["0", r"$\pi$", r"$2\pi$"])
 ax1.yaxis.set_ticks([-1, 0, 1])
 
 ax1.legend(loc="upper right")
@@ -39,8 +39,8 @@ ax2.plot(x, np.cos(x - np.pi / 4.0), linestyle="--", label=r"$\cos(x - \pi/4)$")
 
 ax2.set_title("Second subplot")
 
-ax2.xaxis.set_ticklabels(["0", r"$\pi$", r"$2\pi$"])
 ax2.xaxis.set_ticks([0, np.pi, 2 * np.pi])
+ax2.xaxis.set_ticklabels(["0", r"$\pi$", r"$2\pi$"])
 ax2.yaxis.set_ticks([-1, 0, 1])
 
 ax2.legend(loc="upper center")
