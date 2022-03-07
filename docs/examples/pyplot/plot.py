@@ -12,8 +12,8 @@ ax.plot(x, np.sin(x - np.pi / 4.0), label=r"$\sin(x - \pi/4)$")
 
 ax.set_title("Simple plot")
 
-ax.xaxis.set_ticklabels(["0", r"$\pi$", r"$2\pi$"])
 ax.xaxis.set_ticks([0, np.pi, 2 * np.pi])
+ax.xaxis.set_ticklabels(["0", r"$\pi$", r"$2\pi$"])
 ax.yaxis.set_ticks([-1, 0, 1])
 
 ax.legend(loc="upper right")
