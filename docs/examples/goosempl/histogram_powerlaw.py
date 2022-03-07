@@ -10,7 +10,7 @@ def distribution(a=100, b=3, g=-0.3, size=10000):
 
     r = np.random.random(size=size)
 
-    return (a ** g + (b ** g - a ** g) * r) ** (1.0 / g)
+    return (a**g + (b**g - a**g) * r) ** (1.0 / g)
 
 
 data = distribution()

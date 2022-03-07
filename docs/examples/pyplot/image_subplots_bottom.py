@@ -7,7 +7,7 @@ plt.style.use(["goose", "goose-latex"])
 # --- some data ----
 
 a, b = np.meshgrid(np.linspace(0, 1, 100), np.linspace(0, 1, 100))
-d = np.sqrt(a ** 2 + b ** 2)
+d = np.sqrt(a**2 + b**2)
 
 # --- open figure with three axes ---
 

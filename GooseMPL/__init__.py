@@ -194,9 +194,9 @@ def latex_float(number, fmt="{0:.2g}"):
     if "e" in float_str:
         base, exponent = float_str.split("e")
         if base == "1":
-            return fr"10^{{{int(exponent)}}}"
+            return rf"10^{{{int(exponent)}}}"
         else:
-            return fr"{base} \times 10^{{{int(exponent)}}}"
+            return rf"{base} \times 10^{{{int(exponent)}}}"
 
     return float_str
 
@@ -254,7 +254,7 @@ def log_ticks(
 
     exp_lower, exp_upper = lim
     ticks = np.logspace(exp_lower, exp_upper, exp_upper - exp_lower + 1, base=base)
-    labels = [fr"${base}^{{{np.log10(i):.0f}}}$" for i in ticks]
+    labels = [rf"${base}^{{{np.log10(i):.0f}}}$" for i in ticks]
 
     if keep is not None:
         keep = np.array(keep)
@@ -356,7 +356,7 @@ def log_minorticks(
 
     for i in range(exp_lower, exp_upper):
 
-        t = (10 ** i) * np.arange(2, 10, dtype=float)
+        t = (10**i) * np.arange(2, 10, dtype=float)
 
         if i < 0:
             t = np.around(t, -i)
@@ -743,9 +743,10 @@ def plot(x, y, units="absolute", axis=None, **kwargs):
     :options:
 
         **units** ([``'absolute'``] | ``'relative'``)
-            The type of units in which the coordinates are specified. Relative coordinates correspond
-            to a fraction of the relevant axis. If you use relative coordinates, be sure to set the
-            limits and scale before calling this function!
+            The type of units in which the coordinates are specified.
+            Relative coordinates correspond to a fraction of the relevant axis.
+            If you use relative coordinates, be sure to set the limits and scale before calling
+            this function!
 
         ...
             Any ``plt.plot(...)`` option.
@@ -783,9 +784,10 @@ def text(x, y, text, units="absolute", axis=None, **kwargs):
     :options:
 
         **units** ([``'absolute'``] | ``'relative'``)
-            The type of units in which the coordinates are specified. Relative coordinates correspond
-            to a fraction of the relevant axis. If you use relative coordinates, be sure to set the
-            limits and scale before calling this function!
+            The type of units in which the coordinates are specified.
+            Relative coordinates correspond to a fraction of the relevant axis.
+            If you use relative coordinates, be sure to set the limits and scale before calling
+            this function!
 
         ...
             Any ``plt.text(...)`` option.
@@ -820,7 +822,8 @@ def diagonal_powerlaw(
             The power-law exponent.
 
         **ll, lr, tl, tr** (``<list>``)
-            Coordinates of the lower-left, or the lower-right, or the top-left, or the top-right corner.
+            Coordinates of the lower-left, or the lower-right, or the top-left,
+            or the top-right corner.
 
         **width, height** (``<float>``)
             Width or the height.
@@ -912,9 +915,10 @@ def annotate_powerlaw(text, exp, startx, starty, width=None, rx=0.5, ry=0.5, **k
             E.g. ``rx = 0.5, ry = 0.5`` corresponds to the middle of the line.
 
         **units** ([``'relative'``] | ``'absolute'``)
-            The type of units in which the coordinates are specified. Relative coordinates correspond
-            to a fraction of the relevant axis. If you use relative coordinates, be sure to set the
-            limits and scale before calling this function!
+            The type of units in which the coordinates are specified.
+            Relative coordinates correspond to a fraction of the relevant axis.
+            If you use relative coordinates, be sure to set the limits and scale before calling
+            this function!
 
         **axis** ([``plt.gca()``] | ...)
             Specify the axis to which to apply the limits.
@@ -965,11 +969,11 @@ def annotate_powerlaw(text, exp, startx, starty, width=None, rx=0.5, ry=0.5, **k
         [starty, endy] = rel2abs_y([starty, endy], axis)
 
     # determine multiplication constant
-    const = starty / (startx ** exp)
+    const = starty / (startx**exp)
 
     # get end x/y-coordinate
     if endx is not None:
-        endy = const * endx ** exp
+        endy = const * endx**exp
     else:
         endx = (endy / const) ** (1 / exp)
 
@@ -999,9 +1003,10 @@ def plot_powerlaw(exp, startx, starty, width=None, **kwargs):
             Definition of the end coordinate (only on of these options is needed).
 
         **units** ([``'relative'``] | ``'absolute'``)
-            The type of units in which the coordinates are specified. Relative coordinates correspond
-            to a fraction of the relevant axis. If you use relative coordinates, be sure to set the
-            limits and scale before calling this function!
+            The type of units in which the coordinates are specified.
+            Relative coordinates correspond to a fraction of the relevant axis.
+            If you use relative coordinates, be sure to set the limits and scale before calling
+            this function!
 
         **axis** ([``plt.gca()``] | ...)
             Specify the axis to which to apply the limits.
@@ -1057,11 +1062,11 @@ def plot_powerlaw(exp, startx, starty, width=None, **kwargs):
         [starty, endy] = rel2abs_y([starty, endy], axis)
 
     # determine multiplication constant
-    const = starty / (startx ** exp)
+    const = starty / (startx**exp)
 
     # get end x/y-coordinate
     if endx is not None:
-        endy = const * endx ** exp
+        endy = const * endx**exp
     else:
         endx = (endy / const) ** (1 / exp)
 
@@ -1075,8 +1080,8 @@ def plot_powerlaw(exp, startx, starty, width=None, **kwargs):
 
 def grid_powerlaw(exp, insert=0, skip=0, end=-1, step=0, axis=None, **kwargs):
     r"""
-    Draw a power-law grid: a grid that respects a certain power-law exponent. The grid-lines start from
-    the positions of the ticks.
+    Draw a power-law grid: a grid that respects a certain power-law exponent.
+    The grid-lines start from the positions of the ticks.
 
     :arguments:
 
@@ -1399,9 +1404,9 @@ def fit_powerlaw(
         xl = np.logspace(np.log10(xl[0]), np.log10(xl[-1]), 1000)
         xu = np.logspace(np.log10(xu[0]), np.log10(xu[-1]), 1000)
 
-    yp = prefactor * xp ** exponent
-    yl = prefactor * xl ** exponent
-    yu = prefactor * xu ** exponent
+    yp = prefactor * xp**exponent
+    yl = prefactor * xl**exponent
+    yu = prefactor * xu**exponent
 
     details["handle"] = axis.plot(xp, yp, **kwargs)
 
@@ -2016,7 +2021,8 @@ def histogram(data, return_edges=True, **kwargs):
 def histogram_cumulative(data, **kwargs):
     r"""
     Compute cumulative histogram.
-    See `numpy.histrogram <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`__
+    See `numpy.histrogram
+    <https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html>`__
 
     :extra options:
 
@@ -2204,8 +2210,16 @@ def patch(*args, **kwargs):
 
             fig,ax = plt.subplots()
 
-            p = gplt.patch(coor=coor+disp,conn=conn,axis=ax,cindex=stress,cmap='YlOrRd',edgecolor=None)
-            _ = gplt.patch(coor=coor     ,conn=conn,axis=ax)
+            p = gplt.patch(
+                coor=coor + disp,
+                conn=conn,
+                axis=ax,
+                cindex=stress,
+                cmap='YlOrRd',
+                edgecolor=None
+            )
+
+            _ = gplt.patch(coor=coor, conn=conn, axis=ax)
 
             cbar = fig.colorbar(p,axis=ax,aspect=10)
 
@@ -2222,7 +2236,8 @@ def patch(*args, **kwargs):
             Matrix with on each row the coordinates (positions) of each node.
 
         **conn** (``<numpy.ndarray>`` | ``<list>`` (nested))
-            Matrix with on each row the number numbers (rows in ``coor``) which form an element (patch).
+            Matrix with on each row the number numbers (rows in ``coor``)
+            which form an element (patch).
 
     :options:
 
@@ -2233,8 +2248,8 @@ def patch(*args, **kwargs):
             Specify an axis to include to plot in. By default the current axis is used.
 
         **autoscale** ([``True``] | ``False``)
-            Automatically update the limits of the plot (currently automatic limits of Collections are
-            not supported by matplotlib).
+            Automatically update the limits of the plot
+            (currently automatic limits of Collections are not supported by matplotlib).
 
     :recommended options:
 

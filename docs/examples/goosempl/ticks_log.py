@@ -9,7 +9,7 @@ plt.style.use(["goose", "goose-latex", "goose-autolayout"])
 fig, ax = plt.subplots()
 
 x = np.logspace(1, 3, 1000)
-y = 0.001 * x ** 2.0
+y = 0.001 * x**2.0
 
 ax.plot(x, y)
 

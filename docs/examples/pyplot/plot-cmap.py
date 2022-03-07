@@ -11,7 +11,7 @@ cmap = plt.get_cmap("jet", N)
 fig, ax = plt.subplots()
 
 for i, n in enumerate(np.linspace(0, 2, N)):
-    y = np.sin(x) * x ** n
+    y = np.sin(x) * x**n
     ax.plot(x, y, color=cmap(i))
 
 ax.set_xlabel(r"$x$")
