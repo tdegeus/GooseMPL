@@ -190,6 +190,44 @@ class Test_fit_exp(unittest.TestCase):
         self.assertTrue(np.isclose(exponent, 3.4))
 
 
+class Test_fit_log(unittest.TestCase):
+    """
+    Fit an logarithmic function.
+    """
+
+    def test_prefactor_exponent(self):
+
+        x = np.linspace(0, 1, 1000)[1:]
+        y = 1.2 + 3.4 * np.log(x)
+        offset, prefactor, _ = gplt.fit_log(x, y)
+        self.assertTrue(np.isclose(offset, 1.2))
+        self.assertTrue(np.isclose(prefactor, 3.4))
+
+    def test_prefactor_negative_prefactor(self):
+
+        x = np.linspace(0, 1, 1000)[1:]
+        y = 1.2 - 3.4 * np.log(x)
+        offset, prefactor, _ = gplt.fit_log(x, y)
+        self.assertTrue(np.isclose(offset, 1.2))
+        self.assertTrue(np.isclose(prefactor, -3.4))
+
+    def test_prefactor(self):
+
+        x = np.linspace(0, 1, 1000)[1:]
+        y = 1.2 + 3.4 * np.log(x)
+        offset, prefactor, _ = gplt.fit_log(x, y, prefactor=3.4)
+        self.assertTrue(np.isclose(offset, 1.2))
+        self.assertTrue(np.isclose(prefactor, 3.4))
+
+    def test_exponent(self):
+
+        x = np.linspace(0, 1, 1000)[1:]
+        y = 1.2 + 3.4 * np.log(x)
+        offset, prefactor, _ = gplt.fit_log(x, y, offset=1.2)
+        self.assertTrue(np.isclose(offset, 1.2))
+        self.assertTrue(np.isclose(prefactor, 3.4))
+
+
 class Test_fit_linear(unittest.TestCase):
     """
     Fit a linear.

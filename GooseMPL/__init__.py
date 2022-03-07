@@ -1319,7 +1319,7 @@ def fit_powerlaw(
         with ``x`` replaced with the specified string.
 
     :param extrapolate:
-        Plot the powerlaw on the full range of ``axis.get_xlim()``.
+        Plot the function on the full range of ``axis.get_xlim()``.
         Instead of ``True``, one can specify plot options for the extrapolated line, e.g.
         ``..., extrapolate=dict(ls="--", c="r"), ...``.
 
@@ -1471,7 +1471,7 @@ def fit_exp(
         with ``x`` replaced with the specified string.
 
     :param extrapolate:
-        Plot the powerlaw on the full range of ``axis.get_xlim()``.
+        Plot the function on the full range of ``axis.get_xlim()``.
         Instead of ``True'', one can specify plot options for the extrapolated line, e.g.
         ``..., extrapolate=dict(ls="--", c="r"), ...``.
 
@@ -1570,6 +1570,75 @@ def fit_exp(
     return (prefactor, exponent, details)
 
 
+def fit_log(
+    xdata: ArrayLike,
+    ydata: ArrayLike,
+    yerr: ArrayLike = None,
+    **kwargs,
+) -> (float, float, dict):
+    r"""
+    Fit a logarithm :math:`y = a + b \ln x`.
+    See documentation of :py:func:`fit_linear`.
+    """
+
+    xdata = np.array(xdata)
+    ydata = np.array(ydata)
+
+    i = xdata > 0
+    logx = np.log(xdata[i])
+    y = ydata[i]
+
+    j = np.isnan(logx)
+    logx = logx[~j]
+    y = y[~j]
+
+    axis = kwargs.pop("axis", None)
+    offset, slope, details = fit_linear(logx, y, **kwargs)
+    auto_fmt = kwargs.pop("auto_fmt", None)
+    extrapolate = kwargs.pop("extrapolate", False)
+    kwargs.pop("sigma", None)
+    kwargs.pop("absolute_sigma", None)
+    kwargs.pop("offset", None)
+    kwargs.pop("slope", None)
+    kwargs.pop("fmt", None)
+
+    if auto_fmt:
+        n = 1 + len(auto_fmt)
+        details["label"] = details["label"][:-n] + auto_fmt + r"$"
+
+    if axis is None:
+        return (offset, slope, details)
+
+    if "label" in details:
+        kwargs["label"] = details["label"]
+
+    xp = np.array([np.min(np.exp(logx)), np.max(np.exp(logx))])
+    xl = np.array([axis.get_xlim()[0], xp[0]])
+    xu = np.array([xp[1], axis.get_xlim()[1]])
+
+    if isinstance(extrapolate, bool) and extrapolate:
+        xp = np.array(axis.get_xlim())
+        if xp[0] == 0:
+            xp[0] = np.finfo(np.float64).eps
+
+    if axis.get_xscale() != "log":
+        xp = np.logspace(np.log10(xp[0]), np.log10(xp[-1]), 1000)
+        xl = np.logspace(np.log10(xl[0]), np.log10(xl[-1]), 1000)
+        xu = np.logspace(np.log10(xu[0]), np.log10(xu[-1]), 1000)
+
+    yp = offset + slope * np.log(xp)
+    yl = offset + slope * np.log(xl)
+    yu = offset + slope * np.log(xu)
+
+    details["handle"] = axis.plot(xp, yp, **kwargs)
+
+    if isinstance(extrapolate, dict):
+        details["handle_lower"] = axis.plot(xl, yl, **extrapolate)
+        details["handle_upper"] = axis.plot(xu, yu, **extrapolate)
+
+    return (offset, slope, details)
+
+
 def fit_linear(
     xdata: ArrayLike,
     ydata: ArrayLike,
@@ -1605,7 +1674,7 @@ def fit_linear(
         with ``x`` replaced with the specified string.
 
     :param extrapolate:
-        Plot the powerlaw on the full range of ``axis.get_xlim()``.
+        Plot the function on the full range of ``axis.get_xlim()``.
         Instead of ``True``, one can specify plot options for the extrapolated line, e.g.
         ``..., extrapolate=dict(ls="--", c="r"), ...``.
 
