@@ -13,7 +13,7 @@ plt.rc("axes", prop_cycle=custom_cycler)
 fig, ax = plt.subplots()
 
 for n in np.linspace(0, 2, N):
-    y = np.sin(x) * x ** n
+    y = np.sin(x) * x**n
     ax.plot(x, y)
 
 ax.set_xlabel(r"$x$")

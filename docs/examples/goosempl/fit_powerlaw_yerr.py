@@ -15,7 +15,7 @@ ax.set_xlim([1e0, 1e4])
 ax.set_ylim([1e-2, 1e4])
 
 x = np.logspace(1, 3, 10)
-y = 0.001 * x ** 2.0
+y = 0.001 * x**2.0
 yerr = 0.1 * np.random.random(x.shape) * x
 sign = np.random.random(x.shape)
 sign = sign / np.abs(sign)

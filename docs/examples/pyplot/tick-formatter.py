@@ -5,7 +5,7 @@ import numpy as np
 plt.style.use(["goose", "goose-latex"])
 
 x = np.linspace(0, 10, 101)
-y = x ** 2.0
+y = x**2.0
 
 fig, ax = plt.subplots()
 
