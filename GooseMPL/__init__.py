@@ -2153,6 +2153,9 @@ def bin(x: ArrayLike, y: ArrayLike, bin_edges: ArrayLike | int, use_median: bool
         yerr: std(y) for each bin.
     """
 
+    x = np.array(x)
+    y = np.array(y)
+
     j = np.digitize(x, bin_edges) - 1
     n = bin_edges.size - 1
 
@@ -2161,6 +2164,7 @@ def bin(x: ArrayLike, y: ArrayLike, bin_edges: ArrayLike | int, use_median: bool
         "y": np.NaN * np.ones(n, dtype=float),
         "xerr": np.NaN * np.ones(n, dtype=float),
         "yerr": np.NaN * np.ones(n, dtype=float),
+        "n": np.zeros(n, dtype=int),
     }
 
     assert np.max(j) < ret["x"].size
@@ -2171,6 +2175,7 @@ def bin(x: ArrayLike, y: ArrayLike, bin_edges: ArrayLike | int, use_median: bool
             continue
 
         sel = j == i
+        ret["n"][i] = np.sum(sel)
 
         if not use_median:
             ret["x"][i] = np.mean(x[sel])
