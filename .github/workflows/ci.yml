@@ -45,6 +45,9 @@ jobs:
     - name: Install style
       run: python -c "import GooseMPL; GooseMPL.copy_style()"
 
+    - name: Set matplotlib backend
+      run: echo "MPLBACKEND=Agg" >> $GITHUB_ENV
+
     - name: Run examples - GooseMPL
       working-directory: docs/examples/goosempl
       run: |
