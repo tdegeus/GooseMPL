@@ -48,6 +48,9 @@ jobs:
     - name: Set matplotlib backend
       run: echo "MPLBACKEND=Agg" >> $GITHUB_ENV
 
+    - name: Run test
+      run: python t.py
+
     - name: Run examples - GooseMPL
       working-directory: docs/examples/goosempl
       run: |
