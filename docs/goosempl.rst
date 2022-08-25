@@ -79,6 +79,7 @@ Plot mesh
     GooseMPL.histogram_norm
     GooseMPL.histogram_cumulative
     GooseMPL.cdf
+    GooseMPL.ccdf
     GooseMPL.hist
     GooseMPL.random_from_cdf
 
