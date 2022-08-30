@@ -17,7 +17,6 @@ from __future__ import annotations
 import textwrap
 
 import deprecation
-import matplotlib
 import matplotlib.colors
 import matplotlib.pyplot as plt
 import numpy as np
