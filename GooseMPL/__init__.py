@@ -18,6 +18,7 @@ import textwrap
 
 import deprecation
 import matplotlib
+import matplotlib.colors
 import matplotlib.pyplot as plt
 import numpy as np
 import yaml
@@ -200,6 +201,23 @@ def latex_float(number, fmt="{0:.2g}"):
             return rf"{base} \times 10^{{{int(exponent)}}}"
 
     return float_str
+
+
+def asLinearSegmentedColormap(
+    cmap: ArrayLike, name: str = "mycolormap"
+) -> matplotlib.colors.LinearSegmentedColormap:
+    """
+    Convert matrix of colors to a linear segmented colormap.
+    See `this answer <https://stackoverflow.com/a/31499673/2646505>`__ for more details.
+
+    :param cmap: Matrix of colors [n, 3].
+    :return: The LinearSegmentedColormap.
+    """
+    assert cmap.ndim == 2
+    assert cmap.shape[1] == 3
+    return matplotlib.colors.LinearSegmentedColormap.from_list(
+        name, np.c_[cmap, np.ones(cmap.shape[0])]
+    )
 
 
 def log_ticks(
