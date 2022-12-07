@@ -253,9 +253,11 @@ def ticks(
     if xdir:
         ticks = axis.get_xticks()
         labels = axis.get_xticklabels()
+        lim = axis.get_xlim()
     else:
         ticks = axis.get_yticks()
         labels = axis.get_yticklabels()
+        lim = axis.get_ylim()
 
     if keep is not None:
 
@@ -263,9 +265,11 @@ def ticks(
 
         if autofmt:
             if xdir:
+                axis.set_xlim(lim)
                 axis.set_xticks(ticks[keep])
                 keep_labels = axis.get_xticklabels()
             else:
+                axis.set_ylim(lim)
                 axis.set_yticks(ticks[keep])
                 keep_labels = axis.get_yticklabels()
 
