@@ -411,8 +411,6 @@ class Test_histogram_bin_edges(unittest.TestCase):
         self.assertTrue(np.allclose(bin_edges, np.array([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 7, 9])))
 
 
-
-
 if __name__ == "__main__":
 
     unittest.main()
