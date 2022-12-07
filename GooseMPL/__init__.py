@@ -219,6 +219,76 @@ def asLinearSegmentedColormap(
     )
 
 
+def ticks(
+    keep: list = None,
+    axis: plt.Axes = None,
+    direction: str = "x",
+) -> (list, list):
+    """
+    Get and/or apply ticks and tick-labels between two bounds.
+    Example: select a fraction of the default ticks along an axis::
+
+        ticks(keep=[0, -1], axis=ax)
+
+    :param keep: Keep only a selection of labels, convert the rest to empty strings.
+    :param axis: Apply ticks/labels to an axis. Ticks are only applied if the axis is specified.
+    :param direction: "x" or "y".
+    :return: ticks, labels
+    """
+
+    direction = direction.lower()
+    output_only = axis is None
+    axis = axis if axis else plt.gca()
+
+    if direction == "x":
+        xdir = True
+    elif direction == "y":
+        xdir = False
+    else:
+        raise OSError("Unknown direction")
+
+    if xdir:
+        ticks = axis.get_xticks()
+        labels = axis.get_xticklabels()
+    else:
+        ticks = axis.get_yticks()
+        labels = axis.get_yticklabels()
+
+    if keep is not None:
+        keep = np.array(keep)
+        keep[keep < 0] = len(labels) + keep[keep < 0]
+        for i in np.setdiff1d(np.arange(len(labels)), keep):
+            labels[i] = ""
+
+    if output_only:
+        return ticks, labels
+
+    if xdir:
+        axis.set_xticks(ticks)
+        axis.set_xticklabels(labels)
+    else:
+        axis.set_yticks(ticks)
+        axis.set_yticklabels(labels)
+
+    return ticks, labels
+
+
+def xticks(*args, **kwargs):
+    """
+    See :py:func:`ticks`.
+    """
+    kwargs.setdefault("direction", "x")
+    return ticks(*args, **kwargs)
+
+
+def yticks(*args, **kwargs):
+    """
+    See :py:func:`ticks`.
+    """
+    kwargs.setdefault("direction", "y")
+    return ticks(*args, **kwargs)
+
+
 def log_ticks(
     lim: tuple(int, int) = None,
     keep: list = None,

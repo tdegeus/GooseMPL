@@ -58,6 +58,7 @@ jobs:
         python histogram_powerlaw.py
         python patch.py
         python random_from_cdf.py
+        python ticks.py
         python ticks_log.py
 
     - name: Run examples - pyplot
