@@ -391,6 +391,28 @@ class Test_histogram_bin_edges_integer(unittest.TestCase):
         self.assertTrue(np.allclose(gplt.histogram_bin_edges_integer(a), b))
 
 
+class Test_histogram_bin_edges(unittest.TestCase):
+    """
+    Bin edges.
+    """
+
+    def test_integer(self):
+
+        data = np.array([0, 0, 1, 1, 1, 2, 2, 3, 4, 5, 6])
+        bin_edges = gplt.histogram_bin_edges(data, mode="voronoi")
+
+        self.assertTrue(np.allclose(bin_edges, np.array([-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5])))
+
+    def test_integer2(self):
+
+        data = np.array([8, 8, 1, 1, 1, 2, 2, 3, 4, 5, 6])
+        bin_edges = gplt.histogram_bin_edges(data, mode="voronoi")
+
+        self.assertTrue(np.allclose(bin_edges, np.array([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 7, 9])))
+
+
+
+
 if __name__ == "__main__":
 
     unittest.main()
