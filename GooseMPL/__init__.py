@@ -223,16 +223,19 @@ def ticks(
     keep: list = None,
     axis: plt.Axes = None,
     direction: str = "x",
+    autofmt: bool = True,
 ) -> (list, list):
     """
     Get and/or apply ticks and tick-labels between two bounds.
     Example: select a fraction of the default ticks along an axis::
 
-        ticks(keep=[0, -1], axis=ax)
+        log_ticks(keep=[0, -1], axis=ax)
+        log_ticks(keep=slice(0, None, 2), axis=ax)
 
     :param keep: Keep only a selection of labels, convert the rest to empty strings.
     :param axis: Apply ticks/labels to an axis. Ticks are only applied if the axis is specified.
     :param direction: "x" or "y".
+    :param autofmt: Re-apply automatic formatting to the remaining ticks.
     :return: ticks, labels
     """
 
@@ -255,10 +258,21 @@ def ticks(
         labels = axis.get_yticklabels()
 
     if keep is not None:
-        keep = np.array(keep)
-        keep[keep < 0] = len(labels) + keep[keep < 0]
-        for i in np.setdiff1d(np.arange(len(labels)), keep):
-            labels[i] = ""
+
+        keep = np.arange(len(labels))[keep]
+
+        if autofmt:
+            if xdir:
+                axis.set_xticks(ticks[keep])
+                keep_labels = axis.get_xticklabels()
+            else:
+                axis.set_yticks(ticks[keep])
+                keep_labels = axis.get_yticklabels()
+
+        for idx in np.setdiff1d(np.arange(len(labels)), keep):
+            labels[idx] = ""
+        for i, idx in enumerate(keep):
+            labels[idx] = keep_labels[i]
 
     if output_only:
         return ticks, labels
@@ -302,6 +316,7 @@ def log_ticks(
     Example: select a fraction of the default major ticks along an axis::
 
         log_ticks(keep=[0, -1], axis=ax)
+        log_ticks(keep=slice(0, None, 2), axis=ax)
 
     Example: get ticks and labels (without applying them to a plot)::
 
@@ -345,8 +360,7 @@ def log_ticks(
     labels = [rf"${base}^{{{np.log10(i):.0f}}}$" for i in ticks]
 
     if keep is not None:
-        keep = np.array(keep)
-        keep[keep < 0] = len(labels) + keep[keep < 0]
+        keep = np.arange(len(labels))[keep]
         for i in np.setdiff1d(np.arange(len(labels)), keep):
             labels[i] = ""
 
