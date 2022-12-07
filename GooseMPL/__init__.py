@@ -1973,6 +1973,7 @@ def histogram_bin_edges(
             * ``'equal'``: each bin has equal width.
             * ``'log'``: logarithmic spacing.
             * ``'uniform'``: uniform number of data-points per bin.
+            * ``'voronoi'``: each bin is the region between two adjacent data-points.
 
         **min_count** (``<int>``)
             The minimum number of data-points per bin.
@@ -2030,6 +2031,13 @@ def histogram_bin_edges(
 
         # - determine the bin-edges
         bin_edges = np.unique(np.sort(data)[idx])
+
+    elif mode == "voronoi":
+
+        mid_points = np.unique(data)
+        diff = np.diff(mid_points)
+        bin_edges = mid_points + np.hstack((0.5 * diff, 0.5 * diff[-1]))
+        bin_edges = np.hstack((mid_points[0] - 0.5 * diff[0], bin_edges))
 
     else:
 
