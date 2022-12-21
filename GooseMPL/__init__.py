@@ -2105,7 +2105,7 @@ def histogram_bin_edges(
 
         # - increase the number of data-points by one is an many bins as needed,
         #   such that the total fits the total number of data-points
-        count[np.linspace(0, bins - 1, len(data) - np.sum(count)).astype(np.int)] += 1
+        count[np.linspace(0, bins - 1, len(data) - np.sum(count)).astype(int)] += 1
 
         # - split the data
         idx = np.empty((bins + 1), dtype="int")
