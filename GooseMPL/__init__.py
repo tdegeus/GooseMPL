@@ -2158,7 +2158,7 @@ def histogram_bin_edges(
 
 def histogram_norm(count: ArrayLike, bin_edges: ArrayLike, norm: float = 1.0):
     """
-    Renormalise a histogram.
+    (Re)normalise a histogram.
 
     :param count: Count.
     :param bin_edges: Bin-edges.
@@ -2166,6 +2166,45 @@ def histogram_norm(count: ArrayLike, bin_edges: ArrayLike, norm: float = 1.0):
     """
     assert len(bin_edges) == len(count) + 1
     return count * norm / np.sum(np.diff(bin_edges) * count)
+
+
+def histogram_rebin(count: ArrayLike, bin_edges: ArrayLike, group: int = 100, strip: bool = False):
+    """
+    Rebin a histogram.
+
+    :param count: Count per bin.
+    :param bin_edges: Bin-edges.
+    :param group: Number of bins to group.
+    :param strip: Strip empty bins at the beginning and end.
+    :return: ``count, bin_edges``
+    """
+
+    if group > len(count):
+        return count, bin_edges
+
+    if group == len(count):
+        return np.array([sum(count)]), np.array([bin_edges[0], bin_edges[-1]])
+
+    count = np.array(count)
+
+    if strip:
+
+        start = np.argmax(count > 0)
+        stop = len(count) - np.argmax(count[::-1] > 0)
+
+        count = count[start:stop]
+        bin_edges = bin_edges[start : stop + 1]  # noqa: E203
+
+    n = len(count) // group
+    step = n * group
+    count = np.hstack((count[:step].reshape((n, group)).sum(axis=1), np.sum(count[step:])))
+
+    if len(bin_edges) // group != count.size + 1:
+        bin_edges = np.hstack((bin_edges[::group], bin_edges[-1]))
+    else:
+        bin_edges = bin_edges[::group]
+
+    return count, bin_edges
 
 
 def histogram_bin_edges2midpoint(bin_edges: ArrayLike):

@@ -356,6 +356,77 @@ class Test_histogram_norm(unittest.TestCase):
         self.assertTrue(np.allclose(q, r))
 
 
+class Test_histogram_rebin(unittest.TestCase):
+    """
+    Histogram rebinning.
+    """
+
+    def test_a_strip(self):
+
+        bin_edges = [-1, 0, 1, 2, 3, 4, 6, 7]
+        count = [0, 1, 2, 1, 2, 3, 0]
+
+        bin_edges_new = [0, 2, 4, 6]
+        count_new = [3, 3, 3]
+
+        count_new2, bin_edges_new2 = gplt.histogram_rebin(count, bin_edges, 2, strip=True)
+
+        self.assertEqual(count_new, count_new2.tolist())
+        self.assertEqual(bin_edges_new, bin_edges_new2.tolist())
+
+    def test_a(self):
+
+        bin_edges = [0, 1, 2, 3, 4, 6]
+        count = [1, 2, 1, 2, 3]
+
+        bin_edges_new = [0, 2, 4, 6]
+        count_new = [3, 3, 3]
+
+        count_new2, bin_edges_new2 = gplt.histogram_rebin(count, bin_edges, 2)
+
+        self.assertEqual(count_new, count_new2.tolist())
+        self.assertEqual(bin_edges_new, bin_edges_new2.tolist())
+
+    def test_b(self):
+
+        bin_edges = [0, 1, 2, 3, 4, 6]
+        count = [1, 2, 1, 2, 3]
+
+        bin_edges_new = [0, 3, 6]
+        count_new = [4, 5]
+
+        count_new2, bin_edges_new2 = gplt.histogram_rebin(count, bin_edges, 3)
+
+        self.assertEqual(count_new, count_new2.tolist())
+        self.assertEqual(bin_edges_new, bin_edges_new2.tolist())
+
+    def test_c(self):
+
+        bin_edges = [0, 1, 2, 3, 4, 6]
+        count = [1, 2, 1, 2, 3]
+
+        bin_edges_new = [0, 4, 6]
+        count_new = [6, 3]
+
+        count_new2, bin_edges_new2 = gplt.histogram_rebin(count, bin_edges, 4)
+
+        self.assertEqual(count_new, count_new2.tolist())
+        self.assertEqual(bin_edges_new, bin_edges_new2.tolist())
+
+    def test_d(self):
+
+        bin_edges = [0, 1, 2, 3, 4, 6]
+        count = [1, 2, 1, 2, 3]
+
+        bin_edges_new = [0, 6]
+        count_new = [sum(count)]
+
+        count_new2, bin_edges_new2 = gplt.histogram_rebin(count, bin_edges, 5)
+
+        self.assertEqual(count_new, count_new2.tolist())
+        self.assertEqual(bin_edges_new, bin_edges_new2.tolist())
+
+
 class Test_histogram_bin_edges2midpoint(unittest.TestCase):
     """
     Midpoints of bins
