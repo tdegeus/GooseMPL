@@ -2362,7 +2362,7 @@ def ccdf(data: ArrayLike, greater_equal: bool = True) -> (np.ndarray, np.ndarray
         return np.cumsum([0] + count.tolist())[1::-1] / data.size, bin_edges
 
 
-def bin(x: ArrayLike, y: ArrayLike, bin_edges: ArrayLike | int, use_median: bool = False):
+def bin(x: ArrayLike, y: ArrayLike, bin_edges: ArrayLike | int, use_median: bool = False, return_n: bool = False):
     """
     Bin data.
 
@@ -2370,6 +2370,7 @@ def bin(x: ArrayLike, y: ArrayLike, bin_edges: ArrayLike | int, use_median: bool
     :param y: y-data.
     :param bin_edges: Bin-edges along the x-axis, or the number of bins.
     :param use_median: Use median instead of mean.
+    :param return_n: Return the number of points in each bin (as dictionary entry "n").
     :return: Dictionary as follows::
         x: mean(x) for each bin (or median(x) if use_median = True).
         y: mean(y) for each bin (or median(y) if use_median = True).
@@ -2411,6 +2412,10 @@ def bin(x: ArrayLike, y: ArrayLike, bin_edges: ArrayLike | int, use_median: bool
         ret["xerr"][i] = np.std(x[sel])
         ret["yerr"][i] = np.std(y[sel])
 
+    if return_n:
+        return ret
+
+    ret.pop("n")
     return ret
 
 
