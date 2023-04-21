@@ -2362,7 +2362,13 @@ def ccdf(data: ArrayLike, greater_equal: bool = True) -> (np.ndarray, np.ndarray
         return np.cumsum([0] + count.tolist())[1::-1] / data.size, bin_edges
 
 
-def bin(x: ArrayLike, y: ArrayLike, bin_edges: ArrayLike | int, use_median: bool = False, return_n: bool = False):
+def bin(
+    x: ArrayLike,
+    y: ArrayLike,
+    bin_edges: ArrayLike | int,
+    use_median: bool = False,
+    return_n: bool = False,
+):
     """
     Bin data.
 
