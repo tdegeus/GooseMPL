@@ -12,7 +12,6 @@ class Test_ticks(unittest.TestCase):
     """
 
     def test_log_ticks(self):
-
         ticks, labels = gplt.log_ticks((0, 3))
         self.assertEqual(list(ticks), [1, 10, 100, 1000])
         self.assertEqual(labels, [r"$10^{0}$", r"$10^{1}$", r"$10^{2}$", r"$10^{3}$"])
@@ -22,7 +21,6 @@ class Test_ticks(unittest.TestCase):
         self.assertEqual(labels, [r"$10^{0}$", "", "", r"$10^{3}$"])
 
     def test_log_ticks_plot(self):
-
         fig, ax = plt.subplots()
 
         ax.set_xlim([1, 1000])
@@ -39,13 +37,11 @@ class Test_ticks(unittest.TestCase):
         plt.close(fig)
 
     def test_log_minorticks(self):
-
         ticks, labels = gplt.log_minorticks((1, 10))
         self.assertEqual(list(ticks), [2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(labels, ["2", "3", "4", "5", "6", "7", "8", "9"])
 
     def test_log_minorticks_plot(self):
-
         fig, ax = plt.subplots()
 
         ax.set_xlim([0.1, 10])
@@ -128,7 +124,6 @@ class Test_fit_powerlaw(unittest.TestCase):
     """
 
     def test_prefactor_exponent(self):
-
         x = np.linspace(0, 1, 1000)
         y = 1.2 * x**3.4
         prefactor, exponent, _ = gplt.fit_powerlaw(x, y)
@@ -136,7 +131,6 @@ class Test_fit_powerlaw(unittest.TestCase):
         self.assertTrue(np.isclose(exponent, 3.4))
 
     def test_prefactor(self):
-
         x = np.linspace(0, 1, 1000)
         y = 1.2 * x**3.4
         prefactor, exponent, _ = gplt.fit_powerlaw(x, y, exponent=3.4)
@@ -144,7 +138,6 @@ class Test_fit_powerlaw(unittest.TestCase):
         self.assertTrue(np.isclose(exponent, 3.4))
 
     def test_exponent(self):
-
         x = np.linspace(0, 1, 1000)
         y = 1.2 * x**3.4
         prefactor, exponent, _ = gplt.fit_powerlaw(x, y, prefactor=1.2)
@@ -158,7 +151,6 @@ class Test_fit_exp(unittest.TestCase):
     """
 
     def test_prefactor_exponent(self):
-
         x = np.linspace(0, 1, 1000)
         y = 1.2 * np.exp(x * 3.4)
         prefactor, exponent, _ = gplt.fit_exp(x, y)
@@ -166,7 +158,6 @@ class Test_fit_exp(unittest.TestCase):
         self.assertTrue(np.isclose(exponent, 3.4))
 
     def test_prefactor_negative_exponent(self):
-
         x = np.linspace(0, 1, 1000)
         y = 1.2 * np.exp(x * -3.4)
         prefactor, exponent, _ = gplt.fit_exp(x, y)
@@ -174,7 +165,6 @@ class Test_fit_exp(unittest.TestCase):
         self.assertTrue(np.isclose(exponent, -3.4))
 
     def test_prefactor(self):
-
         x = np.linspace(0, 1, 1000)
         y = 1.2 * np.exp(x * 3.4)
         prefactor, exponent, _ = gplt.fit_exp(x, y, exponent=3.4)
@@ -182,7 +172,6 @@ class Test_fit_exp(unittest.TestCase):
         self.assertTrue(np.isclose(exponent, 3.4))
 
     def test_exponent(self):
-
         x = np.linspace(0, 1, 1000)
         y = 1.2 * np.exp(x * 3.4)
         prefactor, exponent, _ = gplt.fit_exp(x, y, prefactor=1.2)
@@ -196,7 +185,6 @@ class Test_fit_log(unittest.TestCase):
     """
 
     def test_prefactor_exponent(self):
-
         x = np.linspace(0, 1, 1000)[1:]
         y = 1.2 + 3.4 * np.log(x)
         offset, prefactor, _ = gplt.fit_log(x, y)
@@ -204,7 +192,6 @@ class Test_fit_log(unittest.TestCase):
         self.assertTrue(np.isclose(prefactor, 3.4))
 
     def test_prefactor_negative_prefactor(self):
-
         x = np.linspace(0, 1, 1000)[1:]
         y = 1.2 - 3.4 * np.log(x)
         offset, prefactor, _ = gplt.fit_log(x, y)
@@ -212,7 +199,6 @@ class Test_fit_log(unittest.TestCase):
         self.assertTrue(np.isclose(prefactor, -3.4))
 
     def test_prefactor(self):
-
         x = np.linspace(0, 1, 1000)[1:]
         y = 1.2 + 3.4 * np.log(x)
         offset, prefactor, _ = gplt.fit_log(x, y, prefactor=3.4)
@@ -220,7 +206,6 @@ class Test_fit_log(unittest.TestCase):
         self.assertTrue(np.isclose(prefactor, 3.4))
 
     def test_exponent(self):
-
         x = np.linspace(0, 1, 1000)[1:]
         y = 1.2 + 3.4 * np.log(x)
         offset, prefactor, _ = gplt.fit_log(x, y, offset=1.2)
@@ -234,7 +219,6 @@ class Test_fit_linear(unittest.TestCase):
     """
 
     def test_offset_slope(self):
-
         x = np.linspace(0, 1, 1000)
         y = 1.2 + 3.4 * x
         offset, slope, _ = gplt.fit_linear(x, y)
@@ -242,7 +226,6 @@ class Test_fit_linear(unittest.TestCase):
         self.assertTrue(np.isclose(slope, 3.4))
 
     def test_slope(self):
-
         x = np.linspace(0, 1, 1000)
         y = 1.2 + 3.4 * x
         offset, slope, _ = gplt.fit_linear(x, y, slope=3.4)
@@ -250,7 +233,6 @@ class Test_fit_linear(unittest.TestCase):
         self.assertTrue(np.isclose(slope, 3.4))
 
     def test_offset(self):
-
         x = np.linspace(0, 1, 1000)
         y = 1.2 + 3.4 * x
         offset, slope, _ = gplt.fit_linear(x, y, offset=1.2)
@@ -264,7 +246,6 @@ class Test_cdf(unittest.TestCase):
     """
 
     def test_simple(self):
-
         data = np.array([0, 0, 1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5])
         xr = np.array([0, 1, 2, 3, 4, 5])
         pr = np.array([2, 1, 1, 2, 3, 4]) / data.size
@@ -296,7 +277,6 @@ class Test_cdf(unittest.TestCase):
         self.assertTrue(np.allclose(1 - p, pc))
 
     def test_random(self):
-
         data = np.random.random(10000)
 
         p, x = gplt.cdf(data)
@@ -320,7 +300,6 @@ class Test_bin(unittest.TestCase):
     """
 
     def test_simple(self):
-
         xdata = np.array([1, 1, 3, 3, 3, 5, 5])
         ydata = np.array([2, 4, 1, 2, 3, 2, 4])
         bin_edges = np.array([0, 2, 4, 6])
@@ -346,7 +325,6 @@ class Test_histogram_norm(unittest.TestCase):
     """
 
     def test_density(self):
-
         data = [0, 0, 0, 1, 1, 2]
         bin_edges = [-0.5, 0.5, 1.5, 2.5]
         p = gplt.histogram_norm(*np.histogram(data, bins=bin_edges))
@@ -362,7 +340,6 @@ class Test_histogram_rebin(unittest.TestCase):
     """
 
     def test_a_strip(self):
-
         bin_edges = [-1, 0, 1, 2, 3, 4, 6, 7]
         count = [0, 1, 2, 1, 2, 3, 0]
 
@@ -375,7 +352,6 @@ class Test_histogram_rebin(unittest.TestCase):
         self.assertEqual(bin_edges_new, bin_edges_new2.tolist())
 
     def test_a(self):
-
         bin_edges = [0, 1, 2, 3, 4, 6]
         count = [1, 2, 1, 2, 3]
 
@@ -388,7 +364,6 @@ class Test_histogram_rebin(unittest.TestCase):
         self.assertEqual(bin_edges_new, bin_edges_new2.tolist())
 
     def test_b(self):
-
         bin_edges = [0, 1, 2, 3, 4, 6]
         count = [1, 2, 1, 2, 3]
 
@@ -401,7 +376,6 @@ class Test_histogram_rebin(unittest.TestCase):
         self.assertEqual(bin_edges_new, bin_edges_new2.tolist())
 
     def test_c(self):
-
         bin_edges = [0, 1, 2, 3, 4, 6]
         count = [1, 2, 1, 2, 3]
 
@@ -414,7 +388,6 @@ class Test_histogram_rebin(unittest.TestCase):
         self.assertEqual(bin_edges_new, bin_edges_new2.tolist())
 
     def test_d(self):
-
         bin_edges = [0, 1, 2, 3, 4, 6]
         count = [1, 2, 1, 2, 3]
 
@@ -444,19 +417,16 @@ class Test_histogram_bin_edges_integer(unittest.TestCase):
     """
 
     def test_front(self):
-
         a = [0, 0.5, 1.5, 2.5]
         b = [0, 1.5, 2.5]
         self.assertTrue(np.allclose(gplt.histogram_bin_edges_integer(a), b))
 
     def test_middle(self):
-
         a = [0, 1.5, 1.6, 2.5]
         b = [0, 1.6, 2.5]
         self.assertTrue(np.allclose(gplt.histogram_bin_edges_integer(a), b))
 
     def test_back(self):
-
         a = [0, 1.5, 2.5, 2.6]
         b = [0, 1.5, 2.6]
         self.assertTrue(np.allclose(gplt.histogram_bin_edges_integer(a), b))
@@ -468,14 +438,12 @@ class Test_histogram_bin_edges(unittest.TestCase):
     """
 
     def test_integer(self):
-
         data = np.array([0, 0, 1, 1, 1, 2, 2, 3, 4, 5, 6])
         bin_edges = gplt.histogram_bin_edges(data, mode="voronoi")
 
         self.assertTrue(np.allclose(bin_edges, np.array([-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5])))
 
     def test_integer2(self):
-
         data = np.array([8, 8, 1, 1, 1, 2, 2, 3, 4, 5, 6])
         bin_edges = gplt.histogram_bin_edges(data, mode="voronoi")
 
@@ -483,5 +451,4 @@ class Test_histogram_bin_edges(unittest.TestCase):
 
 
 if __name__ == "__main__":
-
     unittest.main()

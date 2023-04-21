@@ -137,7 +137,6 @@ def copy_style():
     }
 
     if not system_has_latex():
-
         import warnings
 
         message = textwrap.dedent(
@@ -258,7 +257,6 @@ def ticks(
         labels = axis.get_yticklabels()
 
     if keep is not None:
-
         keep = np.arange(len(labels))[keep]
 
         if autofmt:
@@ -457,7 +455,6 @@ def log_minorticks(
     labels = []
 
     for i in range(exp_lower, exp_upper):
-
         t = (10**i) * np.arange(2, 10, dtype=float)
 
         if i < 0:
@@ -1050,12 +1047,10 @@ def annotate_powerlaw(text, exp, startx, starty, width=None, rx=0.5, ry=0.5, **k
 
     # apply width/height
     if width is not None:
-
         endx = startx + width
         endy = None
 
     elif height is not None:
-
         if exp > 0:
             endy = starty + height
         elif exp == 0:
@@ -1143,12 +1138,10 @@ def plot_powerlaw(exp, startx, starty, width=None, **kwargs):
 
     # apply width/height
     if width is not None:
-
         endx = startx + width
         endy = None
 
     elif height is not None:
-
         if exp > 0:
             endy = starty + height
         elif exp == 0:
@@ -1223,13 +1216,11 @@ def grid_powerlaw(exp, insert=0, skip=0, end=-1, step=0, axis=None, **kwargs):
 
     # zero-exponent: draw horizontal lines
     if exp == 0:
-
         # y-coordinate of the start positions
         starty = abs2rel_y(axis.get_yticks(), axis=axis)
 
         # insert extra coordinates
         if insert > 0:
-
             n = len(starty)
             x = np.linspace(0, 1, n + (n - 1) * int(insert))
             xp = np.linspace(0, 1, n)
@@ -1249,7 +1240,6 @@ def grid_powerlaw(exp, insert=0, skip=0, end=-1, step=0, axis=None, **kwargs):
 
     # all other exponents
     else:
-
         # get the axis' size in real coordinates
         # - get the limits
         xmin, xmax = axis.get_xlim()
@@ -1278,7 +1268,6 @@ def grid_powerlaw(exp, insert=0, skip=0, end=-1, step=0, axis=None, **kwargs):
 
         # insert extra coordinates
         if insert > 0:
-
             n = len(startx)
             x = np.linspace(0, 1, n + (n - 1) * int(insert))
             xp = np.linspace(0, 1, n)
@@ -1325,7 +1314,6 @@ def _fit_loglog(
     exponent: float,
     **fit_opts,
 ) -> (float, float):
-
     if prefactor is None and exponent is None:
 
         def f(logx, log_prefactor, exponent):
@@ -1348,7 +1336,6 @@ def _fit_loglog(
         eerr = 0
 
     elif exponent is None:
-
         log_prefactor = np.log(prefactor)
 
         def f(logx, exponent):
@@ -1942,7 +1929,6 @@ def histogram_bin_edges_minwidth(min_width, bins):
 
     # keep removing where needed
     while True:
-
         idx = np.where(np.diff(bins) < min_width)[0]
 
         if len(idx) == 0:
@@ -1986,7 +1972,6 @@ def histogram_bin_edges_mincount(data, min_count, bins):
 
     # keep removing where needed
     while True:
-
         P, _ = np.histogram(data, bins=bins, density=False)
 
         idx = np.where(P < min_count)[0]
@@ -2081,15 +2066,12 @@ def histogram_bin_edges(
     # determine the bin-edges
 
     if mode == "equal":
-
         bin_edges = np.linspace(np.min(data), np.max(data), bins + 1)
 
     elif mode == "log":
-
         bin_edges = np.logspace(np.log10(np.min(data)), np.log10(np.max(data)), bins + 1)
 
     elif mode == "uniform":
-
         # - check
         if hasattr(bins, "__len__"):
             raise OSError("Only the number of bins can be specified")
@@ -2117,20 +2099,17 @@ def histogram_bin_edges(
         bin_edges = np.unique(np.sort(data)[idx])
 
     elif mode == "voronoi":
-
         mid_points = np.unique(data)
         diff = np.diff(mid_points)
         bin_edges = mid_points + np.hstack((0.5 * diff, 0.5 * diff[-1]))
         bin_edges = np.hstack((mid_points[0] - 0.5 * diff[0], bin_edges))
 
     else:
-
         raise OSError("Unknown option")
 
     # remove empty starting and ending bin (related to an unfortunate choice of bin-edges)
 
     if remove_empty_edges:
-
         N, _ = np.histogram(data, bins=bin_edges, density=False)
 
         idx = np.min(np.where(N > 0)[0])
@@ -2188,7 +2167,6 @@ def histogram_rebin(count: ArrayLike, bin_edges: ArrayLike, group: int = 100, st
     count = np.array(count)
 
     if strip:
-
         start = np.argmax(count > 0)
         stop = len(count) - np.argmax(count[::-1] > 0)
 
@@ -2401,7 +2379,6 @@ def bin(
     assert np.max(j) < ret["x"].size
 
     for i in range(np.max(j) + 1):
-
         if i not in j:
             continue
 
@@ -2636,7 +2613,6 @@ def restore_data(data, key, axis=None):
     dset = data[key]
 
     if dset.attrs["artist"] == "matplotlib.lines.Line2D":
-
         xy = dset[...]
         opts = {}
 

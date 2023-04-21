@@ -7,7 +7,6 @@ plt.style.use(["goose", "goose-latex"])
 
 
 def distribution(a=100, b=3, g=-0.3, size=10000):
-
     r = np.random.random(size=size)
 
     return (a**g + (b**g - a**g) * r) ** (1.0 / g)
@@ -20,7 +19,6 @@ fig, axes = gplt.subplots(ncols=3)
 # configure axes
 
 for ax in axes:
-
     ax.set_xlabel(r"$x$")
     ax.set_ylabel(r"$\rho(x)$")
 
@@ -63,7 +61,6 @@ axes[2].set_title(r"histogram\_uniform")
 # annotate powerlaw in different ways
 
 for ax in axes:
-
     gplt.grid_powerlaw(exp=-1.3, axis=ax)
 
 plt.savefig("histogram_powerlaw.svg")

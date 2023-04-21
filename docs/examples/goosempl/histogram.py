@@ -7,7 +7,6 @@ plt.style.use(["goose", "goose-latex"])
 
 
 def distribution(a=100, b=3, g=-0.3, size=10000):
-
     r = np.random.random(size=size)
 
     return (a**g + (b**g - a**g) * r) ** (1.0 / g)
@@ -60,7 +59,6 @@ axes[0, 1].set_title(r"histogram\_log")
 axes[0, 2].set_title(r"histogram\_uniform")
 
 for ax in axes.ravel():
-
     ax.set_xlabel(r"$x$")
     ax.set_ylabel(r"$N(x)$")
 
