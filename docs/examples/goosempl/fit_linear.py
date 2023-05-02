@@ -16,9 +16,7 @@ y[10] = y[10] * 0.75
 
 ax.errorbar(x, y, yerr=yerr, marker="o")
 
-offset, slope, details = gplt.fit_linear(
-    x, y, yerr=yerr, axis=ax, c="r", extrapolate=dict(ls="--", c="r")
-)
+gplt.fit_linear(x, y, yerr=yerr, axis=ax, c="r", extrapolate=dict(ls="--", c="r"))
 
 plt.savefig("fit_linear.svg")
 plt.close()
