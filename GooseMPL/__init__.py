@@ -1362,7 +1362,7 @@ def fit_powerlaw(
     auto_fmt: str = None,
     extrapolate: bool | dict = False,
     **kwargs,
-) -> (float, float, dict):
+) -> dict:
     r"""
     Fit a powerlaw :math:`y = c x^b` by a linear fitting of
     :math:`\ln y = \ln c + b \ln x`.
@@ -1416,9 +1416,7 @@ def fit_powerlaw(
         Other plot options.
 
     :return:
-        ``prefactor, exponent, details``
-        The (fitted) prefector and exponent.
-        The details are a dictionary as follows::
+        The fit (and plot) details as a dictionary::
 
             prefactor: (Fitted) prefactor.
             exponent: (Fitted) exponent.
@@ -1479,7 +1477,7 @@ def fit_powerlaw(
         details["label"] = label
 
     if axis is None:
-        return (prefactor, exponent, details)
+        return details
 
     xp = np.array([np.min(np.exp(logx)), np.max(np.exp(logx))])
     xl = np.array([axis.get_xlim()[0], xp[0]])
@@ -1503,7 +1501,7 @@ def fit_powerlaw(
         details["handle_lower"] = axis.plot(xl, yl, **extrapolate)
         details["handle_upper"] = axis.plot(xu, yu, **extrapolate)
 
-    return (prefactor, exponent, details)
+    return details
 
 
 def fit_exp(
@@ -1519,7 +1517,7 @@ def fit_exp(
     auto_fmt: str = None,
     extrapolate: bool | dict = False,
     **kwargs,
-) -> (float, float, dict):
+) -> dict:
     r"""
     Fit an exponential :math:`y = c \exp(b x)` by linear fitting of
     :math`ln y = ln c + b x`.
@@ -1568,9 +1566,7 @@ def fit_exp(
         Other plot options.
 
     :return:
-        ``prefactor, exponent, details``
-        The (fitted) prefector and exponent.
-        The details are a dictionary as follows::
+        The fit (and plot) details as a dictionary::
 
             prefactor: (Fitted) prefactor.
             exponent: (Fitted) exponent.
@@ -1632,7 +1628,7 @@ def fit_exp(
         details["label"] = label
 
     if axis is None:
-        return (prefactor, exponent, details)
+        return details
 
     xp = np.array([np.min(x), np.max(x)])
     xl = np.array([axis.get_xlim()[0], xp[0]])
@@ -1656,7 +1652,7 @@ def fit_exp(
         details["handle_lower"] = axis.plot(xl, yl, **extrapolate)
         details["handle_upper"] = axis.plot(xu, yu, **extrapolate)
 
-    return (prefactor, exponent, details)
+    return details
 
 
 def fit_log(
@@ -1664,7 +1660,7 @@ def fit_log(
     ydata: ArrayLike,
     yerr: ArrayLike = None,
     **kwargs,
-) -> (float, float, dict):
+) -> dict:
     r"""
     Fit a logarithm :math:`y = a + b \ln x`.
     See documentation of :py:func:`fit_linear`.
@@ -1682,7 +1678,9 @@ def fit_log(
     y = y[~j]
 
     axis = kwargs.pop("axis", None)
-    offset, slope, details = fit_linear(logx, y, **kwargs)
+    details = fit_linear(logx, y, **kwargs)
+    offset = details["offset"]
+    slope = details["slope"]
     auto_fmt = kwargs.pop("auto_fmt", None)
     extrapolate = kwargs.pop("extrapolate", False)
     kwargs.pop("sigma", None)
@@ -1696,7 +1694,7 @@ def fit_log(
         details["label"] = details["label"][:-n] + auto_fmt + r"$"
 
     if axis is None:
-        return (offset, slope, details)
+        return details
 
     if "label" in details:
         kwargs["label"] = details["label"]
@@ -1725,7 +1723,7 @@ def fit_log(
         details["handle_lower"] = axis.plot(xl, yl, **extrapolate)
         details["handle_upper"] = axis.plot(xu, yu, **extrapolate)
 
-    return (offset, slope, details)
+    return details
 
 
 def fit_linear(
@@ -1740,7 +1738,7 @@ def fit_linear(
     auto_fmt: str = None,
     extrapolate: bool | dict = False,
     **kwargs,
-) -> (float, float, dict):
+) -> dict:
     r"""
     Fit a linear function :math:`y = a + b x`.
 
@@ -1771,9 +1769,7 @@ def fit_linear(
         Other plot options.
 
     :return:
-        ``offset, slope, details``
-        The (fitted) offset and slope.
-        The details are a dictionary as follows::
+        The fit (and plot) details as a dictionary::
 
             offset: (Fitted) offset.
             slope: (Fitted) slope.
@@ -1849,7 +1845,7 @@ def fit_linear(
         details["label"] = label
 
     if axis is None:
-        return (offset, slope, details)
+        return details
 
     xp = np.array([np.min(xdata), np.max(xdata)])
     xl = np.array([axis.get_xlim()[0], xp[0]])
@@ -1868,7 +1864,7 @@ def fit_linear(
         details["handle_lower"] = axis.plot(xl, yl, **extrapolate)
         details["handle_upper"] = axis.plot(xu, yu, **extrapolate)
 
-    return (offset, slope, details)
+    return details
 
 
 def random_from_cdf(shape, P, x, linspace=False, shuffle=True):

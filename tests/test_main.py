@@ -126,23 +126,23 @@ class Test_fit_powerlaw(unittest.TestCase):
     def test_prefactor_exponent(self):
         x = np.linspace(0, 1, 1000)
         y = 1.2 * x**3.4
-        prefactor, exponent, _ = gplt.fit_powerlaw(x, y)
-        self.assertTrue(np.isclose(prefactor, 1.2))
-        self.assertTrue(np.isclose(exponent, 3.4))
+        fit = gplt.fit_powerlaw(x, y)
+        self.assertTrue(np.isclose(fit["prefactor"], 1.2))
+        self.assertTrue(np.isclose(fit["exponent"], 3.4))
 
     def test_prefactor(self):
         x = np.linspace(0, 1, 1000)
         y = 1.2 * x**3.4
-        prefactor, exponent, _ = gplt.fit_powerlaw(x, y, exponent=3.4)
-        self.assertTrue(np.isclose(prefactor, 1.2))
-        self.assertTrue(np.isclose(exponent, 3.4))
+        fit = gplt.fit_powerlaw(x, y, exponent=3.4)
+        self.assertTrue(np.isclose(fit["prefactor"], 1.2))
+        self.assertTrue(np.isclose(fit["exponent"], 3.4))
 
     def test_exponent(self):
         x = np.linspace(0, 1, 1000)
         y = 1.2 * x**3.4
-        prefactor, exponent, _ = gplt.fit_powerlaw(x, y, prefactor=1.2)
-        self.assertTrue(np.isclose(prefactor, 1.2))
-        self.assertTrue(np.isclose(exponent, 3.4))
+        fit = gplt.fit_powerlaw(x, y, prefactor=1.2)
+        self.assertTrue(np.isclose(fit["prefactor"], 1.2))
+        self.assertTrue(np.isclose(fit["exponent"], 3.4))
 
 
 class Test_fit_exp(unittest.TestCase):
@@ -153,30 +153,30 @@ class Test_fit_exp(unittest.TestCase):
     def test_prefactor_exponent(self):
         x = np.linspace(0, 1, 1000)
         y = 1.2 * np.exp(x * 3.4)
-        prefactor, exponent, _ = gplt.fit_exp(x, y)
-        self.assertTrue(np.isclose(prefactor, 1.2))
-        self.assertTrue(np.isclose(exponent, 3.4))
+        fit = gplt.fit_exp(x, y)
+        self.assertTrue(np.isclose(fit["prefactor"], 1.2))
+        self.assertTrue(np.isclose(fit["exponent"], 3.4))
 
     def test_prefactor_negative_exponent(self):
         x = np.linspace(0, 1, 1000)
         y = 1.2 * np.exp(x * -3.4)
-        prefactor, exponent, _ = gplt.fit_exp(x, y)
-        self.assertTrue(np.isclose(prefactor, 1.2))
-        self.assertTrue(np.isclose(exponent, -3.4))
+        fit = gplt.fit_exp(x, y)
+        self.assertTrue(np.isclose(fit["prefactor"], 1.2))
+        self.assertTrue(np.isclose(fit["exponent"], -3.4))
 
     def test_prefactor(self):
         x = np.linspace(0, 1, 1000)
         y = 1.2 * np.exp(x * 3.4)
-        prefactor, exponent, _ = gplt.fit_exp(x, y, exponent=3.4)
-        self.assertTrue(np.isclose(prefactor, 1.2))
-        self.assertTrue(np.isclose(exponent, 3.4))
+        fit = gplt.fit_exp(x, y, exponent=3.4)
+        self.assertTrue(np.isclose(fit["prefactor"], 1.2))
+        self.assertTrue(np.isclose(fit["exponent"], 3.4))
 
     def test_exponent(self):
         x = np.linspace(0, 1, 1000)
         y = 1.2 * np.exp(x * 3.4)
-        prefactor, exponent, _ = gplt.fit_exp(x, y, prefactor=1.2)
-        self.assertTrue(np.isclose(prefactor, 1.2))
-        self.assertTrue(np.isclose(exponent, 3.4))
+        fit = gplt.fit_exp(x, y, prefactor=1.2)
+        self.assertTrue(np.isclose(fit["prefactor"], 1.2))
+        self.assertTrue(np.isclose(fit["exponent"], 3.4))
 
 
 class Test_fit_log(unittest.TestCase):
@@ -187,30 +187,30 @@ class Test_fit_log(unittest.TestCase):
     def test_prefactor_exponent(self):
         x = np.linspace(0, 1, 1000)[1:]
         y = 1.2 + 3.4 * np.log(x)
-        offset, prefactor, _ = gplt.fit_log(x, y)
-        self.assertTrue(np.isclose(offset, 1.2))
-        self.assertTrue(np.isclose(prefactor, 3.4))
+        fit = gplt.fit_log(x, y)
+        self.assertTrue(np.isclose(fit["offset"], 1.2))
+        self.assertTrue(np.isclose(fit["slope"], 3.4))
 
     def test_prefactor_negative_prefactor(self):
         x = np.linspace(0, 1, 1000)[1:]
         y = 1.2 - 3.4 * np.log(x)
-        offset, prefactor, _ = gplt.fit_log(x, y)
-        self.assertTrue(np.isclose(offset, 1.2))
-        self.assertTrue(np.isclose(prefactor, -3.4))
+        fit = gplt.fit_log(x, y)
+        self.assertTrue(np.isclose(fit["offset"], 1.2))
+        self.assertTrue(np.isclose(fit["slope"], -3.4))
 
     def test_prefactor(self):
         x = np.linspace(0, 1, 1000)[1:]
         y = 1.2 + 3.4 * np.log(x)
-        offset, prefactor, _ = gplt.fit_log(x, y, prefactor=3.4)
-        self.assertTrue(np.isclose(offset, 1.2))
-        self.assertTrue(np.isclose(prefactor, 3.4))
+        fit = gplt.fit_log(x, y, prefactor=3.4)
+        self.assertTrue(np.isclose(fit["offset"], 1.2))
+        self.assertTrue(np.isclose(fit["slope"], 3.4))
 
     def test_exponent(self):
         x = np.linspace(0, 1, 1000)[1:]
         y = 1.2 + 3.4 * np.log(x)
-        offset, prefactor, _ = gplt.fit_log(x, y, offset=1.2)
-        self.assertTrue(np.isclose(offset, 1.2))
-        self.assertTrue(np.isclose(prefactor, 3.4))
+        fit = gplt.fit_log(x, y, offset=1.2)
+        self.assertTrue(np.isclose(fit["offset"], 1.2))
+        self.assertTrue(np.isclose(fit["slope"], 3.4))
 
 
 class Test_fit_linear(unittest.TestCase):
@@ -221,23 +221,23 @@ class Test_fit_linear(unittest.TestCase):
     def test_offset_slope(self):
         x = np.linspace(0, 1, 1000)
         y = 1.2 + 3.4 * x
-        offset, slope, _ = gplt.fit_linear(x, y)
-        self.assertTrue(np.isclose(offset, 1.2))
-        self.assertTrue(np.isclose(slope, 3.4))
+        fit = gplt.fit_linear(x, y)
+        self.assertTrue(np.isclose(fit["offset"], 1.2))
+        self.assertTrue(np.isclose(fit["slope"], 3.4))
 
     def test_slope(self):
         x = np.linspace(0, 1, 1000)
         y = 1.2 + 3.4 * x
-        offset, slope, _ = gplt.fit_linear(x, y, slope=3.4)
-        self.assertTrue(np.isclose(offset, 1.2))
-        self.assertTrue(np.isclose(slope, 3.4))
+        fit = gplt.fit_linear(x, y, slope=3.4)
+        self.assertTrue(np.isclose(fit["offset"], 1.2))
+        self.assertTrue(np.isclose(fit["slope"], 3.4))
 
     def test_offset(self):
         x = np.linspace(0, 1, 1000)
         y = 1.2 + 3.4 * x
-        offset, slope, _ = gplt.fit_linear(x, y, offset=1.2)
-        self.assertTrue(np.isclose(offset, 1.2))
-        self.assertTrue(np.isclose(slope, 3.4))
+        fit = gplt.fit_linear(x, y, offset=1.2)
+        self.assertTrue(np.isclose(fit["offset"], 1.2))
+        self.assertTrue(np.isclose(fit["slope"], 3.4))
 
 
 class Test_cdf(unittest.TestCase):
