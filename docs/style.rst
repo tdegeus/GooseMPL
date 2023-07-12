@@ -17,6 +17,14 @@ The following styles are part of *GooseMPL*:
     Extend a style to enable the use of LaTeX,
     and change the font to LaTeX default Computer Modern font.
 
+*   ``goose-autolayout``
+
+    Set ``figure.autolayout = True``.
+
+*   ``goose-huge``
+
+    Set the font-size to 20pt.
+
 *   ``goose-tick-in``
 
     Place the tick-markers (*the little lines*)

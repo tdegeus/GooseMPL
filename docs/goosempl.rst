@@ -20,6 +20,9 @@ Ticks
 
 .. autosummary::
 
+    GooseMPL.ticks
+    GooseMPL.xticks
+    GooseMPL.yticks
     GooseMPL.log_ticks
     GooseMPL.log_xticks
     GooseMPL.log_yticks
