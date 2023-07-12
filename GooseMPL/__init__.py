@@ -228,8 +228,8 @@ def ticks(
     Get and/or apply ticks and tick-labels between two bounds.
     Example: select a fraction of the default ticks along an axis::
 
-        log_ticks(keep=[0, -1], axis=ax)
-        log_ticks(keep=slice(0, None, 2), axis=ax)
+        ticks(keep=[0, -1], axis=ax)
+        ticks(keep=slice(0, None, 2), axis=ax)
 
     :param keep: Keep only a selection of labels, convert the rest to empty strings.
     :param axis: Apply ticks/labels to an axis. Ticks are only applied if the axis is specified.
