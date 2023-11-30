@@ -1996,7 +1996,7 @@ def histogram_bin_edges_integer(bin_edges):
     :return: Bin-edges.
     """
 
-    if type(bin_edges) == list:
+    if isinstance(bin_edges, list):
         bin_edges = np.array(bin_edges)
 
     assert bin_edges.size > 1
