@@ -76,6 +76,7 @@ jobs:
         python image.py
         python image_subplots.py
         python image_subplots_bottom.py
+        python image_subplots_grid.py
         python legend_background.py
         python legend_external.py
         python multicolor.py

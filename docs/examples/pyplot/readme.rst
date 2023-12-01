@@ -264,8 +264,8 @@ Basic
 
   * `StackOverflow - "positioning the colorbar" <https://stackoverflow.com/a/43425119/2646505>`_
 
-Colorbar positioning
---------------------
+Orientation
+-----------
 
 :download:`source: image_subplots_bottom.py <image_subplots_bottom.py>`
 
@@ -273,6 +273,18 @@ Colorbar positioning
    :language: python
 
 .. image:: image_subplots_bottom.svg
+  :width: 1000px
+  :align: center
+
+Grid
+----
+
+:download:`source: image_subplots_grid.py <image_subplots_grid.py>`
+
+.. literalinclude:: image_subplots_grid.py
+   :language: python
+
+.. image:: image_subplots_grid.svg
   :width: 1000px
   :align: center
 
