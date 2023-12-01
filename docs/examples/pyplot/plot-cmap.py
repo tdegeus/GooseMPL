@@ -23,7 +23,7 @@ sm.set_array([])
 ticks = np.linspace(0, N - 1, int((N + 1) / 2))
 labels = np.linspace(0, 2, int((N + 1) / 2))
 boundaries = np.linspace(0, N, N + 1) - 0.5
-cbar = plt.colorbar(sm, ticks=ticks, boundaries=boundaries)
+cbar = plt.colorbar(sm, ticks=ticks, boundaries=boundaries, ax=ax)
 cbar.ax.set_yticklabels([f"{i:.1f}" for i in labels])
 
 plt.savefig("plot-cmap.svg")
