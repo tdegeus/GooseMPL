@@ -10,4 +10,5 @@ dependencies:
 - python
 - pyyaml
 - scipy
+- setuptools_scm
 - sphinx
