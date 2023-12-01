@@ -127,13 +127,20 @@ def copy_style():
         "axes.spines.right": False,
     }
 
+    preamble = [
+        r"\usepackage{amsmath}",
+        r"\usepackage{amsfonts}",
+        r"\usepackage{amssymb}",
+        r"\usepackage{bm}",
+    ]
+
     styles["goose-latex.mplstyle"] = {
         "font.family": "serif",
         "font.serif": find_latex_font_serif(),
         "font.weight": "bold",
         "font.size": 18,
         "text.usetex": True,
-        "text.latex.preamble": r"\usepackage{{amsmath, amsfonts, amssymb, bm}}",
+        "text.latex.preamble": "".join(preamble),
     }
 
     if not system_has_latex():
@@ -301,6 +308,45 @@ def yticks(*args, **kwargs):
     return ticks(*args, **kwargs)
 
 
+def log_format(base, ticks):
+    """
+    Format a list of ticks to LaTeX notation.
+
+    :param base: The base of the exponents.
+    :param ticks: The ticks.
+    :return: The formatted ticks.
+    """
+
+    def text_minus(arg):
+        if arg[0] == "-":
+            return r"\text{-}" + arg[1:]
+        return arg
+
+    text = [f"{np.log10(i):.0f}" for i in ticks]
+    text = [text_minus(i) for i in text]
+    return [rf"${base}^{{{i}}}$" for i in text]
+
+
+def log_format_text_minus(base, ticks):
+    """
+    Format a list of ticks to LaTeX notation.
+    If the exponent is negative, the minus sign is formatted as a LaTeX text (shorter minus sign).
+
+    :param base: The base of the exponents.
+    :param ticks: The ticks.
+    :return: The formatted ticks.
+    """
+
+    def text_minus(arg):
+        if arg[0] == "-":
+            return r"\text{-}" + arg[1:]
+        return arg
+
+    text = [f"{np.log10(i):.0f}" for i in ticks]
+    text = [text_minus(i) for i in text]
+    return [rf"${base}^{{{i}}}$" for i in text]
+
+
 def log_ticks(
     lim: tuple(int, int) = None,
     keep: list = None,
@@ -308,6 +354,7 @@ def log_ticks(
     axis: plt.Axes = None,
     direction: str = "x",
     minor: bool = True,
+    formatter: callable = log_format,
 ) -> (list, list):
     """
     Get and/or apply major ticks and tick-labels between two bounds.
@@ -330,6 +377,7 @@ def log_ticks(
     :param axis: Apply ticks/labels to an axis. Ticks are only applied if the axis is specified.
     :param direction: "x" or "y".
     :param minor: Use minor ticks: minor ticks are placed without labels, they are not returned.
+    :param formatter: Function to format the ticks. Called ``formatter(base, ticks)``.
     :return: ticks, labels
     """
 
@@ -355,7 +403,7 @@ def log_ticks(
 
     exp_lower, exp_upper = lim
     ticks = np.logspace(exp_lower, exp_upper, exp_upper - exp_lower + 1, base=base)
-    labels = [rf"${base}^{{{np.log10(i):.0f}}}$" for i in ticks]
+    labels = formatter(base, ticks)
 
     if keep is not None:
         keep = np.arange(len(labels))[keep]
