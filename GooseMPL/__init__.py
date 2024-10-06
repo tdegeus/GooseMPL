@@ -2413,10 +2413,10 @@ def bin(
     n = bin_edges.size - 1
 
     ret = {
-        "x": np.NaN * np.ones(n, dtype=float),
-        "y": np.NaN * np.ones(n, dtype=float),
-        "xerr": np.NaN * np.ones(n, dtype=float),
-        "yerr": np.NaN * np.ones(n, dtype=float),
+        "x": np.nan * np.ones(n, dtype=float),
+        "y": np.nan * np.ones(n, dtype=float),
+        "xerr": np.nan * np.ones(n, dtype=float),
+        "yerr": np.nan * np.ones(n, dtype=float),
         "n": np.zeros(n, dtype=int),
     }
 
